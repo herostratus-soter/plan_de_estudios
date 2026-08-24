@@ -121,7 +121,9 @@ function computarNiveles(materias) {
 
     if (prereqs.length === 0) {
       var req = m.creditos_requeridos;
-      if (req && req.minimo >= 40) {
+      if (req && req.minimo >= 60) {
+        levels[codigo] = 6;
+      } else if (req && req.minimo >= 40) {
         levels[codigo] = 5;
       } else {
         levels[codigo] = 0;
@@ -150,8 +152,21 @@ function computarNiveles(materias) {
  * @param {string} modo      — 'grupo' | 'subgrupo'
  * @returns {{ nodes: Array, edges: Array, levels: Object }}
  */
-function buildGraph(materias, modo) {
-  var levels  = computarNiveles(materias);
+function buildGraph(materiasInput, modo) {
+  var masterLevels = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.materias)
+    ? computarNiveles(PENSUM_DATA.materias)
+    : computarNiveles(materiasInput);
+
+  var levels = {};
+  for (var code in materiasInput) {
+    if (masterLevels && masterLevels[code] !== undefined) {
+      levels[code] = masterLevels[code];
+    } else {
+      levels[code] = 0;
+    }
+  }
+
+  var materias = materiasInput;
   var nodes   = [];
   var edges   = [];
   var edgeSet = {};

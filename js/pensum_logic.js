@@ -106,16 +106,21 @@ function evaluarArbolPrereqs(tree, aprobadas) {
  */
 function creditosAprobados(aprobadas, materias, compMap) {
   var result = { fundamentacion: 0, disciplinar: 0, libre_eleccion: 0 };
-  if (!aprobadas || !materias) return result;
+  if (!aprobadas) return result;
 
   aprobadas.forEach(function(code) {
-    var m = materias[code];
+    if (code === 'LE-EXTERNA') {
+      var crEx = (typeof Seleccion !== 'undefined' && Seleccion.extCredits) ? Seleccion.extCredits : 3;
+      result.libre_eleccion += crEx;
+      return;
+    }
+
+    var m = materias ? materias[code] : null;
     if (!m) return;
 
     var comp = compMap ? compMap[m.grupo] : null;
     if (comp && result.hasOwnProperty(comp)) {
-      var cr = (code === 'LE-EXTERNA' && typeof Seleccion !== 'undefined' && Seleccion.extCredits) ? Seleccion.extCredits : m.creditos;
-      result[comp] += cr;
+      result[comp] += m.creditos;
     }
   });
 
@@ -127,14 +132,21 @@ function creditosAprobados(aprobadas, materias, compMap) {
  */
 function creditosPorGrupo(aprobadas, materias) {
   var r = {};
-  if (!aprobadas || !materias) return r;
+  if (!aprobadas) return r;
+
   aprobadas.forEach(function(code) {
-    var m = materias[code];
+    if (code === 'LE-EXTERNA') {
+      var crEx = (typeof Seleccion !== 'undefined' && Seleccion.extCredits) ? Seleccion.extCredits : 3;
+      r['Libre Elección'] = (r['Libre Elección'] || 0) + crEx;
+      return;
+    }
+
+    var m = materias ? materias[code] : null;
     if (!m) return;
     if (!r[m.grupo]) r[m.grupo] = 0;
-    var cr = (code === 'LE-EXTERNA' && typeof Seleccion !== 'undefined' && Seleccion.extCredits) ? Seleccion.extCredits : m.creditos;
-    r[m.grupo] += cr;
+    r[m.grupo] += m.creditos;
   });
+
   return r;
 }
 
@@ -181,7 +193,7 @@ function puedeMatricular(codigo, aprobadas, materias, compMap) {
 
   var faltan = [];
   if (!puedePrereqs) faltan.push('Prerrequisitos directos no cumplidos');
-  if (!puedeCreds)   faltan.push('Créditos previos de ' + reqInfo.componente + ' (' + cur + '/' + reqInfo.minimo + ' cr)');
+  if (!puedeCreds)   faltan.push('Créditos previos de ' + reqInfo.componente + ' (' + cur + '/' + reqInfo.minimo + ' créditos)');
 
   return { puede: puedePrereqs && puedeCreds, faltan: faltan };
 }

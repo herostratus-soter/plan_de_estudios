@@ -46,10 +46,10 @@
 
   <section id="contador">
     <h2>Componentes</h2>
-    <div class="cr-row"><span class="comp-dot fund" id="chk-fund"></span><span>Fundamentación</span><b id="cr-fund">0 / 51 cr</b></div>
-    <div class="cr-row"><span class="comp-dot disc" id="chk-disc"></span><span>Disciplinar</span><b id="cr-disc">0 / 81 cr</b></div>
-    <div class="cr-row"><span class="comp-dot libre" id="chk-libre"></span><span>Libre Elección</span><b id="cr-libre">0 / 33 cr</b></div>
-    <div class="cr-row cr-total"><span></span><span>Total</span><b id="cr-total">0 / 165 cr</b></div>
+    <div class="cr-row"><span class="comp-dot fund" id="chk-fund"></span><span>Fundamentación</span><b id="cr-fund">0 / 51 créditos</b></div>
+    <div class="cr-row"><span class="comp-dot disc" id="chk-disc"></span><span>Disciplinar</span><b id="cr-disc">0 / 81 créditos</b></div>
+    <div class="cr-row"><span class="comp-dot libre" id="chk-libre"></span><span>Libre Elección</span><b id="cr-libre">0 / 33 créditos</b></div>
+    <div class="cr-row cr-total"><span></span><span>Total</span><b id="cr-total">0 / 165 créditos</b></div>
   </section>
 
   <div id="mode-switch">
@@ -58,7 +58,12 @@
   </div>
 
   <section id="legend">
-    <h2 id="legend-title">Grupos</h2>
+    <div class="legend-header">
+      <h2 id="legend-title">Grupos</h2>
+      <button id="btn-toggle-legend-all" class="legend-toggle-btn" title="Activar / Desactivar todos los grupos">
+        👁️ Alternar todos
+      </button>
+    </div>
     <div id="legend-list"></div>
   </section>
 
@@ -68,19 +73,45 @@
 <div id="network-wrapper">
   <div id="view-mode-banner" class="view-mode-banner hidden">
     <div class="banner-info">
-      <span class="banner-badge">🔍 Vista Enfoque — Árbol Local</span>
+      <span id="banner-badge" class="banner-badge">🔍 Vista Enfoque — Árbol Local</span>
       <span id="banner-course-title" class="banner-title">Materia</span>
     </div>
     <button id="btn-return-universal" class="banner-return-btn">
       ⬅ Volver al Pensum Universal
     </button>
   </div>
+
+  <!-- Botones Flotantes de Vista (A la derecha sobre el lienzo) -->
+  <div id="floating-controls" class="floating-controls">
+    <button id="btn-float-le-externa" class="float-btn float-btn-wide" title="Asignaturas de Libre Elección fuera del pensum (Clic: +3 créditos | Clic Der: -3 créditos)">
+      <span class="float-icon">🎨</span>
+      <span class="float-label">Libre Elección Externa: <b id="float-le-cr">0 créditos</b></span>
+      <span class="float-tooltip">Clic: +3 créditos | Clic Der: -3 créditos</span>
+    </button>
+    <button id="btn-float-focus-active" class="float-btn" title="Enfocar árbol de la materia activa">
+      <span class="float-icon">🔍</span>
+      <span class="float-tooltip">Enfocar materia activa</span>
+    </button>
+    <button id="btn-float-focus-selection" class="float-btn" title="Enfocar solo materias seleccionadas">
+      <span class="float-icon">🎓</span>
+      <span class="float-tooltip">Enfocar mi selección</span>
+    </button>
+  </div>
+
   <main id="network"></main>
 </div>
 
-<!-- Panel Derecho: Buscador, Selección y Detalle -->
+<!-- Panel Derecho: Detalle, Buscador, Selección, Reset y Exportar -->
 <aside id="right-panel">
-  <!-- Sección Buscador de Cursos -->
+  <!-- 1. Ficha / Detalle de la Materia Seleccionada Activa (Lo más arriba) -->
+  <section id="info">
+    <h2>Detalle de Materia</h2>
+    <div id="info-content">
+      <span class="dim">Haz clic en una materia para ver su cadena de prerrequisitos.</span>
+    </div>
+  </section>
+
+  <!-- 2. Buscador de Cursos -->
   <section id="search-section" class="panel-section">
     <h2>Buscador de Cursos</h2>
     <div class="search-box">
@@ -89,25 +120,32 @@
     </div>
   </section>
 
-  <!-- Sección Tray de Materias Seleccionadas -->
+  <!-- 3. Lista de Materias Seleccionadas -->
   <section id="selected-tray-section" class="panel-section">
     <div class="tray-header">
       <h2>Materias Seleccionadas (<span id="tray-count">0</span>)</h2>
-      <span id="tray-total-cr" class="tray-total-cr">0 cr</span>
+      <span id="tray-total-cr" class="tray-total-cr">0 créditos</span>
     </div>
     <div id="selected-tray-list" class="selected-tray-list">
       <span class="dim">Ninguna materia seleccionada.</span>
     </div>
   </section>
 
-  <!-- Sección Detalle de Materia -->
-  <section id="info">
-    <h2>Detalle de Materia</h2>
-    <div id="info-content">
-      <span class="dim">Haz clic en una materia para ver su cadena de prerrequisitos.</span>
-    </div>
-    <button id="reset-btn">Reiniciar selección</button>
-  </section>
+  <!-- 4. Botón Deseleccionar Todo -->
+  <div class="panel-action-block">
+    <button id="reset-btn" class="reset-all-btn">🗑️ Deseleccionar todo</button>
+  </div>
+
+  <!-- 5. Exportar / Importar .txt (Lo más abajo) -->
+  <div class="panel-action-block panel-export-block">
+    <button id="btn-export-txt" class="tray-action-btn" title="Exportar materias seleccionadas a un archivo .txt">
+      📤 Exportar .txt
+    </button>
+    <button id="btn-import-txt" class="tray-action-btn" title="Importar materias seleccionadas desde un archivo .txt">
+      📥 Importar .txt
+    </button>
+    <input type="file" id="input-import-file" accept=".txt" style="display:none;" />
+  </div>
 </aside>
 
 <!-- Dependencias: orden importa -->

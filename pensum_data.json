@@ -1364,14 +1364,6 @@
           "2015162"
         ]
       }
-    },
-    "LE-EXTERNA": {
-      "nombre": "Libre Elección (Asignatura Externa)",
-      "creditos": 3,
-      "obligatoria": false,
-      "grupo": "Libre Elección",
-      "subgrupo": "Libre Elección",
-      "prerrequisitos": null
     }
   },
   "programa": {

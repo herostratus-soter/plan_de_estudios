@@ -765,3 +765,181 @@ body {
   opacity: 1;
   background: rgba(239, 68, 68, 0.2);
 }
+
+/* ─── Botones Flotantes de Vista (Flotando a la derecha sobre el lienzo) ───── */
+.floating-controls {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  z-index: 500;
+  display: flex;
+  gap: 10px;
+}
+
+.float-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(22, 27, 34, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  transition: background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.float-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.float-btn:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.25);
+}
+
+.float-btn:active {
+  transform: translateY(0);
+}
+
+.float-tooltip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: #1e293b;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.float-btn:hover .float-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tray-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.tray-action-btn {
+  flex: 1;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.tray-action-btn:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.panel-action-block {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  background: var(--panel);
+}
+
+.panel-export-block {
+  margin-top: auto;
+  background: rgba(22, 27, 34, 0.95);
+}
+
+.reset-all-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.reset-all-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+.legend-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.legend-header h2 {
+  margin: 0;
+}
+
+.legend-toggle-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.legend-toggle-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+  color: #ffffff;
+}
+
+.float-btn-wide {
+  width: auto;
+  padding: 0 12px;
+  gap: 8px;
+}
+
+.float-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #e2e8f0;
+  white-space: nowrap;
+}
+
+.float-label b {
+  color: #38bdf8;
+  font-weight: 700;
+}

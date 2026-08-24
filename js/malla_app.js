@@ -135,15 +135,18 @@ function init() {
   updateCreditCounter();
 }
 
-// ─── Cambio de Modo de Vista (Pensum Universal <-> Árbol Local) ───────────────
+// ─── Cambio de Modo de Vista (Pensum Universal <-> Árbol Local / Selección) ───
 function mostrarArbolLocal(codigo) {
   if (!codigo || !materias[codigo]) return;
   vistaModo       = 'local';
   materiaEnfocada = codigo;
 
-  var banner  = document.getElementById('view-mode-banner');
-  var titleEl = document.getElementById('banner-course-title');
+  var banner   = document.getElementById('view-mode-banner');
+  var badgeEl  = document.getElementById('banner-badge');
+  var titleEl  = document.getElementById('banner-course-title');
+
   if (banner) banner.classList.remove('hidden');
+  if (badgeEl) badgeEl.textContent = '🔍 Vista Enfoque — Árbol Local';
   if (titleEl) titleEl.textContent = materias[codigo].nombre;
 
   var ancestorNodes = getAncestorNodeIds(codigo, materias);
@@ -166,6 +169,43 @@ function mostrarArbolLocal(codigo) {
   }
 
   updateInfoPanel(codigo);
+}
+
+function mostrarArbolSeleccionados() {
+  var selCodes = Array.from(Seleccion.set);
+  if (selCodes.length === 0) return;
+
+  vistaModo       = 'local';
+  materiaEnfocada = 'SELECCION';
+
+  var banner   = document.getElementById('view-mode-banner');
+  var badgeEl  = document.getElementById('banner-badge');
+  var titleEl  = document.getElementById('banner-course-title');
+
+  if (banner) banner.classList.remove('hidden');
+  if (badgeEl) badgeEl.textContent = '🎓 Vista Enfoque — Mi Selección';
+  if (titleEl) titleEl.textContent = selCodes.length + ' materias seleccionadas';
+
+  var subMaterias = {};
+  for (var i = 0; i < selCodes.length; i++) {
+    var code = selCodes[i];
+    if (materias[code]) {
+      subMaterias[code] = materias[code];
+    }
+  }
+
+  var selGraph = buildGraph(subMaterias, modo);
+
+  allNodes.clear();
+  allNodes.add(selGraph.nodes);
+
+  allEdges.clear();
+  allEdges.add(selGraph.edges);
+
+  applySelectionVisuals();
+  if (network) {
+    network.fit({ animation: true });
+  }
 }
 
 function mostrarPensumUniversal() {
@@ -494,7 +534,7 @@ function updateCreditCounter() {
     if (!chk || !val) return;
 
     var done = cur >= min;
-    val.textContent = cur + ' / ' + min + ' cr';
+    val.textContent = cur + ' / ' + min + ' créditos';
 
     chk.className = 'comp-dot ' + typeClass + (done ? ' done' : '');
 
@@ -512,7 +552,7 @@ function updateCreditCounter() {
   var total   = totales.fundamentacion + totales.disciplinar + totales.libre_eleccion;
   var totalEl = document.getElementById('cr-total');
   if (totalEl) {
-    totalEl.textContent = total + ' / ' + metaTotal + ' cr';
+    totalEl.textContent = total + ' / ' + metaTotal + ' créditos';
     if (total >= metaTotal) {
       totalEl.style.color = '#4ade80';
     } else {
@@ -522,13 +562,9 @@ function updateCreditCounter() {
 }
 
 function updateLEExternaLabel() {
-  if (!allNodes) return;
   var cr = Seleccion.extCredits || 0;
-  var labelText = 'Libre Elección\n(Asignatura Externa)';
-  if (cr > 0) labelText += '\n[' + cr + ' cr]';
-  try {
-    allNodes.update({ id: 'LE-EXTERNA', label: labelText });
-  } catch(e) {}
+  var floatCrEl = document.getElementById('float-le-cr');
+  if (floatCrEl) floatCrEl.textContent = cr + ' créditos';
 }
 
 // ─── Eventos de click en el grafo ────────────────────────────────────────────
@@ -634,7 +670,7 @@ function setupSearchEvents() {
       html += '<div class="search-item" data-code="' + item.code + '">';
       html += '  <div class="search-item-header">';
       html += '    <span class="search-item-code">#' + item.code + '</span>';
-      html += '    <span class="search-item-cr">' + item.m.creditos + ' cr</span>';
+      html += '    <span class="search-item-cr">' + item.m.creditos + ' créditos</span>';
       html += '  </div>';
       html += '  <div class="search-item-name">' + item.m.nombre + '</div>';
       html += '</div>';
@@ -691,7 +727,7 @@ function renderSelectedTray() {
     }
   }
 
-  if (totalCrEl) totalCrEl.textContent = totalCr + ' cr';
+  if (totalCrEl) totalCrEl.textContent = totalCr + ' créditos';
 
   if (selCodes.length === 0) {
     listEl.innerHTML = '<span class="dim" style="font-size:11px;padding:4px 0;">Ninguna materia seleccionada.</span>';
@@ -714,7 +750,7 @@ function renderSelectedTray() {
     html += '    <span class="tray-item-name" title="' + mName + '">' + mName + '</span>';
     html += '  </div>';
     html += '  <div class="tray-item-right">';
-    html += '    <span class="tray-item-cr">' + cr + ' cr</span>';
+    html += '    <span class="tray-item-cr">' + cr + ' créditos</span>';
     html += '    <button class="tray-item-remove" data-code="' + code + '" title="Quitar de selección">✕</button>';
     html += '  </div>';
     html += '</div>';
@@ -747,6 +783,77 @@ function renderSelectedTray() {
   }
 }
 
+// ─── Exportar e Importar Selección (.txt) ────────────────────────────────────
+function exportarSeleccionTxt() {
+  var selCodes = Array.from(Seleccion.set);
+  if (selCodes.length === 0) {
+    alert("No hay materias seleccionadas para exportar.");
+    return;
+  }
+
+  var formattedList = [];
+  for (var i = 0; i < selCodes.length; i++) {
+    var c = selCodes[i];
+    if (c === 'LE-EXTERNA') {
+      formattedList.push('LE-EXTERNA:' + (Seleccion.extCredits || 3));
+    } else {
+      formattedList.push(c);
+    }
+  }
+
+  var txtContent = formattedList.join(', ');
+  var blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
+  var url  = URL.createObjectURL(blob);
+
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'mi_seleccion_pensum.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importarSeleccionTxt(file) {
+  if (!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var content = e.target.result || '';
+    var tokens = content.split(/[,;\n\r\t]+/).map(function(t) { return t.trim(); }).filter(function(t) { return t.length > 0; });
+
+    if (tokens.length === 0) {
+      alert("El archivo .txt no contiene códigos de materias válidos.");
+      return;
+    }
+
+    Seleccion.reiniciar();
+    var lastAdded = null;
+
+    for (var i = 0; i < tokens.length; i++) {
+      var tok = tokens[i];
+      if (tok.indexOf('LE-EXTERNA') === 0) {
+        var parts = tok.split(':');
+        var cr = parts.length > 1 ? parseInt(parts[1], 10) : 3;
+        Seleccion.extCredits = isNaN(cr) ? 3 : cr;
+        Seleccion.agregar('LE-EXTERNA');
+        lastAdded = 'LE-EXTERNA';
+      } else if (materias[tok]) {
+        Seleccion.agregar(tok);
+        lastAdded = tok;
+      }
+    }
+
+    if (lastAdded) Seleccion.activo = lastAdded;
+
+    applySelectionVisuals();
+    updateInfoPanel(Seleccion.activo);
+    renderSelectedTray();
+  };
+
+  reader.readAsText(file);
+}
+
 // ─── Botones y modo ──────────────────────────────────────────────────────────
 function setupEvents() {
   setupSearchEvents();
@@ -760,12 +867,88 @@ function setupEvents() {
       applySelectionVisuals();
       updateInfoPanel(null);
       renderSelectedTray();
+      updateLEExternaLabel();
     });
+
+  var btnToggleLegend = document.getElementById('btn-toggle-legend-all');
+  if (btnToggleLegend) {
+    btnToggleLegend.addEventListener('click', toggleAllGrupos);
+  }
+
+  var btnFloatLE = document.getElementById('btn-float-le-externa');
+  if (btnFloatLE) {
+    btnFloatLE.addEventListener('click', function() {
+      var curCr = Seleccion.extCredits || 0;
+      if (curCr < 33) {
+        Seleccion.extCredits = curCr + 3;
+        Seleccion.set.add('LE-EXTERNA');
+      }
+      Seleccion.activo = 'LE-EXTERNA';
+      updateLEExternaLabel();
+      applySelectionVisuals();
+      updateInfoPanel('LE-EXTERNA');
+      renderSelectedTray();
+    });
+
+    btnFloatLE.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      var curCr = Seleccion.extCredits || 0;
+      if (curCr > 3) {
+        Seleccion.extCredits = curCr - 3;
+      } else {
+        Seleccion.extCredits = 0;
+        Seleccion.set.delete('LE-EXTERNA');
+        if (Seleccion.activo === 'LE-EXTERNA') Seleccion.limpiarActivo();
+      }
+      updateLEExternaLabel();
+      applySelectionVisuals();
+      updateInfoPanel(Seleccion.activo);
+      renderSelectedTray();
+    });
+  }
 
   var returnBtn = document.getElementById('btn-return-universal');
   if (returnBtn) {
     returnBtn.addEventListener('click', function() {
       mostrarPensumUniversal();
+    });
+  }
+
+  var btnFloatActive = document.getElementById('btn-float-focus-active');
+  if (btnFloatActive) {
+    btnFloatActive.addEventListener('click', function() {
+      if (Seleccion.activo) {
+        mostrarArbolLocal(Seleccion.activo);
+      }
+    });
+  }
+
+  var btnFloatSelection = document.getElementById('btn-float-focus-selection');
+  if (btnFloatSelection) {
+    btnFloatSelection.addEventListener('click', function() {
+      if (Seleccion.set.size > 0) {
+        mostrarArbolSeleccionados();
+      }
+    });
+  }
+
+  var btnExport = document.getElementById('btn-export-txt');
+  if (btnExport) {
+    btnExport.addEventListener('click', exportarSeleccionTxt);
+  }
+
+  var btnImport = document.getElementById('btn-import-txt');
+  var inputImport = document.getElementById('input-import-file');
+  if (btnImport && inputImport) {
+    btnImport.addEventListener('click', function() {
+      inputImport.value = '';
+      inputImport.click();
+    });
+
+    inputImport.addEventListener('change', function(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        importarSeleccionTxt(e.target.files[0]);
+      }
     });
   }
 
@@ -870,7 +1053,7 @@ function renderLegend() {
 
     var isComplete   = (selCr > 0 && selCr >= reqTarget);
     var counterColor = isComplete ? '#4ade80' : '#38bdf8';
-    var subText      = '<b style="color:' + counterColor + '">' + selCr + ' / ' + reqTarget + ' cr</b>';
+    var subText      = '<b style="color:' + counterColor + '">' + selCr + ' / ' + reqTarget + ' créditos</b>';
 
     html += '<div class="legend-item' + (active ? '' : ' dim') + '" data-key="' + key + '">';
     html += '<span class="legend-dot" style="background:' + color + '"></span>';
@@ -938,10 +1121,10 @@ function updateInfoPanel(selectedId) {
     var crEx = Seleccion.extCredits || 3;
     var htmlEx = '<div class="course-name">Libre Elección (Asignatura Externa)</div>';
     htmlEx += '<div class="course-meta"><span class="badge badge-opt">Optativa</span>';
-    htmlEx += '<span class="badge badge-cr">' + crEx + ' cr</span></div>';
+    htmlEx += '<span class="badge badge-cr">' + crEx + ' créditos</span></div>';
     htmlEx += '<div class="info-row"><b>Grupo:</b> Libre Elección</div>';
     htmlEx += '<div class="info-row"><b>Subgrupo:</b> Libre Elección — Profundización</div>';
-    htmlEx += '<div class="info-row"><b>Créditos acumulados:</b> <b style="color:#38bdf8">' + crEx + ' cr</b></div>';
+    htmlEx += '<div class="info-row"><b>Créditos acumulados:</b> <b style="color:#38bdf8">' + crEx + ' créditos</b></div>';
     htmlEx += '<div class="info-note" style="margin-top:12px;background:rgba(59,130,246,0.1);border-left-color:#38bdf8;color:#e2e8f0;">';
     htmlEx += '💡 <b>Contador de Asignaturas de Libre Elección</b><br>';
     htmlEx += '• Clic izquierdo: <b>Suma +3 créditos</b><br>';
@@ -992,7 +1175,7 @@ function updateInfoPanel(selectedId) {
   html += '<div class="course-meta">';
   html += '<span class="badge ' + (m.obligatoria ? 'badge-oblig' : 'badge-opt') + '">';
   html += (m.obligatoria ? 'Obligatoria' : 'Optativa') + '</span>';
-  html += '<span class="badge badge-cr">' + m.creditos + ' cr</span></div>';
+  html += '<span class="badge badge-cr">' + m.creditos + ' créditos</span></div>';
   html += '<div class="info-row">' + estadoHtml + '</div>';
   html += crHtml;
   html += '<div class="info-row"><b>Código SIA:</b> ' + selectedId + '</div>';
@@ -1002,7 +1185,6 @@ function updateInfoPanel(selectedId) {
   if (node) html += '<div class="info-row"><b>Nivel:</b> ' + node.level + '</div>';
   html += '<div class="info-section">Prerrequisitos inmediatos</div>';
   html += renderPrereqTree(m.prerrequisitos);
-  html += '<button class="focus-mode-btn" id="btn-focus-toggle">' + btnText + '</button>';
 
   if (m.notas) html += '<div class="info-note">' + m.notas + '</div>';
   if (selCount > 1)
@@ -1010,15 +1192,4 @@ function updateInfoPanel(selectedId) {
             selCount + ' materias en la selección</div>';
 
   content.innerHTML = html;
-
-  var focusBtn = document.getElementById('btn-focus-toggle');
-  if (focusBtn) {
-    focusBtn.onclick = function() {
-      if (isCurrentLocal) {
-        mostrarPensumUniversal();
-      } else {
-        mostrarArbolLocal(selectedId);
-      }
-    };
-  }
 }
