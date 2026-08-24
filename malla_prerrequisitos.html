@@ -78,8 +78,29 @@
   <main id="network"></main>
 </div>
 
-<!-- Panel Derecho: Detalle de la Materia -->
+<!-- Panel Derecho: Buscador, Selección y Detalle -->
 <aside id="right-panel">
+  <!-- Sección Buscador de Cursos -->
+  <section id="search-section" class="panel-section">
+    <h2>Buscador de Cursos</h2>
+    <div class="search-box">
+      <input type="text" id="course-search-input" placeholder="Buscar por código SIA o nombre..." autocomplete="off" />
+      <div id="search-results-dropdown" class="search-dropdown hidden"></div>
+    </div>
+  </section>
+
+  <!-- Sección Tray de Materias Seleccionadas -->
+  <section id="selected-tray-section" class="panel-section">
+    <div class="tray-header">
+      <h2>Materias Seleccionadas (<span id="tray-count">0</span>)</h2>
+      <span id="tray-total-cr" class="tray-total-cr">0 cr</span>
+    </div>
+    <div id="selected-tray-list" class="selected-tray-list">
+      <span class="dim">Ninguna materia seleccionada.</span>
+    </div>
+  </section>
+
+  <!-- Sección Detalle de Materia -->
   <section id="info">
     <h2>Detalle de Materia</h2>
     <div id="info-content">

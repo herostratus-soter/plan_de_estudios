@@ -538,6 +538,7 @@ function onLeftClick(params) {
     Seleccion.limpiarActivo();
     applySelectionVisuals();
     updateInfoPanel(null);
+    renderSelectedTray();
     return;
   }
   var clicked = params.nodes[0];
@@ -553,12 +554,14 @@ function onLeftClick(params) {
     updateLEExternaLabel();
     applySelectionVisuals();
     updateInfoPanel('LE-EXTERNA');
+    renderSelectedTray();
     return;
   }
 
   Seleccion.agregar(clicked);
   applySelectionVisuals();
   updateInfoPanel(clicked);
+  renderSelectedTray();
 }
 
 function onRightClick(params) {
@@ -576,16 +579,177 @@ function onRightClick(params) {
     updateLEExternaLabel();
     applySelectionVisuals();
     updateInfoPanel(Seleccion.activo);
+    renderSelectedTray();
     return;
   }
 
   Seleccion.quitar(nodeId);
   applySelectionVisuals();
   updateInfoPanel(Seleccion.activo);
+  renderSelectedTray();
+}
+
+// ─── Buscador de Cursos y Tray de Selección ──────────────────────────────────
+function setupSearchEvents() {
+  var inputEl    = document.getElementById('course-search-input');
+  var dropdownEl = document.getElementById('search-results-dropdown');
+  if (!inputEl || !dropdownEl) return;
+
+  function removeAccents(str) {
+    return (str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+
+  inputEl.addEventListener('input', function() {
+    var rawQ = inputEl.value.trim();
+    if (!rawQ) {
+      dropdownEl.innerHTML = '';
+      dropdownEl.classList.add('hidden');
+      return;
+    }
+
+    var q = removeAccents(rawQ);
+    var matches = [];
+    var keys = Object.keys(materias);
+
+    for (var i = 0; i < keys.length; i++) {
+      var code = keys[i];
+      var m = materias[code];
+      var normName = removeAccents(m.nombre);
+
+      if (code.indexOf(q) !== -1 || normName.indexOf(q) !== -1) {
+        matches.push({ code: code, m: m });
+        if (matches.length >= 8) break;
+      }
+    }
+
+    if (matches.length === 0) {
+      dropdownEl.innerHTML = '<div style="padding:8px 10px;font-size:11px;color:var(--text-dim);">No se encontraron materias</div>';
+      dropdownEl.classList.remove('hidden');
+      return;
+    }
+
+    var html = '';
+    for (var j = 0; j < matches.length; j++) {
+      var item = matches[j];
+      html += '<div class="search-item" data-code="' + item.code + '">';
+      html += '  <div class="search-item-header">';
+      html += '    <span class="search-item-code">#' + item.code + '</span>';
+      html += '    <span class="search-item-cr">' + item.m.creditos + ' cr</span>';
+      html += '  </div>';
+      html += '  <div class="search-item-name">' + item.m.nombre + '</div>';
+      html += '</div>';
+    }
+
+    dropdownEl.innerHTML = html;
+    dropdownEl.classList.remove('hidden');
+
+    var itemEls = dropdownEl.getElementsByClassName('search-item');
+    for (var k = 0; k < itemEls.length; k++) {
+      itemEls[k].addEventListener('click', function() {
+        var code = this.getAttribute('data-code');
+        Seleccion.agregar(code);
+        applySelectionVisuals();
+        updateInfoPanel(code);
+        renderSelectedTray();
+
+        inputEl.value = '';
+        dropdownEl.innerHTML = '';
+        dropdownEl.classList.add('hidden');
+
+        if (network && typeof network.focus === 'function') {
+          try {
+            network.focus(code, { scale: 1.1, animation: { duration: 400 } });
+          } catch(e) {}
+        }
+      });
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!inputEl.contains(e.target) && !dropdownEl.contains(e.target)) {
+      dropdownEl.classList.add('hidden');
+    }
+  });
+}
+
+function renderSelectedTray() {
+  var listEl    = document.getElementById('selected-tray-list');
+  var countEl   = document.getElementById('tray-count');
+  var totalCrEl = document.getElementById('tray-total-cr');
+  if (!listEl) return;
+
+  var selCodes = Array.from(Seleccion.set);
+  if (countEl) countEl.textContent = selCodes.length;
+
+  var totalCr = 0;
+  for (var i = 0; i < selCodes.length; i++) {
+    var c = selCodes[i];
+    if (c === 'LE-EXTERNA') {
+      totalCr += (Seleccion.extCredits || 3);
+    } else if (materias[c]) {
+      totalCr += materias[c].creditos;
+    }
+  }
+
+  if (totalCrEl) totalCrEl.textContent = totalCr + ' cr';
+
+  if (selCodes.length === 0) {
+    listEl.innerHTML = '<span class="dim" style="font-size:11px;padding:4px 0;">Ninguna materia seleccionada.</span>';
+    return;
+  }
+
+  var html = '';
+  for (var j = 0; j < selCodes.length; j++) {
+    var code = selCodes[j];
+    var isExt = (code === 'LE-EXTERNA');
+    var mName = isExt ? 'Libre Elección Externa' : (materias[code] ? materias[code].nombre : code);
+    var cr    = isExt ? (Seleccion.extCredits || 3) : (materias[code] ? materias[code].creditos : 0);
+    var comp  = isExt ? 'libre_eleccion' : (materias[code] ? COMPONENTE_POR_GRUPO[materias[code].grupo] : null);
+    var dotCol = COMP_DOT[comp] || '#ffffff';
+    var isAct = (Seleccion.activo === code);
+
+    html += '<div class="tray-item' + (isAct ? ' active-item' : '') + '" data-code="' + code + '">';
+    html += '  <div class="tray-item-left">';
+    html += '    <span class="tray-item-dot" style="background:' + dotCol + '"></span>';
+    html += '    <span class="tray-item-name" title="' + mName + '">' + mName + '</span>';
+    html += '  </div>';
+    html += '  <div class="tray-item-right">';
+    html += '    <span class="tray-item-cr">' + cr + ' cr</span>';
+    html += '    <button class="tray-item-remove" data-code="' + code + '" title="Quitar de selección">✕</button>';
+    html += '  </div>';
+    html += '</div>';
+  }
+
+  listEl.innerHTML = html;
+
+  var items = listEl.getElementsByClassName('tray-item');
+  for (var k = 0; k < items.length; k++) {
+    items[k].addEventListener('click', function(e) {
+      if (e.target.classList.contains('tray-item-remove')) return;
+      var code = this.getAttribute('data-code');
+      Seleccion.activo = code;
+      applySelectionVisuals();
+      updateInfoPanel(code);
+      renderSelectedTray();
+    });
+  }
+
+  var removeBtns = listEl.getElementsByClassName('tray-item-remove');
+  for (var r = 0; r < removeBtns.length; r++) {
+    removeBtns[r].addEventListener('click', function(e) {
+      e.stopPropagation();
+      var code = this.getAttribute('data-code');
+      Seleccion.quitar(code);
+      applySelectionVisuals();
+      updateInfoPanel(Seleccion.activo);
+      renderSelectedTray();
+    });
+  }
 }
 
 // ─── Botones y modo ──────────────────────────────────────────────────────────
 function setupEvents() {
+  setupSearchEvents();
   document.getElementById('btn-grupo')
     .addEventListener('click', function() { applyModo('grupo'); });
   document.getElementById('btn-subgrupo')
@@ -595,6 +759,7 @@ function setupEvents() {
       Seleccion.reiniciar();
       applySelectionVisuals();
       updateInfoPanel(null);
+      renderSelectedTray();
     });
 
   var returnBtn = document.getElementById('btn-return-universal');

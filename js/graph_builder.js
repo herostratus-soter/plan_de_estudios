@@ -156,34 +156,20 @@ function buildGraph(materias, modo) {
   var edges   = [];
   var edgeSet = {};
 
+  var parentsMap  = {};
   var childrenMap = {};
-  for (var cKey in materias) childrenMap[cKey] = [];
   for (var cKey in materias) {
-    var pList = flatPrereqs(materias[cKey].prerrequisitos);
+    parentsMap[cKey]  = flatPrereqs(materias[cKey].prerrequisitos);
+    childrenMap[cKey] = [];
+  }
+  for (var cKey in materias) {
+    var pList = parentsMap[cKey];
     for (var p = 0; p < pList.length; p++) {
       if (childrenMap[pList[p]]) childrenMap[pList[p]].push(cKey);
     }
   }
 
-  var getDescendantsCount = function(code) {
-    var desc = {};
-    var count = 0;
-    var traverse = function(c) {
-      var chList = childrenMap[c] || [];
-      for (var k = 0; k < chList.length; k++) {
-        var ch = chList[k];
-        if (!desc[ch]) {
-          desc[ch] = true;
-          count++;
-          traverse(ch);
-        }
-      }
-    };
-    traverse(code);
-    return count;
-  };
-
-  var byLevel = {};
+  var byLevel  = {};
   var maxLevel = 0;
   for (var code in levels) {
     var lvl = levels[code];
@@ -192,58 +178,94 @@ function buildGraph(materias, modo) {
     if (lvl > maxLevel) maxLevel = lvl;
   }
 
-  if (byLevel[0] && byLevel[0].length > 0) {
-    var nodesL0 = byLevel[0].slice();
-    nodesL0.sort(function(a, b) {
-      return getDescendantsCount(a) - getDescendantsCount(b);
-    });
-
-    var centeredL0 = new Array(nodesL0.length);
-    var mid = Math.floor(nodesL0.length / 2);
-    var lPtr = mid - 1, rPtr = mid;
-
-    for (var idx = nodesL0.length - 1; idx >= 0; idx--) {
-      var itemCode = nodesL0[idx];
-      if ((nodesL0.length - 1 - idx) % 2 === 0) {
-        centeredL0[rPtr++] = itemCode;
-      } else {
-        centeredL0[lPtr--] = itemCode;
-      }
-    }
-    byLevel[0] = centeredL0.filter(function(x) { return !!x; });
+  var degree = {};
+  for (var cKey in materias) {
+    degree[cKey] = (parentsMap[cKey] ? parentsMap[cKey].length : 0) + (childrenMap[cKey] ? childrenMap[cKey].length : 0);
   }
 
+  var positionsX    = {};
+  var nodeSpacingX  = 180;
+  var levelSpacingY = 150;
+
+  // Inicialización por grado de conectividad: nodos más conectados cerca a X=0
+  for (var l = 0; l <= maxLevel; l++) {
+    var lvlNodes = byLevel[l] || [];
+    var sortedDeg = lvlNodes.slice().sort(function(a, b) { return degree[b] - degree[a]; });
+    var centered  = new Array(sortedDeg.length);
+    var mid = Math.floor(sortedDeg.length / 2);
+    var lPtr = mid - 1, rPtr = mid;
+    for (var idx = 0; idx < sortedDeg.length; idx++) {
+      if (idx % 2 === 0) { centered[rPtr++] = sortedDeg[idx]; }
+      else { centered[lPtr--] = sortedDeg[idx]; }
+    }
+    byLevel[l] = centered;
+    for (var k = 0; k < centered.length; k++) {
+      positionsX[centered[k]] = (k - (centered.length - 1) / 2.0) * nodeSpacingX;
+    }
+  }
+
+  // Cálculo de baricentro correlacional 2-vías
+  function getTwoWayBarycenter(code) {
+    var pList = parentsMap[code] || [];
+    var cList = childrenMap[code] || [];
+
+    var sum = 0, count = 0;
+    for (var i = 0; i < pList.length; i++) {
+      if (positionsX[pList[i]] !== undefined) {
+        sum += positionsX[pList[i]];
+        count++;
+      }
+    }
+    for (var j = 0; j < cList.length; j++) {
+      if (positionsX[cList[j]] !== undefined) {
+        sum += positionsX[cList[j]];
+        count++;
+      }
+    }
+    return count > 0 ? (sum / count) : 0.0;
+  }
+
+  // Relajación iterativa 2-vías con jerarquía universal de conectividad
+  for (var pass = 0; pass < 6; pass++) {
+    for (var l = 0; l <= maxLevel; l++) {
+      var lvlNodes = byLevel[l] || [];
+      if (lvlNodes.length <= 1) continue;
+
+      var connectedNodes = [], independentNodes = [];
+      for (var i = 0; i < lvlNodes.length; i++) {
+        var cd = lvlNodes[i];
+        if (degree[cd] >= 1) connectedNodes.push(cd);
+        else independentNodes.push(cd);
+      }
+
+      connectedNodes.sort(function(a, b) { return getTwoWayBarycenter(a) - getTwoWayBarycenter(b); });
+      independentNodes.sort(function(a, b) { return (positionsX[a] || 0) - (positionsX[b] || 0); });
+
+      var midIndep = Math.floor(independentNodes.length / 2);
+      var ordered  = independentNodes.slice(0, midIndep).concat(connectedNodes).concat(independentNodes.slice(midIndep));
+      byLevel[l]   = ordered;
+
+      var minSpacing = 185;
+      for (var k = 0; k < ordered.length; k++) {
+        var code = ordered[k];
+        positionsX[code] = (k - (ordered.length - 1) / 2.0) * minSpacing;
+      }
+    }
+  }
+
+  // Mapeo final normalizado y equidistante de coordenadas vis.js
   var positions = {};
-  var nodeSpacingX = 180;
+  var nodeSpacingX = 185;
   var levelSpacingY = 150;
 
   for (var l = 0; l <= maxLevel; l++) {
-    var nodesInLvl = byLevel[l] || [];
-
-    if (l > 0) {
-      nodesInLvl.sort(function(a, b) {
-        var getBary = function(c) {
-          var prereqs = flatPrereqs(materias[c] ? materias[c].prerrequisitos : null);
-          var sum = 0, count = 0;
-          for (var p = 0; p < prereqs.length; p++) {
-            if (positions[prereqs[p]]) {
-              sum += positions[prereqs[p]].x;
-              count++;
-            }
-          }
-          return count > 0 ? (sum / count) : 0;
-        };
-        return getBary(a) - getBary(b);
-      });
-    }
-
-    var count = nodesInLvl.length;
+    var lvlNodes = byLevel[l] || [];
+    var count = lvlNodes.length;
     var y = (maxLevel - l - (maxLevel / 2.0)) * levelSpacingY;
-
     for (var k = 0; k < count; k++) {
-      var cCode = nodesInLvl[k];
+      var code = lvlNodes[k];
       var x = (k - (count - 1) / 2.0) * nodeSpacingX;
-      positions[cCode] = { x: x, y: y };
+      positions[code] = { x: x, y: y };
     }
   }
 
