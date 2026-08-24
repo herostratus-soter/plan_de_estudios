@@ -1,3 +1,1563 @@
-// AUTO-GENERADO desde pensum_data.json — no editar directamente.
-// Para regenerar: python3 scripts/gen_bundle.py
-var PENSUM_DATA = {"_meta":{"descripcion":"Tabla canónica del plan de estudios. Una entrada por materia. Todo el sistema la consulta.","version":"3.0.0","fuente":"Acuerdo 11 de 2023, Acta 36, 7 de diciembre — Consejo Facultad de Ingeniería, UNAL Bogotá","campos":{"codigo":"Código SIA (clave única del objeto)","nombre":"Nombre oficial de la asignatura","creditos":"Número de créditos académicos","obligatoria":"true = Obligatoria según el Acuerdo; false = Optativa","grupo":"Agrupación según el Acuerdo","subgrupo":"Subagrupación (slot de elección); null si es curso directo del grupo","prerrequisitos":"Árbol booleano: null | codigo_string | {and:[...]} | {or:[...]}. Hoja = código SIA string. OR = alternativas equivalentes. AND = todas las condiciones requeridas.","notas":"Solo cuando hay algo que no cabe como código: prerequisitos de créditos mínimos, cursos externos al programa"},"nota_transitoria_art2":"El prerrequisito 2016703 (Pensamiento Sistémico) está suspendido transitoriamente por 3 periodos para: 2016701, 2025982, 2016053.","cursos_clave":{"2015734_o_2026573":"Programación de Computadores (subgrupo)","1000004_o_2016377":"Cálculo Diferencial (subgrupo)","1000005_o_2015556":"Cálculo Integral (subgrupo)","1000006_o_2015162":"Cálculo en Varias Variables (subgrupo)","1000003_o_2015555":"Álgebra Lineal (subgrupo)","2025963_o_2015168":"Matemáticas Discretas I (subgrupo)","2025964_o_2015181":"Matemáticas Discretas II (subgrupo)","1000013_o_2027877_o_2015178":"Probabilidad y Estadística (subgrupo)","2025986_o_2015703_o_2016047":"Ingeniería Económica (subgrupo)","2015702_o_2016028":"Gerencia y Gestión de Proyectos (subgrupo)","2016353_o_2027641":"Bases de Datos (subgrupo)","2016698_o_2016498":"Elementos de Computadores (subgrupo)","2025982_o_2016053":"Sistemas de Información (subgrupo)","2025970_o_2019082_o_2017293":"Modelos y Sistemas (subgrupo)","2025971_o_2015173":"Optimización (subgrupo)","2016375":"Programación Orientada a Objetos","2016699":"Estructuras de Datos","2016696":"Algoritmos","2015174":"Introducción a la Teoría de la Computación","1000019":"Fundamentos de Mecánica","1000017":"Fundamentos de Electricidad y Magnetismo","2016697":"Arquitectura de Computadores","2016701":"Ingeniería de Software I","2016702":"Ingeniería de Software II","2025967":"Redes de Computadores","2016703":"Pensamiento Sistémico","2025975":"Introducción a la Ingeniería de Sistemas y Computación"}},"materias":{"1000004":{"nombre":"Cálculo Diferencial","creditos":4,"obligatoria":false,"grupo":"Matemáticas","subgrupo":"Cálculo Diferencial","prerrequisitos":null,"notas":"Prerrequisito externo al programa: Matemáticas Básicas (bachillerato)"},"2016377":{"nombre":"Cálculo Diferencial en una Variable","creditos":4,"obligatoria":false,"grupo":"Matemáticas","subgrupo":"Cálculo Diferencial","prerrequisitos":null,"notas":"Prerrequisito externo al programa: Matemáticas Básicas (bachillerato)"},"1000005":{"nombre":"Cálculo Integral","creditos":4,"obligatoria":false,"grupo":"Matemáticas","subgrupo":"Cálculo Integral","prerrequisitos":{"or":["1000004","2016377"]}},"2015556":{"nombre":"Cálculo Integral en una Variable","creditos":4,"obligatoria":false,"grupo":"Matemáticas","subgrupo":"Cálculo Integral","prerrequisitos":{"or":["1000004","2016377"]}},"1000006":{"nombre":"Cálculo en Varias Variables","creditos":4,"obligatoria":false,"grupo":"Matemáticas","subgrupo":"Cálculo en Varias Variables","prerrequisitos":{"or":["1000005","2015556"]}},"2015162":{"nombre":"Cálculo Vectorial","creditos":4,"obligatoria":false,"grupo":"Matemáticas","subgrupo":"Cálculo en Varias Variables","prerrequisitos":{"or":["1000005","2015556"]}},"1000003":{"nombre":"Álgebra Lineal","creditos":4,"obligatoria":false,"grupo":"Matemáticas","subgrupo":"Álgebra Lineal","prerrequisitos":{"or":["1000004","2016377"]}},"2015555":{"nombre":"Álgebra Lineal Básica","creditos":4,"obligatoria":false,"grupo":"Matemáticas","subgrupo":"Álgebra Lineal","prerrequisitos":{"or":["1000004","2016377"]}},"1000013":{"nombre":"Probabilidad y Estadística Fundamental","creditos":3,"obligatoria":false,"grupo":"Probabilidad y Estadística","subgrupo":"Probabilidad y Estadística","prerrequisitos":{"or":["1000005","2015556"]}},"2027877":{"nombre":"Probabilidad Fundamental","creditos":4,"obligatoria":false,"grupo":"Probabilidad y Estadística","subgrupo":"Probabilidad y Estadística","prerrequisitos":{"or":["1000005","2015556"]}},"2015178":{"nombre":"Probabilidad","creditos":4,"obligatoria":false,"grupo":"Probabilidad y Estadística","subgrupo":"Probabilidad y Estadística","prerrequisitos":{"or":["1000005","2015556"]}},"1000019":{"nombre":"Fundamentos de Mecánica","creditos":4,"obligatoria":true,"grupo":"Física","subgrupo":"Física","prerrequisitos":{"or":["1000004","2016377"]}},"1000017":{"nombre":"Fundamentos de Electricidad y Magnetismo","creditos":4,"obligatoria":true,"grupo":"Física","subgrupo":"Física","prerrequisitos":{"and":["1000019",{"or":["1000005","2015556"]}]}},"2025963":{"nombre":"Matemáticas Discretas I","creditos":4,"obligatoria":false,"grupo":"Ciencias de la Computación","subgrupo":"Matemáticas Discretas I","prerrequisitos":{"or":["1000003","2015555"]}},"2015168":{"nombre":"Fundamentos de Matemáticas","creditos":4,"obligatoria":false,"grupo":"Ciencias de la Computación","subgrupo":"Matemáticas Discretas I","prerrequisitos":{"or":["1000003","2015555"]}},"2025964":{"nombre":"Matemáticas Discretas II","creditos":4,"obligatoria":false,"grupo":"Ciencias de la Computación","subgrupo":"Matemáticas Discretas II","prerrequisitos":{"or":["2025963","2015168"]}},"2015181":{"nombre":"Sistemas Numéricos","creditos":4,"obligatoria":false,"grupo":"Ciencias de la Computación","subgrupo":"Matemáticas Discretas II","prerrequisitos":{"or":["2025963","2015168"]}},"2015970":{"nombre":"Métodos Numéricos","creditos":3,"obligatoria":false,"grupo":"Ciencias de la Computación","subgrupo":"Métodos Numéricos","prerrequisitos":{"or":["1000006","2015162"]}},"2019072":{"nombre":"Análisis Numérico I","creditos":4,"obligatoria":false,"grupo":"Ciencias de la Computación","subgrupo":"Métodos Numéricos","prerrequisitos":{"or":["1000006","2015162"]}},"2015174":{"nombre":"Introducción a la Teoría de la Computación","creditos":4,"obligatoria":true,"grupo":"Ciencias de la Computación","subgrupo":"Ciencias de la Computación","prerrequisitos":{"or":["2025963","2015168"]}},"2016696":{"nombre":"Algoritmos","creditos":3,"obligatoria":true,"grupo":"Ciencias de la Computación","subgrupo":"Ciencias de la Computación","prerrequisitos":{"and":["2016699",{"or":["2025964","2015181"]},{"or":["1000013","2027877","2015178"]}]}},"2025986":{"nombre":"Ingeniería Económica y Análisis de Riesgo","creditos":3,"obligatoria":false,"grupo":"Ciencias Económicas y Administrativas","subgrupo":"Ingeniería Económica","prerrequisitos":{"and":[{"or":["1000005","2015556"]},{"or":["1000013","2027877","2015178"]}]}},"2015703":{"nombre":"Ingeniería Económica","creditos":3,"obligatoria":false,"grupo":"Ciencias Económicas y Administrativas","subgrupo":"Ingeniería Económica","prerrequisitos":{"or":["1000005","2015556"]}},"2016047":{"nombre":"Modelos Económicos Computacionales","creditos":3,"obligatoria":false,"grupo":"Ciencias Económicas y Administrativas","subgrupo":"Ingeniería Económica","prerrequisitos":{"or":["1000005","2015556"]}},"2015702":{"nombre":"Gerencia y Gestión de Proyectos","creditos":3,"obligatoria":false,"grupo":"Ciencias Económicas y Administrativas","subgrupo":"Gerencia y Gestión de Proyectos","prerrequisitos":{"or":["2025986","2015703","2016047"]}},"2016028":{"nombre":"Diseño, Gestión y Evaluación de Proyectos","creditos":4,"obligatoria":false,"grupo":"Ciencias Económicas y Administrativas","subgrupo":"Gerencia y Gestión de Proyectos","prerrequisitos":{"or":["2025986","2015703","2016047"]}},"2015734":{"nombre":"Programación de Computadores","creditos":3,"obligatoria":false,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Programación de Computadores","prerrequisitos":null},"2026573":{"nombre":"Introducción a las Ciencias de la Computación y a la Programación","creditos":3,"obligatoria":false,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Programación de Computadores","prerrequisitos":null},"2016375":{"nombre":"Programación Orientada a Objetos","creditos":3,"obligatoria":true,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Métodos y Tecnologías de Software","prerrequisitos":{"or":["2015734","2026573"]}},"2016699":{"nombre":"Estructuras de Datos","creditos":3,"obligatoria":true,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Métodos y Tecnologías de Software","prerrequisitos":"2016375"},"2025966":{"nombre":"Lenguajes de Programación","creditos":3,"obligatoria":false,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Lenguajes","prerrequisitos":{"and":["2016699","2015174"]}},"2027642":{"nombre":"Compiladores","creditos":3,"obligatoria":false,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Lenguajes","prerrequisitos":{"and":["2016699","2015174"]}},"2027628":{"nombre":"Teoría de Lenguajes Formales","creditos":3,"obligatoria":false,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Lenguajes","prerrequisitos":{"and":["2016699","2015174"]}},"2016701":{"nombre":"Ingeniería de Software I","creditos":3,"obligatoria":true,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Métodos y Tecnologías de Software","prerrequisitos":{"and":["2016703","2016699",{"or":["2016353","2027641"]}]},"notas":"Prerrequisito 2016703 (Pensamiento Sistémico) suspendido transitoriamente por 3 periodos (Art. 2 Transitorio)"},"2016702":{"nombre":"Ingeniería de Software II","creditos":3,"obligatoria":true,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Métodos y Tecnologías de Software","prerrequisitos":{"and":["2016701","2025967"]}},"2016716":{"nombre":"Arquitectura de Software","creditos":3,"obligatoria":true,"grupo":"Métodos y Tecnologías de Software","subgrupo":"Métodos y Tecnologías de Software","prerrequisitos":"2016702"},"2016698":{"nombre":"Elementos de Computadores","creditos":3,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Elementos de Computadores","prerrequisitos":"2025975"},"2016498":{"nombre":"Electrónica Digital I","creditos":4,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Elementos de Computadores","prerrequisitos":null,"notas":"Prerrequisito externo al programa: Electrónica Análoga I"},"2016697":{"nombre":"Arquitectura de Computadores","creditos":3,"obligatoria":true,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Infraestructura Computacional, de Comunicaciones y de Información","prerrequisitos":{"or":["2016698","2016498"]}},"2016707":{"nombre":"Sistemas Operativos","creditos":3,"obligatoria":true,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Infraestructura Computacional, de Comunicaciones y de Información","prerrequisitos":"2016697"},"2025967":{"nombre":"Redes de Computadores","creditos":3,"obligatoria":true,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Infraestructura Computacional, de Comunicaciones y de Información","prerrequisitos":{"and":["1000017","2016699","2016697"]}},"2016722":{"nombre":"Computación Paralela y Distribuida","creditos":3,"obligatoria":true,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Infraestructura Computacional, de Comunicaciones y de Información","prerrequisitos":"2016696"},"2016353":{"nombre":"Bases de Datos","creditos":3,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Bases de Datos","prerrequisitos":"2016375"},"2027641":{"nombre":"Análisis de Bases de Datos","creditos":3,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Bases de Datos","prerrequisitos":"2016375"},"2025994":{"nombre":"Teoría de la Información y Sistemas de Comunicaciones","creditos":3,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Información y Comunicaciones","prerrequisitos":{"and":["2025967",{"or":["1000013","2027877","2015178"]}]}},"2016492":{"nombre":"Comunicaciones","creditos":3,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Información y Comunicaciones","prerrequisitos":null,"notas":"Prerrequisito externo al programa: Líneas y Antenas"},"2025982":{"nombre":"Sistemas de Información","creditos":3,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Sistemas de Información","prerrequisitos":{"and":["2016703",{"or":["2016353","2027641"]},{"or":["2015702","2016028"]}]},"notas":"Prerrequisito 2016703 (Pensamiento Sistémico) suspendido transitoriamente por 3 periodos (Art. 2 Transitorio)"},"2016053":{"nombre":"Sistemas de Información Gerencial","creditos":4,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Sistemas de Información","prerrequisitos":{"and":["2016703",{"or":["2016353","2027641"]},{"or":["2015702","2016028"]}]},"notas":"Prerrequisito 2016703 (Pensamiento Sistémico) suspendido transitoriamente por 3 periodos (Art. 2 Transitorio)"},"2025972":{"nombre":"Introducción a la Criptografía y a la Seguridad de la Información","creditos":3,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Criptografía y Seguridad de la Información","prerrequisitos":"2016696"},"2027311":{"nombre":"Introducción a la Criptografía y a la Teoría de Información","creditos":4,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Criptografía y Seguridad de la Información","prerrequisitos":"2016696"},"2027313":{"nombre":"Teoría de la Codificación","creditos":4,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Criptografía y Seguridad de la Información","prerrequisitos":"2016696","notas":"Mismo código aparece en Libre Elección — Profundización"},"2027310":{"nombre":"Criptografía","creditos":3,"obligatoria":false,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Criptografía y Seguridad de la Información","prerrequisitos":"2016696"},"2025983":{"nombre":"Arquitectura de Infraestructura y Gobierno de TICs","creditos":3,"obligatoria":true,"grupo":"Infraestructura Computacional, de Comunicaciones y de Información","subgrupo":"Infraestructura Computacional, de Comunicaciones y de Información","prerrequisitos":{"and":["2016702",{"or":["2025982","2016053"]}]}},"2016788":{"nombre":"Tecnología Digital","creditos":3,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":"2016697"},"2016753":{"nombre":"Microcontroladores","creditos":3,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":"2016697"},"2025960":{"nombre":"Computación Visual","creditos":3,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":"2016696"},"2016080":{"nombre":"Aplicaciones Gráficas Tridimensionales","creditos":3,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":"2016696"},"2025196":{"nombre":"Introducción a la Biología Computacional","creditos":4,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":"2016696"},"2026548":{"nombre":"Introducción al Análisis Combinatorio","creditos":4,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":"2016696"},"2028837":{"nombre":"Matemáticas del Aprendizaje de Máquinas","creditos":4,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":"2016696","notas":"También ofrecida en el grupo Sistemas Inteligentes"},"2027309":{"nombre":"Análisis Forense Digital","creditos":4,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":"2016696"},"2029297":{"nombre":"Introducción a la Computación de Alto Rendimiento","creditos":4,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":"2016696"},"2016770":{"nombre":"Robótica","creditos":3,"obligatoria":false,"grupo":"Computación Aplicada","subgrupo":"Computación Aplicada","prerrequisitos":{"and":["1000017","2016697","2016696"]}},"2025995":{"nombre":"Introducción a los Sistemas Inteligentes","creditos":3,"obligatoria":false,"grupo":"Sistemas Inteligentes","subgrupo":"Sistemas Inteligentes","prerrequisitos":"2016696"},"2016748":{"nombre":"Inteligencia Artificial","creditos":3,"obligatoria":false,"grupo":"Sistemas Inteligentes","subgrupo":"Sistemas Inteligentes","prerrequisitos":"2016696"},"2023251":{"nombre":"Inteligencia Artificial y Minirobots","creditos":3,"obligatoria":false,"grupo":"Sistemas Inteligentes","subgrupo":"Sistemas Inteligentes","prerrequisitos":"2016696"},"2027631":{"nombre":"Introducción a la Inteligencia Artificial","creditos":3,"obligatoria":false,"grupo":"Sistemas Inteligentes","subgrupo":"Sistemas Inteligentes","prerrequisitos":"2016696"},"2017290":{"nombre":"Técnicas de Inteligencia Artificial","creditos":3,"obligatoria":false,"grupo":"Sistemas Inteligentes","subgrupo":"Sistemas Inteligentes","prerrequisitos":"2016696"},"2016703":{"nombre":"Pensamiento Sistémico","creditos":3,"obligatoria":true,"grupo":"Modelos, Sistemas, Optimización y Simulación","subgrupo":"Modelos, Sistemas, Optimización y Simulación","prerrequisitos":null},"2025970":{"nombre":"Modelos y Simulación","creditos":3,"obligatoria":false,"grupo":"Modelos, Sistemas, Optimización y Simulación","subgrupo":"Modelos y Sistemas","prerrequisitos":{"and":["2016375",{"or":["1000006","2015162"]},{"or":["2025964","2015181"]},{"or":["1000013","2027877","2015178"]}]}},"2019082":{"nombre":"Modelos Matemáticos I","creditos":4,"obligatoria":false,"grupo":"Modelos, Sistemas, Optimización y Simulación","subgrupo":"Modelos y Sistemas","prerrequisitos":{"and":["2016375",{"or":["1000006","2015162"]},{"or":["2025964","2015181"]},{"or":["1000013","2027877","2015178"]}]}},"2017293":{"nombre":"Modelación Matemática","creditos":3,"obligatoria":false,"grupo":"Modelos, Sistemas, Optimización y Simulación","subgrupo":"Modelos y Sistemas","prerrequisitos":{"and":["2016375",{"or":["1000006","2015162"]},{"or":["2025964","2015181"]},{"or":["1000013","2027877","2015178"]}]}},"2025971":{"nombre":"Optimización","creditos":3,"obligatoria":false,"grupo":"Modelos, Sistemas, Optimización y Simulación","subgrupo":"Optimización","prerrequisitos":{"or":["2025970","2019082","2017293"]}},"2015173":{"nombre":"Introducción a la Optimización","creditos":4,"obligatoria":false,"grupo":"Modelos, Sistemas, Optimización y Simulación","subgrupo":"Optimización","prerrequisitos":{"or":["2025970","2019082","2017293"]}},"2025969":{"nombre":"Modelos Estocásticos y Simulación en Computación y Comunicaciones","creditos":3,"obligatoria":true,"grupo":"Modelos, Sistemas, Optimización y Simulación","subgrupo":"Modelos, Sistemas, Optimización y Simulación","prerrequisitos":{"or":["2025971","2015173"]}},"2025975":{"nombre":"Introducción a la Ingeniería de Sistemas y Computación","creditos":3,"obligatoria":true,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Contexto Profesional e Interdisciplinario","prerrequisitos":null},"2024045":{"nombre":"Taller de Proyectos Interdisciplinarios","creditos":3,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2016615":{"nombre":"Taller de Invención y Creatividad","creditos":3,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2017275":{"nombre":"Proyecto Aplicado de Ingeniería","creditos":4,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2016093":{"nombre":"Taller de Énfasis en Animación y Narrativas Audiovisuales I","creditos":3,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2016091":{"nombre":"Taller de Énfasis en Multimedia e Imagen Digital I","creditos":3,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2026551":{"nombre":"Creación y Gestión de Empresas","creditos":3,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2016007":{"nombre":"Fundamentos de Administración","creditos":4,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2016600":{"nombre":"Gestión Tecnológica","creditos":3,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2016599":{"nombre":"Gestión de la Ciencia, la Tecnología y la Innovación","creditos":3,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2016741":{"nombre":"Finanzas","creditos":3,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2016037":{"nombre":"Finanzas Avanzadas","creditos":4,"obligatoria":false,"grupo":"Contexto Profesional e Interdisciplinario","subgrupo":"Taller Interdisciplinario de Proyectos de Creación y Gestión","prerrequisitos":{"or":["2015702","2016028"]}},"2025974":{"nombre":"Trabajo de Grado — Trabajo Investigativo","creditos":6,"obligatoria":false,"grupo":"Trabajo de Grado","subgrupo":"Trabajo de Grado","prerrequisitos":null},"2025973":{"nombre":"Trabajo de Grado — Práctica de Extensión","creditos":6,"obligatoria":false,"grupo":"Trabajo de Grado","subgrupo":"Trabajo de Grado","prerrequisitos":null},"2016843":{"nombre":"Trabajo de Grado — Asignaturas de Posgrado","creditos":6,"obligatoria":false,"grupo":"Trabajo de Grado","subgrupo":"Trabajo de Grado","prerrequisitos":null},"2016762":{"nombre":"Práctica Estudiantil I","creditos":3,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":null},"2016763":{"nombre":"Práctica Estudiantil II","creditos":6,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":null},"2016764":{"nombre":"Práctica Estudiantil III","creditos":9,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":null},"1000070":{"nombre":"Práctica Colombia I","creditos":3,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":null},"1000071":{"nombre":"Práctica Colombia II","creditos":6,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":null},"1000072":{"nombre":"Práctica Colombia III","creditos":9,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":null},"1000089-B":{"nombre":"Cátedra Nacional de Inducción y Preparación para la Vida Universitaria","creditos":2,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":null},"2025819":{"nombre":"Introducción a la Teoría de Conjuntos","creditos":4,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":"2016696"},"2015184":{"nombre":"Teoría de Grafos","creditos":4,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":"2016696"},"2019267":{"nombre":"Teoría de la Recursión","creditos":4,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":"2016696"},"2027629":{"nombre":"Lógica Computacional","creditos":3,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":"2016696"},"2016366":{"nombre":"Estadística Descriptiva y Exploratoria","creditos":4,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":null},"2016379":{"nombre":"Inferencia Estadística","creditos":4,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":{"or":["1000013","2027877","2015178"]}},"2016360":{"nombre":"Análisis de Regresión","creditos":4,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":{"or":["1000013","2027877","2015178"]}},"2015155":{"nombre":"Introducción al Análisis Real","creditos":4,"obligatoria":false,"grupo":"Libre Elección — Profundización","subgrupo":"Libre Elección — Profundización","prerrequisitos":{"or":["1000006","2015162"]}}}};
+var PENSUM_DATA = {
+  "_meta": {
+    "descripcion": "Tabla canónica del plan de estudios. Una entrada por materia. Todo el sistema la consulta.",
+    "version": "4.0.0",
+    "fuente": "Acuerdo 11 de 2023, Acta 36, 7 de diciembre — Consejo Facultad de Ingeniería, UNAL Bogotá",
+    "campos": {
+      "codigo": "Código SIA (clave única del objeto)",
+      "nombre": "Nombre oficial de la asignatura",
+      "creditos": "Número de créditos académicos",
+      "obligatoria": "true = Obligatoria según el Acuerdo; false = Optativa",
+      "grupo": "Agrupación según el Acuerdo",
+      "subgrupo": "Subagrupación (slot de elección); null si es curso directo del grupo",
+      "prerrequisitos": "Árbol booleano: null | codigo_string | {and:[...]} | {or:[...]}. Hoja = código SIA string. OR = alternativas equivalentes. AND = todas las condiciones requeridas.",
+      "notas": "Solo cuando hay algo que no cabe como código: prerequisitos de créditos mínimos, cursos externos al programa"
+    },
+    "nota_transitoria_art2": "El prerrequisito 2016703 (Pensamiento Sistémico) está suspendido transitoriamente por 3 periodos para: 2016701, 2025982, 2016053.",
+    "cursos_clave": {
+      "2015734_o_2026573": "Programación de Computadores (subgrupo)",
+      "1000004_o_2016377": "Cálculo Diferencial (subgrupo)",
+      "1000005_o_2015556": "Cálculo Integral (subgrupo)",
+      "1000006_o_2015162": "Cálculo en Varias Variables (subgrupo)",
+      "1000003_o_2015555": "Álgebra Lineal (subgrupo)",
+      "2025963_o_2015168": "Matemáticas Discretas I (subgrupo)",
+      "2025964_o_2015181": "Matemáticas Discretas II (subgrupo)",
+      "1000013_o_2027877_o_2015178": "Probabilidad y Estadística (subgrupo)",
+      "2025986_o_2015703_o_2016047": "Ingeniería Económica (subgrupo)",
+      "2015702_o_2016028": "Gerencia y Gestión de Proyectos (subgrupo)",
+      "2016353_o_2027641": "Bases de Datos (subgrupo)",
+      "2016698_o_2016498": "Elementos de Computadores (subgrupo)",
+      "2025982_o_2016053": "Sistemas de Información (subgrupo)",
+      "2025970_o_2019082_o_2017293": "Modelos y Sistemas (subgrupo)",
+      "2025971_o_2015173": "Optimización (subgrupo)",
+      "2016375": "Programación Orientada a Objetos",
+      "2016699": "Estructuras de Datos",
+      "2016696": "Algoritmos",
+      "2015174": "Introducción a la Teoría de la Computación",
+      "1000019": "Fundamentos de Mecánica",
+      "1000017": "Fundamentos de Electricidad y Magnetismo",
+      "2016697": "Arquitectura de Computadores",
+      "2016701": "Ingeniería de Software I",
+      "2016702": "Ingeniería de Software II",
+      "2025967": "Redes de Computadores",
+      "2016703": "Pensamiento Sistémico",
+      "2025975": "Introducción a la Ingeniería de Sistemas y Computación"
+    }
+  },
+  "materias": {
+    "1000004": {
+      "nombre": "Cálculo Diferencial",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Matemáticas",
+      "subgrupo": "Cálculo Diferencial",
+      "prerrequisitos": null,
+      "notas": "Prerrequisito externo al programa: Matemáticas Básicas (bachillerato)"
+    },
+    "2016377": {
+      "nombre": "Cálculo Diferencial en una Variable",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Matemáticas",
+      "subgrupo": "Cálculo Diferencial",
+      "prerrequisitos": null,
+      "notas": "Prerrequisito externo al programa: Matemáticas Básicas (bachillerato)"
+    },
+    "1000005": {
+      "nombre": "Cálculo Integral",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Matemáticas",
+      "subgrupo": "Cálculo Integral",
+      "prerrequisitos": {
+        "or": [
+          "1000004",
+          "2016377"
+        ]
+      }
+    },
+    "2015556": {
+      "nombre": "Cálculo Integral en una Variable",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Matemáticas",
+      "subgrupo": "Cálculo Integral",
+      "prerrequisitos": {
+        "or": [
+          "1000004",
+          "2016377"
+        ]
+      }
+    },
+    "1000006": {
+      "nombre": "Cálculo en Varias Variables",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Matemáticas",
+      "subgrupo": "Cálculo en Varias Variables",
+      "prerrequisitos": {
+        "or": [
+          "1000005",
+          "2015556"
+        ]
+      }
+    },
+    "2015162": {
+      "nombre": "Cálculo Vectorial",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Matemáticas",
+      "subgrupo": "Cálculo en Varias Variables",
+      "prerrequisitos": {
+        "or": [
+          "1000005",
+          "2015556"
+        ]
+      }
+    },
+    "1000003": {
+      "nombre": "Álgebra Lineal",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Matemáticas",
+      "subgrupo": "Álgebra Lineal",
+      "prerrequisitos": {
+        "or": [
+          "1000004",
+          "2016377"
+        ]
+      }
+    },
+    "2015555": {
+      "nombre": "Álgebra Lineal Básica",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Matemáticas",
+      "subgrupo": "Álgebra Lineal",
+      "prerrequisitos": {
+        "or": [
+          "1000004",
+          "2016377"
+        ]
+      }
+    },
+    "1000013": {
+      "nombre": "Probabilidad y Estadística Fundamental",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Probabilidad y Estadística",
+      "subgrupo": "Probabilidad y Estadística",
+      "prerrequisitos": {
+        "or": [
+          "1000005",
+          "2015556"
+        ]
+      }
+    },
+    "2027877": {
+      "nombre": "Probabilidad Fundamental",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Probabilidad y Estadística",
+      "subgrupo": "Probabilidad y Estadística",
+      "prerrequisitos": {
+        "or": [
+          "1000005",
+          "2015556"
+        ]
+      }
+    },
+    "2015178": {
+      "nombre": "Probabilidad",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Probabilidad y Estadística",
+      "subgrupo": "Probabilidad y Estadística",
+      "prerrequisitos": {
+        "or": [
+          "1000005",
+          "2015556"
+        ]
+      }
+    },
+    "1000019": {
+      "nombre": "Fundamentos de Mecánica",
+      "creditos": 4,
+      "obligatoria": true,
+      "grupo": "Física",
+      "subgrupo": "Física",
+      "prerrequisitos": {
+        "or": [
+          "1000004",
+          "2016377"
+        ]
+      }
+    },
+    "1000017": {
+      "nombre": "Fundamentos de Electricidad y Magnetismo",
+      "creditos": 4,
+      "obligatoria": true,
+      "grupo": "Física",
+      "subgrupo": "Física",
+      "prerrequisitos": {
+        "and": [
+          "1000019",
+          {
+            "or": [
+              "1000005",
+              "2015556"
+            ]
+          }
+        ]
+      }
+    },
+    "2025963": {
+      "nombre": "Matemáticas Discretas I",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Ciencias de la Computación",
+      "subgrupo": "Matemáticas Discretas I",
+      "prerrequisitos": {
+        "or": [
+          "1000003",
+          "2015555"
+        ]
+      }
+    },
+    "2015168": {
+      "nombre": "Fundamentos de Matemáticas",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Ciencias de la Computación",
+      "subgrupo": "Matemáticas Discretas I",
+      "prerrequisitos": {
+        "or": [
+          "1000003",
+          "2015555"
+        ]
+      }
+    },
+    "2025964": {
+      "nombre": "Matemáticas Discretas II",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Ciencias de la Computación",
+      "subgrupo": "Matemáticas Discretas II",
+      "prerrequisitos": {
+        "or": [
+          "2025963",
+          "2015168"
+        ]
+      }
+    },
+    "2015181": {
+      "nombre": "Sistemas Numéricos",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Ciencias de la Computación",
+      "subgrupo": "Matemáticas Discretas II",
+      "prerrequisitos": {
+        "or": [
+          "2025963",
+          "2015168"
+        ]
+      }
+    },
+    "2015970": {
+      "nombre": "Métodos Numéricos",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Ciencias de la Computación",
+      "subgrupo": "Métodos Numéricos",
+      "prerrequisitos": {
+        "or": [
+          "1000006",
+          "2015162"
+        ]
+      }
+    },
+    "2019072": {
+      "nombre": "Análisis Numérico I",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Ciencias de la Computación",
+      "subgrupo": "Métodos Numéricos",
+      "prerrequisitos": {
+        "or": [
+          "1000006",
+          "2015162"
+        ]
+      }
+    },
+    "2015174": {
+      "nombre": "Introducción a la Teoría de la Computación",
+      "creditos": 4,
+      "obligatoria": true,
+      "grupo": "Ciencias de la Computación",
+      "subgrupo": "Ciencias de la Computación",
+      "prerrequisitos": {
+        "or": [
+          "2025963",
+          "2015168"
+        ]
+      }
+    },
+    "2016696": {
+      "nombre": "Algoritmos",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Ciencias de la Computación",
+      "subgrupo": "Ciencias de la Computación",
+      "prerrequisitos": {
+        "and": [
+          "2016699",
+          {
+            "or": [
+              "2025964",
+              "2015181"
+            ]
+          },
+          {
+            "or": [
+              "1000013",
+              "2027877",
+              "2015178"
+            ]
+          }
+        ]
+      }
+    },
+    "2025986": {
+      "nombre": "Ingeniería Económica y Análisis de Riesgo",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Ciencias Económicas y Administrativas",
+      "subgrupo": "Ingeniería Económica",
+      "prerrequisitos": {
+        "and": [
+          {
+            "or": [
+              "1000005",
+              "2015556"
+            ]
+          },
+          {
+            "or": [
+              "1000013",
+              "2027877",
+              "2015178"
+            ]
+          }
+        ]
+      }
+    },
+    "2015703": {
+      "nombre": "Ingeniería Económica",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Ciencias Económicas y Administrativas",
+      "subgrupo": "Ingeniería Económica",
+      "prerrequisitos": {
+        "or": [
+          "1000005",
+          "2015556"
+        ]
+      }
+    },
+    "2016047": {
+      "nombre": "Modelos Económicos Computacionales",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Ciencias Económicas y Administrativas",
+      "subgrupo": "Ingeniería Económica",
+      "prerrequisitos": {
+        "or": [
+          "1000005",
+          "2015556"
+        ]
+      }
+    },
+    "2015702": {
+      "nombre": "Gerencia y Gestión de Proyectos",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Ciencias Económicas y Administrativas",
+      "subgrupo": "Gerencia y Gestión de Proyectos",
+      "prerrequisitos": {
+        "or": [
+          "2025986",
+          "2015703",
+          "2016047"
+        ]
+      }
+    },
+    "2016028": {
+      "nombre": "Diseño, Gestión y Evaluación de Proyectos",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Ciencias Económicas y Administrativas",
+      "subgrupo": "Gerencia y Gestión de Proyectos",
+      "prerrequisitos": {
+        "or": [
+          "2025986",
+          "2015703",
+          "2016047"
+        ]
+      }
+    },
+    "2015734": {
+      "nombre": "Programación de Computadores",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Programación de Computadores",
+      "prerrequisitos": null
+    },
+    "2026573": {
+      "nombre": "Introducción a las Ciencias de la Computación y a la Programación",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Programación de Computadores",
+      "prerrequisitos": null
+    },
+    "2016375": {
+      "nombre": "Programación Orientada a Objetos",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Métodos y Tecnologías de Software",
+      "prerrequisitos": {
+        "or": [
+          "2015734",
+          "2026573"
+        ]
+      }
+    },
+    "2016699": {
+      "nombre": "Estructuras de Datos",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Métodos y Tecnologías de Software",
+      "prerrequisitos": "2016375"
+    },
+    "2025966": {
+      "nombre": "Lenguajes de Programación",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Lenguajes",
+      "prerrequisitos": {
+        "and": [
+          "2016699",
+          "2015174"
+        ]
+      }
+    },
+    "2027642": {
+      "nombre": "Compiladores",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Lenguajes",
+      "prerrequisitos": {
+        "and": [
+          "2016699",
+          "2015174"
+        ]
+      }
+    },
+    "2027628": {
+      "nombre": "Teoría de Lenguajes Formales",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Lenguajes",
+      "prerrequisitos": {
+        "and": [
+          "2016699",
+          "2015174"
+        ]
+      }
+    },
+    "2016701": {
+      "nombre": "Ingeniería de Software I",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Métodos y Tecnologías de Software",
+      "prerrequisitos": {
+        "and": [
+          "2016703",
+          "2016699",
+          {
+            "or": [
+              "2016353",
+              "2027641"
+            ]
+          }
+        ]
+      },
+      "notas": "Prerrequisito 2016703 (Pensamiento Sistémico) suspendido transitoriamente por 3 periodos (Art. 2 Transitorio)"
+    },
+    "2016702": {
+      "nombre": "Ingeniería de Software II",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Métodos y Tecnologías de Software",
+      "prerrequisitos": {
+        "and": [
+          "2016701",
+          "2025967"
+        ]
+      }
+    },
+    "2016716": {
+      "nombre": "Arquitectura de Software",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Métodos y Tecnologías de Software",
+      "subgrupo": "Métodos y Tecnologías de Software",
+      "prerrequisitos": "2016702",
+      "creditos_requeridos": {
+        "componente": "disciplinar",
+        "minimo": 20
+      }
+    },
+    "2016698": {
+      "nombre": "Elementos de Computadores",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Elementos de Computadores",
+      "prerrequisitos": "2025975"
+    },
+    "2016498": {
+      "nombre": "Electrónica Digital I",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Elementos de Computadores",
+      "prerrequisitos": null,
+      "notas": "Prerrequisito externo al programa: Electrónica Análoga I"
+    },
+    "2016697": {
+      "nombre": "Arquitectura de Computadores",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "prerrequisitos": {
+        "or": [
+          "2016698",
+          "2016498"
+        ]
+      }
+    },
+    "2016707": {
+      "nombre": "Sistemas Operativos",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "prerrequisitos": "2016697",
+      "creditos_requeridos": {
+        "componente": "disciplinar",
+        "minimo": 20
+      }
+    },
+    "2025967": {
+      "nombre": "Redes de Computadores",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "prerrequisitos": {
+        "and": [
+          "1000017",
+          "2016699",
+          "2016697"
+        ]
+      }
+    },
+    "2016722": {
+      "nombre": "Computación Paralela y Distribuida",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "prerrequisitos": "2016696",
+      "creditos_requeridos": {
+        "componente": "disciplinar",
+        "minimo": 20
+      }
+    },
+    "2016353": {
+      "nombre": "Bases de Datos",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Bases de Datos",
+      "prerrequisitos": "2016375"
+    },
+    "2027641": {
+      "nombre": "Análisis de Bases de Datos",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Bases de Datos",
+      "prerrequisitos": "2016375"
+    },
+    "2025994": {
+      "nombre": "Teoría de la Información y Sistemas de Comunicaciones",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Información y Comunicaciones",
+      "prerrequisitos": {
+        "and": [
+          "2025967",
+          {
+            "or": [
+              "1000013",
+              "2027877",
+              "2015178"
+            ]
+          }
+        ]
+      }
+    },
+    "2016492": {
+      "nombre": "Comunicaciones",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Información y Comunicaciones",
+      "prerrequisitos": null,
+      "notas": "Prerrequisito externo al programa: Líneas y Antenas"
+    },
+    "2025982": {
+      "nombre": "Sistemas de Información",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Sistemas de Información",
+      "prerrequisitos": {
+        "and": [
+          "2016703",
+          {
+            "or": [
+              "2016353",
+              "2027641"
+            ]
+          },
+          {
+            "or": [
+              "2015702",
+              "2016028"
+            ]
+          }
+        ]
+      },
+      "notas": "Prerrequisito 2016703 (Pensamiento Sistémico) suspendido transitoriamente por 3 periodos (Art. 2 Transitorio)"
+    },
+    "2016053": {
+      "nombre": "Sistemas de Información Gerencial",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Sistemas de Información",
+      "prerrequisitos": {
+        "and": [
+          "2016703",
+          {
+            "or": [
+              "2016353",
+              "2027641"
+            ]
+          },
+          {
+            "or": [
+              "2015702",
+              "2016028"
+            ]
+          }
+        ]
+      },
+      "notas": "Prerrequisito 2016703 (Pensamiento Sistémico) suspendido transitoriamente por 3 periodos (Art. 2 Transitorio)"
+    },
+    "2025972": {
+      "nombre": "Introducción a la Criptografía y a la Seguridad de la Información",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Criptografía y Seguridad de la Información",
+      "prerrequisitos": "2016696"
+    },
+    "2027311": {
+      "nombre": "Introducción a la Criptografía y a la Teoría de Información",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Criptografía y Seguridad de la Información",
+      "prerrequisitos": "2016696"
+    },
+    "2027313": {
+      "nombre": "Teoría de la Codificación",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Criptografía y Seguridad de la Información",
+      "prerrequisitos": "2016696",
+      "notas": "Mismo código aparece en Libre Elección — Profundización"
+    },
+    "2027310": {
+      "nombre": "Criptografía",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Criptografía y Seguridad de la Información",
+      "prerrequisitos": "2016696"
+    },
+    "2025983": {
+      "nombre": "Arquitectura de Infraestructura y Gobierno de TICs",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+      "prerrequisitos": {
+        "and": [
+          "2016702",
+          {
+            "or": [
+              "2025982",
+              "2016053"
+            ]
+          }
+        ]
+      }
+    },
+    "2016788": {
+      "nombre": "Tecnología Digital",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": "2016697"
+    },
+    "2016753": {
+      "nombre": "Microcontroladores",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": "2016697"
+    },
+    "2025960": {
+      "nombre": "Computación Visual",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": "2016696"
+    },
+    "2016080": {
+      "nombre": "Aplicaciones Gráficas Tridimensionales",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": "2016696"
+    },
+    "2025196": {
+      "nombre": "Introducción a la Biología Computacional",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": "2016696"
+    },
+    "2026548": {
+      "nombre": "Introducción al Análisis Combinatorio",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": "2016696"
+    },
+    "2028837": {
+      "nombre": "Matemáticas del Aprendizaje de Máquinas",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": "2016696",
+      "notas": "También ofrecida en el grupo Sistemas Inteligentes"
+    },
+    "2027309": {
+      "nombre": "Análisis Forense Digital",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": "2016696"
+    },
+    "2029297": {
+      "nombre": "Introducción a la Computación de Alto Rendimiento",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": "2016696"
+    },
+    "2016770": {
+      "nombre": "Robótica",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Computación Aplicada",
+      "subgrupo": "Computación Aplicada",
+      "prerrequisitos": {
+        "and": [
+          "1000017",
+          "2016697",
+          "2016696"
+        ]
+      }
+    },
+    "2025995": {
+      "nombre": "Introducción a los Sistemas Inteligentes",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Sistemas Inteligentes",
+      "subgrupo": "Sistemas Inteligentes",
+      "prerrequisitos": "2016696"
+    },
+    "2016748": {
+      "nombre": "Inteligencia Artificial",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Sistemas Inteligentes",
+      "subgrupo": "Sistemas Inteligentes",
+      "prerrequisitos": "2016696"
+    },
+    "2023251": {
+      "nombre": "Inteligencia Artificial y Minirobots",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Sistemas Inteligentes",
+      "subgrupo": "Sistemas Inteligentes",
+      "prerrequisitos": "2016696"
+    },
+    "2027631": {
+      "nombre": "Introducción a la Inteligencia Artificial",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Sistemas Inteligentes",
+      "subgrupo": "Sistemas Inteligentes",
+      "prerrequisitos": "2016696"
+    },
+    "2017290": {
+      "nombre": "Técnicas de Inteligencia Artificial",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Sistemas Inteligentes",
+      "subgrupo": "Sistemas Inteligentes",
+      "prerrequisitos": "2016696"
+    },
+    "2016703": {
+      "nombre": "Pensamiento Sistémico",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Modelos, Sistemas, Optimización y Simulación",
+      "subgrupo": "Modelos, Sistemas, Optimización y Simulación",
+      "prerrequisitos": null
+    },
+    "2025970": {
+      "nombre": "Modelos y Simulación",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Modelos, Sistemas, Optimización y Simulación",
+      "subgrupo": "Modelos y Sistemas",
+      "prerrequisitos": {
+        "and": [
+          "2016375",
+          {
+            "or": [
+              "1000006",
+              "2015162"
+            ]
+          },
+          {
+            "or": [
+              "2025964",
+              "2015181"
+            ]
+          },
+          {
+            "or": [
+              "1000013",
+              "2027877",
+              "2015178"
+            ]
+          }
+        ]
+      }
+    },
+    "2019082": {
+      "nombre": "Modelos Matemáticos I",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Modelos, Sistemas, Optimización y Simulación",
+      "subgrupo": "Modelos y Sistemas",
+      "prerrequisitos": {
+        "and": [
+          "2016375",
+          {
+            "or": [
+              "1000006",
+              "2015162"
+            ]
+          },
+          {
+            "or": [
+              "2025964",
+              "2015181"
+            ]
+          },
+          {
+            "or": [
+              "1000013",
+              "2027877",
+              "2015178"
+            ]
+          }
+        ]
+      }
+    },
+    "2017293": {
+      "nombre": "Modelación Matemática",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Modelos, Sistemas, Optimización y Simulación",
+      "subgrupo": "Modelos y Sistemas",
+      "prerrequisitos": {
+        "and": [
+          "2016375",
+          {
+            "or": [
+              "1000006",
+              "2015162"
+            ]
+          },
+          {
+            "or": [
+              "2025964",
+              "2015181"
+            ]
+          },
+          {
+            "or": [
+              "1000013",
+              "2027877",
+              "2015178"
+            ]
+          }
+        ]
+      }
+    },
+    "2025971": {
+      "nombre": "Optimización",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Modelos, Sistemas, Optimización y Simulación",
+      "subgrupo": "Optimización",
+      "prerrequisitos": {
+        "or": [
+          "2025970",
+          "2019082",
+          "2017293"
+        ]
+      }
+    },
+    "2015173": {
+      "nombre": "Introducción a la Optimización",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Modelos, Sistemas, Optimización y Simulación",
+      "subgrupo": "Optimización",
+      "prerrequisitos": {
+        "or": [
+          "2025970",
+          "2019082",
+          "2017293"
+        ]
+      }
+    },
+    "2025969": {
+      "nombre": "Modelos Estocásticos y Simulación en Computación y Comunicaciones",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Modelos, Sistemas, Optimización y Simulación",
+      "subgrupo": "Modelos, Sistemas, Optimización y Simulación",
+      "prerrequisitos": {
+        "or": [
+          "2025971",
+          "2015173"
+        ]
+      }
+    },
+    "2025975": {
+      "nombre": "Introducción a la Ingeniería de Sistemas y Computación",
+      "creditos": 3,
+      "obligatoria": true,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Contexto Profesional e Interdisciplinario",
+      "prerrequisitos": null
+    },
+    "2024045": {
+      "nombre": "Taller de Proyectos Interdisciplinarios",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2016615": {
+      "nombre": "Taller de Invención y Creatividad",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2017275": {
+      "nombre": "Proyecto Aplicado de Ingeniería",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2016093": {
+      "nombre": "Taller de Énfasis en Animación y Narrativas Audiovisuales I",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2016091": {
+      "nombre": "Taller de Énfasis en Multimedia e Imagen Digital I",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2026551": {
+      "nombre": "Creación y Gestión de Empresas",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2016007": {
+      "nombre": "Fundamentos de Administración",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2016600": {
+      "nombre": "Gestión Tecnológica",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2016599": {
+      "nombre": "Gestión de la Ciencia, la Tecnología y la Innovación",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2016741": {
+      "nombre": "Finanzas",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2016037": {
+      "nombre": "Finanzas Avanzadas",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Contexto Profesional e Interdisciplinario",
+      "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+      "prerrequisitos": {
+        "or": [
+          "2015702",
+          "2016028"
+        ]
+      }
+    },
+    "2025974": {
+      "nombre": "Trabajo de Grado — Trabajo Investigativo",
+      "creditos": 6,
+      "obligatoria": false,
+      "grupo": "Trabajo de Grado",
+      "subgrupo": "Trabajo de Grado",
+      "prerrequisitos": null
+    },
+    "2025973": {
+      "nombre": "Trabajo de Grado — Práctica de Extensión",
+      "creditos": 6,
+      "obligatoria": false,
+      "grupo": "Trabajo de Grado",
+      "subgrupo": "Trabajo de Grado",
+      "prerrequisitos": null
+    },
+    "2016843": {
+      "nombre": "Trabajo de Grado — Asignaturas de Posgrado",
+      "creditos": 6,
+      "obligatoria": false,
+      "grupo": "Trabajo de Grado",
+      "subgrupo": "Trabajo de Grado",
+      "prerrequisitos": null
+    },
+    "2016762": {
+      "nombre": "Práctica Estudiantil I",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": null
+    },
+    "2016763": {
+      "nombre": "Práctica Estudiantil II",
+      "creditos": 6,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": null
+    },
+    "2016764": {
+      "nombre": "Práctica Estudiantil III",
+      "creditos": 9,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": null
+    },
+    "1000070": {
+      "nombre": "Práctica Colombia I",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": null
+    },
+    "1000071": {
+      "nombre": "Práctica Colombia II",
+      "creditos": 6,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": null
+    },
+    "1000072": {
+      "nombre": "Práctica Colombia III",
+      "creditos": 9,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": null
+    },
+    "1000089-B": {
+      "nombre": "Cátedra Nacional de Inducción y Preparación para la Vida Universitaria",
+      "creditos": 2,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": null
+    },
+    "2025819": {
+      "nombre": "Introducción a la Teoría de Conjuntos",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": "2016696"
+    },
+    "2015184": {
+      "nombre": "Teoría de Grafos",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": "2016696"
+    },
+    "2019267": {
+      "nombre": "Teoría de la Recursión",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": "2016696"
+    },
+    "2027629": {
+      "nombre": "Lógica Computacional",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": "2016696"
+    },
+    "2016366": {
+      "nombre": "Estadística Descriptiva y Exploratoria",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": null
+    },
+    "2016379": {
+      "nombre": "Inferencia Estadística",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": {
+        "or": [
+          "1000013",
+          "2027877",
+          "2015178"
+        ]
+      }
+    },
+    "2016360": {
+      "nombre": "Análisis de Regresión",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": {
+        "or": [
+          "1000013",
+          "2027877",
+          "2015178"
+        ]
+      }
+    },
+    "2015155": {
+      "nombre": "Introducción al Análisis Real",
+      "creditos": 4,
+      "obligatoria": false,
+      "grupo": "Libre Elección — Profundización",
+      "subgrupo": "Libre Elección — Profundización",
+      "prerrequisitos": {
+        "or": [
+          "1000006",
+          "2015162"
+        ]
+      }
+    }
+  },
+  "programa": {
+    "nombre": "Ingeniería de Sistemas y Computación",
+    "acuerdo": "Acuerdo 11 de 2023",
+    "creditos_totales": 165,
+    "componentes": {
+      "fundamentacion": {
+        "nombre": "Fundamentación",
+        "creditos_exigidos": 51,
+        "color_indicador": "#3b82f6",
+        "agrupaciones": [
+          {
+            "id": "matematicas",
+            "nombre": "Matemáticas",
+            "color": "#60a5fa",
+            "subagrupaciones": [
+              {
+                "nombre": "Cálculo Diferencial",
+                "color": "#eff6ff"
+              },
+              {
+                "nombre": "Cálculo Integral",
+                "color": "#dbeafe"
+              },
+              {
+                "nombre": "Cálculo en Varias Variables",
+                "color": "#bfdbfe"
+              },
+              {
+                "nombre": "Álgebra Lineal",
+                "color": "#93c5fd"
+              },
+              {
+                "nombre": "Matemáticas Discretas I",
+                "color": "#e0e7ff"
+              },
+              {
+                "nombre": "Matemáticas Discretas II",
+                "color": "#c7d2fe"
+              },
+              {
+                "nombre": "Métodos Numéricos",
+                "color": "#a5b4fc"
+              }
+            ]
+          },
+          {
+            "id": "prob_estadistica",
+            "nombre": "Probabilidad y Estadística",
+            "color": "#a78bfa",
+            "subagrupaciones": [
+              {
+                "nombre": "Probabilidad y Estadística",
+                "color": "#a78bfa"
+              }
+            ]
+          },
+          {
+            "id": "fisica",
+            "nombre": "Física",
+            "color": "#4ade80",
+            "subagrupaciones": [
+              {
+                "nombre": "Física",
+                "color": "#4ade80"
+              }
+            ]
+          },
+          {
+            "id": "ciencias_computacion",
+            "nombre": "Ciencias de la Computación",
+            "color": "#818cf8",
+            "subagrupaciones": [
+              {
+                "nombre": "Ciencias de la Computación",
+                "color": "#818cf8"
+              }
+            ]
+          },
+          {
+            "id": "econ_adm",
+            "nombre": "Ciencias Económicas y Administrativas",
+            "color": "#fbbf24",
+            "subagrupaciones": [
+              {
+                "nombre": "Ingeniería Económica",
+                "color": "#fefce8"
+              },
+              {
+                "nombre": "Gerencia y Gestión de Proyectos",
+                "color": "#fef9c3"
+              }
+            ]
+          }
+        ]
+      },
+      "disciplinar": {
+        "nombre": "Disciplinar / Profesional",
+        "creditos_exigidos": 81,
+        "color_indicador": "#22c55e",
+        "agrupaciones": [
+          {
+            "id": "metodos_software",
+            "nombre": "Métodos y Tecnologías de Software",
+            "color": "#34d399",
+            "subagrupaciones": [
+              {
+                "nombre": "Programación de Computadores",
+                "color": "#f0fdf4"
+              },
+              {
+                "nombre": "Lenguajes",
+                "color": "#dcfce7"
+              },
+              {
+                "nombre": "Métodos y Tecnologías de Software",
+                "color": "#34d399"
+              }
+            ]
+          },
+          {
+            "id": "infraestructura",
+            "nombre": "Infraestructura Computacional, de Comunicaciones y de Información",
+            "color": "#fb923c",
+            "subagrupaciones": [
+              {
+                "nombre": "Elementos de Computadores",
+                "color": "#fff7ed"
+              },
+              {
+                "nombre": "Bases de Datos",
+                "color": "#ffedd5"
+              },
+              {
+                "nombre": "Información y Comunicaciones",
+                "color": "#fed7aa"
+              },
+              {
+                "nombre": "Sistemas de Información",
+                "color": "#fdba74"
+              },
+              {
+                "nombre": "Criptografía y Seguridad de la Información",
+                "color": "#fca5a5"
+              },
+              {
+                "nombre": "Infraestructura Computacional, de Comunicaciones y de Información",
+                "color": "#fb923c"
+              }
+            ]
+          },
+          {
+            "id": "computacion_aplicada",
+            "nombre": "Computación Aplicada",
+            "color": "#22d3ee",
+            "subagrupaciones": [
+              {
+                "nombre": "Computación Aplicada",
+                "color": "#22d3ee"
+              }
+            ]
+          },
+          {
+            "id": "sistemas_inteligentes",
+            "nombre": "Sistemas Inteligentes",
+            "color": "#2dd4bf",
+            "subagrupaciones": [
+              {
+                "nombre": "Sistemas Inteligentes",
+                "color": "#2dd4bf"
+              }
+            ]
+          },
+          {
+            "id": "modelos_optimizacion",
+            "nombre": "Modelos, Sistemas, Optimización y Simulación",
+            "color": "#fb7185",
+            "subagrupaciones": [
+              {
+                "nombre": "Modelos y Sistemas",
+                "color": "#fee2e2"
+              },
+              {
+                "nombre": "Optimización",
+                "color": "#fecdd3"
+              },
+              {
+                "nombre": "Modelos, Sistemas, Optimización y Simulación",
+                "color": "#fb7185"
+              }
+            ]
+          },
+          {
+            "id": "contexto_profesional",
+            "nombre": "Contexto Profesional e Interdisciplinario",
+            "color": "#c084fc",
+            "subagrupaciones": [
+              {
+                "nombre": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+                "color": "#f3e8ff"
+              },
+              {
+                "nombre": "Contexto Profesional e Interdisciplinario",
+                "color": "#c084fc"
+              }
+            ]
+          },
+          {
+            "id": "trabajo_grado",
+            "nombre": "Trabajo de Grado",
+            "color": "#f87171",
+            "subagrupaciones": [
+              {
+                "nombre": "Trabajo de Grado",
+                "color": "#f87171"
+              }
+            ]
+          }
+        ]
+      },
+      "libre_eleccion": {
+        "nombre": "Libre Elección",
+        "creditos_exigidos": 33,
+        "color_indicador": "#f472b6",
+        "agrupaciones": [
+          {
+            "id": "libre_eleccion_profundizacion",
+            "nombre": "Libre Elección — Profundización",
+            "color": "#a3e635",
+            "subagrupaciones": [
+              {
+                "nombre": "Libre Elección — Profundización",
+                "color": "#a3e635"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+};

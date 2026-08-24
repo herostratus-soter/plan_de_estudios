@@ -16,6 +16,7 @@
 </head>
 <body>
 
+<!-- Panel Izquierdo: Leyendas y Filtros -->
 <aside id="sidebar">
 
   <div class="sidebar-header">
@@ -43,35 +44,39 @@
     <span class="shape-demo rd"></span> Optativa
   </div>
 
+  <section id="contador">
+    <h2>Componentes</h2>
+    <div class="cr-row"><span class="cr-check" id="chk-fund">□</span><span>Fundamentación</span><b id="cr-fund">0 / 51 cr</b></div>
+    <div class="cr-row"><span class="cr-check" id="chk-disc">□</span><span>Disciplinar</span><b id="cr-disc">0 / 81 cr</b></div>
+    <div class="cr-row"><span class="cr-check" id="chk-libre">□</span><span>Libre Elección</span><b id="cr-libre">0 / 33 cr</b></div>
+    <div class="cr-row cr-total"><span></span><span>Total</span><b id="cr-total">0 / 165 cr</b></div>
+  </section>
+
   <div id="mode-switch">
     <button class="mode-btn active" id="btn-grupo">Por grupo</button>
     <button class="mode-btn"        id="btn-subgrupo">Por subgrupo</button>
   </div>
-
-  <section id="contador">
-    <h2>Componentes</h2>
-    <div class="cr-row"><span class="cr-check" id="chk-fund">□</span><span>Fundamentación</span><b id="cr-fund">0 / —</b></div>
-    <div class="cr-row"><span class="cr-check" id="chk-disc">□</span><span>Disciplinar</span><b id="cr-disc">0 / —</b></div>
-    <div class="cr-row"><span class="cr-check" id="chk-libre">□</span><span>Libre Elección</span><b id="cr-libre">0 / —</b></div>
-    <div class="cr-row cr-total"><span></span><span>Total</span><b id="cr-total">0</b></div>
-  </section>
 
   <section id="legend">
     <h2 id="legend-title">Grupos</h2>
     <div id="legend-list"></div>
   </section>
 
+</aside>
+
+<!-- Lienzo Central de la Red -->
+<main id="network"></main>
+
+<!-- Panel Derecho: Detalle de la Materia -->
+<aside id="right-panel">
   <section id="info">
-    <h2>Detalle</h2>
+    <h2>Detalle de Materia</h2>
     <div id="info-content">
       <span class="dim">Haz clic en una materia para ver su cadena de prerrequisitos.</span>
     </div>
     <button id="reset-btn">Reiniciar selección</button>
   </section>
-
 </aside>
-
-<main id="network"></main>
 
 <!-- Modal Subgrafo Compacto (Modo Enfoque Aislado) -->
 <div id="subgraph-modal" class="modal-overlay hidden">
@@ -95,6 +100,7 @@
 <script src="js/pensum_bundle.js"></script>  <!-- datos del JSON canónico -->
 <script src="js/pensum_logic.js"></script>   <!-- lógica pura + colores + contadores -->
 <script src="js/graph_builder.js"></script>  <!-- buildGraph, computarNiveles -->
+<script src="js/subgraph_modal.js"></script> <!-- vista modal del sub-árbol aislado -->
 <script src="js/malla_app.js"></script>      <!-- orquesta todo -->
 
 </body>

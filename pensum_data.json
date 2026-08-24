@@ -1,7 +1,7 @@
 {
   "_meta": {
     "descripcion": "Tabla canónica del plan de estudios. Una entrada por materia. Todo el sistema la consulta.",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "fuente": "Acuerdo 11 de 2023, Acta 36, 7 de diciembre — Consejo Facultad de Ingeniería, UNAL Bogotá",
     "campos": {
       "codigo": "Código SIA (clave única del objeto)",
@@ -520,7 +520,11 @@
       "obligatoria": true,
       "grupo": "Métodos y Tecnologías de Software",
       "subgrupo": "Métodos y Tecnologías de Software",
-      "prerrequisitos": "2016702"
+      "prerrequisitos": "2016702",
+      "creditos_requeridos": {
+        "componente": "disciplinar",
+        "minimo": 20
+      }
     },
     "2016698": {
       "nombre": "Elementos de Computadores",
@@ -558,7 +562,11 @@
       "obligatoria": true,
       "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
       "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
-      "prerrequisitos": "2016697"
+      "prerrequisitos": "2016697",
+      "creditos_requeridos": {
+        "componente": "disciplinar",
+        "minimo": 20
+      }
     },
     "2025967": {
       "nombre": "Redes de Computadores",
@@ -580,7 +588,11 @@
       "obligatoria": true,
       "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
       "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
-      "prerrequisitos": "2016696"
+      "prerrequisitos": "2016696",
+      "creditos_requeridos": {
+        "componente": "disciplinar",
+        "minimo": 20
+      }
     },
     "2016353": {
       "nombre": "Bases de Datos",
@@ -1305,6 +1317,245 @@
         "or": [
           "1000006",
           "2015162"
+        ]
+      }
+    }
+  },
+  "programa": {
+    "nombre": "Ingeniería de Sistemas y Computación",
+    "acuerdo": "Acuerdo 11 de 2023",
+    "creditos_totales": 165,
+    "componentes": {
+      "fundamentacion": {
+        "nombre": "Fundamentación",
+        "creditos_exigidos": 51,
+        "color_indicador": "#3b82f6",
+        "agrupaciones": [
+          {
+            "id": "matematicas",
+            "nombre": "Matemáticas",
+            "color": "#60a5fa",
+            "subagrupaciones": [
+              {
+                "nombre": "Cálculo Diferencial",
+                "color": "#eff6ff"
+              },
+              {
+                "nombre": "Cálculo Integral",
+                "color": "#dbeafe"
+              },
+              {
+                "nombre": "Cálculo en Varias Variables",
+                "color": "#bfdbfe"
+              },
+              {
+                "nombre": "Álgebra Lineal",
+                "color": "#93c5fd"
+              },
+              {
+                "nombre": "Matemáticas Discretas I",
+                "color": "#e0e7ff"
+              },
+              {
+                "nombre": "Matemáticas Discretas II",
+                "color": "#c7d2fe"
+              },
+              {
+                "nombre": "Métodos Numéricos",
+                "color": "#a5b4fc"
+              }
+            ]
+          },
+          {
+            "id": "prob_estadistica",
+            "nombre": "Probabilidad y Estadística",
+            "color": "#a78bfa",
+            "subagrupaciones": [
+              {
+                "nombre": "Probabilidad y Estadística",
+                "color": "#a78bfa"
+              }
+            ]
+          },
+          {
+            "id": "fisica",
+            "nombre": "Física",
+            "color": "#4ade80",
+            "subagrupaciones": [
+              {
+                "nombre": "Física",
+                "color": "#4ade80"
+              }
+            ]
+          },
+          {
+            "id": "ciencias_computacion",
+            "nombre": "Ciencias de la Computación",
+            "color": "#818cf8",
+            "subagrupaciones": [
+              {
+                "nombre": "Ciencias de la Computación",
+                "color": "#818cf8"
+              }
+            ]
+          },
+          {
+            "id": "econ_adm",
+            "nombre": "Ciencias Económicas y Administrativas",
+            "color": "#fbbf24",
+            "subagrupaciones": [
+              {
+                "nombre": "Ingeniería Económica",
+                "color": "#fefce8"
+              },
+              {
+                "nombre": "Gerencia y Gestión de Proyectos",
+                "color": "#fef9c3"
+              }
+            ]
+          }
+        ]
+      },
+      "disciplinar": {
+        "nombre": "Disciplinar / Profesional",
+        "creditos_exigidos": 81,
+        "color_indicador": "#22c55e",
+        "agrupaciones": [
+          {
+            "id": "metodos_software",
+            "nombre": "Métodos y Tecnologías de Software",
+            "color": "#34d399",
+            "subagrupaciones": [
+              {
+                "nombre": "Programación de Computadores",
+                "color": "#f0fdf4"
+              },
+              {
+                "nombre": "Lenguajes",
+                "color": "#dcfce7"
+              },
+              {
+                "nombre": "Métodos y Tecnologías de Software",
+                "color": "#34d399"
+              }
+            ]
+          },
+          {
+            "id": "infraestructura",
+            "nombre": "Infraestructura Computacional, de Comunicaciones y de Información",
+            "color": "#fb923c",
+            "subagrupaciones": [
+              {
+                "nombre": "Elementos de Computadores",
+                "color": "#fff7ed"
+              },
+              {
+                "nombre": "Bases de Datos",
+                "color": "#ffedd5"
+              },
+              {
+                "nombre": "Información y Comunicaciones",
+                "color": "#fed7aa"
+              },
+              {
+                "nombre": "Sistemas de Información",
+                "color": "#fdba74"
+              },
+              {
+                "nombre": "Criptografía y Seguridad de la Información",
+                "color": "#fca5a5"
+              },
+              {
+                "nombre": "Infraestructura Computacional, de Comunicaciones y de Información",
+                "color": "#fb923c"
+              }
+            ]
+          },
+          {
+            "id": "computacion_aplicada",
+            "nombre": "Computación Aplicada",
+            "color": "#22d3ee",
+            "subagrupaciones": [
+              {
+                "nombre": "Computación Aplicada",
+                "color": "#22d3ee"
+              }
+            ]
+          },
+          {
+            "id": "sistemas_inteligentes",
+            "nombre": "Sistemas Inteligentes",
+            "color": "#2dd4bf",
+            "subagrupaciones": [
+              {
+                "nombre": "Sistemas Inteligentes",
+                "color": "#2dd4bf"
+              }
+            ]
+          },
+          {
+            "id": "modelos_optimizacion",
+            "nombre": "Modelos, Sistemas, Optimización y Simulación",
+            "color": "#fb7185",
+            "subagrupaciones": [
+              {
+                "nombre": "Modelos y Sistemas",
+                "color": "#fee2e2"
+              },
+              {
+                "nombre": "Optimización",
+                "color": "#fecdd3"
+              },
+              {
+                "nombre": "Modelos, Sistemas, Optimización y Simulación",
+                "color": "#fb7185"
+              }
+            ]
+          },
+          {
+            "id": "contexto_profesional",
+            "nombre": "Contexto Profesional e Interdisciplinario",
+            "color": "#c084fc",
+            "subagrupaciones": [
+              {
+                "nombre": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+                "color": "#f3e8ff"
+              },
+              {
+                "nombre": "Contexto Profesional e Interdisciplinario",
+                "color": "#c084fc"
+              }
+            ]
+          },
+          {
+            "id": "trabajo_grado",
+            "nombre": "Trabajo de Grado",
+            "color": "#f87171",
+            "subagrupaciones": [
+              {
+                "nombre": "Trabajo de Grado",
+                "color": "#f87171"
+              }
+            ]
+          }
+        ]
+      },
+      "libre_eleccion": {
+        "nombre": "Libre Elección",
+        "creditos_exigidos": 33,
+        "color_indicador": "#f472b6",
+        "agrupaciones": [
+          {
+            "id": "libre_eleccion_profundizacion",
+            "nombre": "Libre Elección — Profundización",
+            "color": "#a3e635",
+            "subagrupaciones": [
+              {
+                "nombre": "Libre Elección — Profundización",
+                "color": "#a3e635"
+              }
+            ]
+          }
         ]
       }
     }

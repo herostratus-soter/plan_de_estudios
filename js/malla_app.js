@@ -1,21 +1,23 @@
 'use strict';
 // malla_app.js — orquesta DOM, vis.js y los módulos de lógica.
-// Depende de (orden de carga): pensum_bundle.js → pensum_logic.js → graph_builder.js
+// Depende de (orden de carga): pensum_bundle.js → pensum_logic.js → graph_builder.js → subgraph_modal.js
 
 // ─── Datos y grafo ────────────────────────────────────────────────────────────
-var materias         = {};
-var modo             = 'grupo';
-var allNodes         = null;
-var allEdges         = null;
-var network          = null;
-var graphData        = null;
-var MINS_PROGRAMA    = null;
-var TOTALES_GRUPO    = null;
-var TOTALES_SUBGRUPO = null;
-var hoveredId        = null;
+var materias             = {};
+var modo                 = 'grupo';
+var allNodes             = null;
+var allEdges             = null;
+var network              = null;
+var graphData            = null;
+var MINS_PROGRAMA        = null;
+var TOTALES_GRUPO        = null;
+var TOTALES_SUBGRUPO     = null;
+var COMPONENTE_POR_GRUPO = {};
+var COLORES_GRUPO        = {};
+var COLORES_SUBGRUPO     = {};
+var hoveredId            = null;
 
 // ─── Paleta gris (sin color — se usa cuando el grupo NO está en el filtro) ──
-// Cuatro niveles de brillo para los cuatro estados de selección.
 var GRIS = {
   base:       '#282f38',   // sin selección: gris equilibrado, no tan oscuro
   hover:      '#3b4352',   // hover: un toque más claro
@@ -24,7 +26,7 @@ var GRIS = {
 };
 
 var GRIS_FONT = {
-  base:       '#b8c0cc',   // sin selección: gris bastante claro para ser muy legible (antes oscuro)
+  base:       '#b8c0cc',   // sin selección: gris bastante claro para ser muy legible
   hover:      '#000000',
   seleccion:  '#e2e8f0',
   activo:     '#ffffff',
@@ -74,7 +76,7 @@ var Seleccion = {
   quitar:        function(c) { this.set.delete(c); if (this.activo===c) this.activo=null; },
   limpiarActivo: function()  { this.activo = null; },
   reiniciar:     function()  { this.set.clear(); this.activo = null; },
-  esCompleto:    function(c) { return puedeMatricular(c, this.set, materias).puede; },
+  esCompleto:    function(c) { return puedeMatricular(c, this.set, materias, COMPONENTE_POR_GRUPO).puede; },
   exportar:      function()  { return { seleccionados: Array.from(this.set), activo: this.activo }; },
   importar:      function(d) { this.set = new Set(d.seleccionados||[]); this.activo = d.activo||null; },
 };
@@ -88,13 +90,15 @@ function getEstado(codigo) {
 
 // ─── Créditos mínimos del programa ───────────────────────────────────────────
 function computarMinsPrograma() {
-  var t = { fundamentacion: 0, disciplinar: 0, libre_eleccion: 0 };
-  for (var c of Object.keys(materias)) {
-    var m = materias[c]; if (!m.obligatoria) continue;
-    var comp = COMPONENTE_POR_GRUPO[m.grupo]; if (comp) t[comp] += m.creditos;
+  if (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.programa && PENSUM_DATA.programa.componentes) {
+    var comp = PENSUM_DATA.programa.componentes;
+    return {
+      fundamentacion: comp.fundamentacion ? comp.fundamentacion.creditos_exigidos : 51,
+      disciplinar:    comp.disciplinar ? comp.disciplinar.creditos_exigidos : 81,
+      libre_eleccion: comp.libre_eleccion ? comp.libre_eleccion.creditos_exigidos : 33,
+    };
   }
-  if (t.libre_eleccion === 0) t.libre_eleccion = 16;
-  return t;
+  return { fundamentacion: 51, disciplinar: 81, libre_eleccion: 33 };
 }
 
 // ─── Arranque ─────────────────────────────────────────────────────────────────
@@ -107,6 +111,15 @@ if (typeof PENSUM_DATA !== 'undefined') {
 }
 
 function init() {
+  COMPONENTE_POR_GRUPO = buildComponenteMap(PENSUM_DATA);
+  var maps             = buildColorMaps(PENSUM_DATA);
+  COLORES_GRUPO        = maps.grupo;
+  COLORES_SUBGRUPO     = maps.subgrupo;
+
+  // Activar todos los grupos y subgrupos por defecto
+  LeyendaFiltro.grupo    = new Set(Object.keys(COLORES_GRUPO));
+  LeyendaFiltro.subgrupo = new Set(Object.keys(COLORES_SUBGRUPO));
+
   MINS_PROGRAMA    = computarMinsPrograma();
   TOTALES_GRUPO    = computarTotalesGrupo(materias);
   TOTALES_SUBGRUPO = computarTotalesSubgrupo(materias);
@@ -152,46 +165,39 @@ function rebuildGraph() {
     },
   };
 
-  if (network) network.destroy();
   network = new vis.Network(container, { nodes: allNodes, edges: allEdges }, options);
 
   network.on('click',     onLeftClick);
   network.on('oncontext', onRightClick);
-  network.on('hoverNode', function(p) {
-    if (hoveredId !== p.node) {
-      hoveredId = p.node;
-      applySelectionVisuals();
-    }
-  });
-  network.on('blurNode',  function()  {
-    if (hoveredId !== null) {
-      hoveredId = null;
-      applySelectionVisuals();
-    }
-  });
-  network.on('afterDrawing', drawComponentDots);
 
+  network.on('hoverNode', function(params) {
+    hoveredId = params.node;
+    applySelectionVisuals();
+  });
+  network.on('blurNode', function() {
+    hoveredId = null;
+    applySelectionVisuals();
+  });
+
+  network.on('afterDrawing', drawComponentDots);
   applySelectionVisuals();
 }
 
-// ─── Dots de componente en canvas ────────────────────────────────────────────
-// Independientes del filtro de leyenda: siempre color real a máximo brillo.
-// Posición: centro abajo, justo fuera de la caja.
+// ─── Puntos de Componente ───────────────────────────────────────────────────
 function drawComponentDots(ctx) {
-  if (!graphData) return;
-  var DOT_R = 6.5; // puntico un poco más grande (diámetro 13px)
+  var DOT_R = 6.5;
+  var all = allNodes.get();
 
-  for (var i = 0; i < graphData.nodes.length; i++) {
-    var n    = graphData.nodes[i];
-    var m    = materias[n._codigo];
+  for (var i = 0; i < all.length; i++) {
+    var n    = all[i];
+    var m    = materias[n.id];
+    if (!m) continue;
     var comp = COMPONENTE_POR_GRUPO[m.grupo];
     if (!comp) continue;
 
     try {
       var bb = network.getBoundingBox(n.id);
       var x  = (bb.left + bb.right) / 2;
-      // Obligatoria (recta): bb.bottom coincide con el borde visual (+3px afuera).
-      // Optativa (redondeada): vis.js extiende el bounding box (-17px para alinear al borde visual).
       var y  = m.obligatoria ? (bb.bottom + 3) : (bb.bottom - 17);
 
       ctx.beginPath();
@@ -199,102 +205,72 @@ function drawComponentDots(ctx) {
       ctx.fillStyle   = COMP_DOT[comp];
       ctx.fill();
       ctx.lineWidth   = 1.4;
-      ctx.strokeStyle = '#12161c';
+      ctx.strokeStyle = '#0d1117';
       ctx.stroke();
     } catch(e) {}
   }
 }
 
-// ─── Recoloreado en caliente (sin reset de zoom) ─────────────────────────────
+// Recoloración liviana cuando cambia el modo grupo / subgrupo
 function recolorNodes() {
+  var updates = [];
   for (var i = 0; i < graphData.nodes.length; i++) {
-    var n = graphData.nodes[i];
-    var m = materias[n._codigo];
-    var c = modo === 'grupo'
-      ? (COLORES_GRUPO[m.grupo] || '#e5e7eb')
-      : (COLORES_SUBGRUPO[m.subgrupo] || COLORES_GRUPO[m.grupo] || '#e5e7eb');
-    n._colorBase   = c;
-    n._colorDim    = dimHex(c);
-    n._colorHover  = lightenHex(c, 60);
-    n._colorActive = lightenHex(c, 70);
+    var n   = graphData.nodes[i];
+    var key = modo === 'grupo' ? n._grupo : n._subgrupo;
+    var col = modo === 'grupo'
+      ? (COLORES_GRUPO[key]    || COLORES_LIMPIO)
+      : (COLORES_SUBGRUPO[key] || COLORES_LIMPIO);
+
+    n._colorBase   = col;
+    n._colorDim    = dimHex(col);
+    n._colorHover  = lightenHex(col, 20);
+    n._colorActive = lightenHex(col, 40);
+
+    updates.push({ id: n.id, color: { background: n._colorBase } });
   }
+  allNodes.update(updates);
 }
 
-// ─── Aristas ancestras para el hover de nodos ─────────────────────────────────
-/**
- * Encuentra de forma recursiva todas las aristas (caminos) que llevan hasta targetId.
- * @param {string|null} targetId
- * @param {Array} edges
- * @returns {Set<string>} Set con los IDs de las aristas activas (origen -> targetId)
- */
+// ─── Colección recursiva de aristas prerrequisito ─────────────────────────────
 function getAncestorEdgeIds(targetId, edges) {
-  if (!targetId || !edges) return new Set();
-
-  var incomingMap = {};
-  for (var i = 0; i < edges.length; i++) {
-    var e = edges[i];
-    if (!incomingMap[e.to]) incomingMap[e.to] = [];
-    incomingMap[e.to].push(e);
-  }
-
-  var activeEdgeIds = new Set();
+  var ancestorEdges = new Set();
   var visitedNodes  = new Set();
 
-  function collectAncestors(nodeId) {
+  function visit(nodeId) {
     if (visitedNodes.has(nodeId)) return;
     visitedNodes.add(nodeId);
 
-    var inc = incomingMap[nodeId];
-    if (!inc) return;
-
-    for (var j = 0; j < inc.length; j++) {
-      var edge = inc[j];
-      activeEdgeIds.add(edge.id);
-      collectAncestors(edge.from);
+    for (var i = 0; i < edges.length; i++) {
+      var edge = edges[i];
+      if (edge.to === nodeId) {
+        ancestorEdges.add(edge.id);
+        visit(edge.from);
+      }
     }
   }
 
-  collectAncestors(targetId);
-  return activeEdgeIds;
+  visit(targetId);
+  return ancestorEdges;
 }
 
-/**
- * Encuentra únicamente las aristas y nodos salientes DIRECTOS (1 nivel adelante: lo que targetId desbloquea).
- * No es recursivo.
- * @param {string|null} targetId
- * @param {Array} edges
- * @returns {{ edgeIds: Set<string>, nodeIds: Set<string> }}
- */
 function getDirectDependentEdgesAndNodes(targetId, edges) {
-  var edgeIds = new Set();
-  var nodeIds = new Set();
-  if (!targetId || !edges) return { edgeIds: edgeIds, nodeIds: nodeIds };
-
+  var dependentEdges = new Set();
+  var dependentNodes = new Set();
   for (var i = 0; i < edges.length; i++) {
-    var e = edges[i];
-    if (e.from === targetId) {
-      edgeIds.add(e.id);
-      nodeIds.add(e.to);
+    var edge = edges[i];
+    if (edge.from === targetId) {
+      dependentEdges.add(edge.id);
+      dependentNodes.add(edge.to);
     }
   }
-
-  return { edgeIds: edgeIds, nodeIds: nodeIds };
+  return { edgeIds: dependentEdges, nodeIds: dependentNodes };
 }
 
-/**
- * Comprueba si una opción OR discontinua no fue elegida pero OTRA opción del mismo grupo OR ya fue elegida en Seleccion.set.
- * @param {Object} edge
- * @param {Array} edges
- * @param {Set<string>} selectionSet
- * @returns {boolean}
- */
 function isOrGroupSatisfiedByOther(edge, edges, selectionSet) {
-  if (!edge.dashes) return false;
-  var targetId = edge.to;
-
+  var targetNode = edge.to;
   for (var i = 0; i < edges.length; i++) {
     var other = edges[i];
-    if (other.to === targetId && other.dashes && other.from !== edge.from) {
+    if (other.to === targetNode && other.dashes && other.from !== edge.from) {
       if (selectionSet.has(other.from)) {
         return true;
       }
@@ -303,96 +279,77 @@ function isOrGroupSatisfiedByOther(edge, edges, selectionSet) {
   return false;
 }
 
-// ─── Aplicar visuales ────────────────────────────────────────────────────────
-// DOS sistemas independientes combinados:
-//
-//   Sistema 1 — Selección de materias → controla BRILLO (oscuro/normal/claro)
-//     sin_seleccion → nivel oscuro
-//     hover         → un poco más claro  (manejado explícitamente en applySelectionVisuals)
-//     seleccionado  → nivel normal
-//     activo        → nivel claro
-//
-//   Sistema 2 — Filtro de leyenda → controla si hay COLOR o todo GRIS
-//     grupo OFF → se usa la paleta GRIS
-//     grupo ON  → se usa el color real del grupo
-//
-//   Las aristas/flechas están OCULTAS por defecto y solo se muestran:
-//     - Al hacer hover sobre un nodo (azul/blanco).
-//     - Al seleccionar nodos (árbol RECURSIVO completo en verde/rojo/azul tenue).
-//
+// ─── Actualización Visual Centralizada ─────────────────────────────────────────
 function applySelectionVisuals() {
-  // ─── 1. Visibilidad de aristas ───
-  if (allEdges && graphData && graphData.edges) {
-    // Hover: ancestros del nodo bajo el cursor (camino hacia atrás)
-    var ancestorEdges = (hoveredId && graphData)
-      ? getAncestorEdgeIds(hoveredId, graphData.edges)
-      : new Set();
+  if (!allEdges || !allNodes) return;
 
-    // Hover: materias que el nodo bajo el cursor desbloquea (1 nivel adelante)
-    var dependentInfo = (hoveredId && graphData)
-      ? getDirectDependentEdgesAndNodes(hoveredId, graphData.edges)
-      : { edgeIds: new Set(), nodeIds: new Set() };
+  var hoverAncestorEdges = new Set();
+  var dependentInfo      = { edgeIds: new Set(), nodeIds: new Set() };
+  var allCurrentEdges    = allEdges.get();
 
-    // Selección: mapa RECURSIVO completo de todas las aristas de prerrequisitos de los nodos en Seleccion.set
-    var selectedAncestorEdges = new Set();
-    if (graphData && Seleccion.set.size > 0) {
-      Seleccion.set.forEach(function(selectedId) {
-        var ancSet = getAncestorEdgeIds(selectedId, graphData.edges);
-        ancSet.forEach(function(eid) { selectedAncestorEdges.add(eid); });
-      });
-    }
-
-    var edgeUpdates = [];
-    for (var k = 0; k < graphData.edges.length; k++) {
-      var edge             = graphData.edges[k];
-      var isAncestor       = ancestorEdges.has(edge.id);                  // Hover: camino hacia el nodo
-      var isDependent      = dependentInfo.edgeIds.has(edge.id);          // Hover: materias que desbloquea (1 nivel)
-      var isSelectedPrereq = selectedAncestorEdges.has(edge.id);          // Selección: arista en el árbol RECURSIVO de la selección
-      var isContinuous     = !edge.dashes;                                // Continua (absoluta) vs discontinua (OR)
-
-      var edgeColor, edgeWidth;
-
-      if (isAncestor) {
-        // Hover: camino hacia atrás al nodo bajo el cursor (intenso)
-        edgeWidth = isContinuous ? 2.2 : 1.5;
-        edgeColor = isContinuous ? { color: '#38bdf8', opacity: 0.95 } : { color: '#cbd5e1', opacity: 0.85 };
-      } else if (isDependent) {
-        // Hover: materias que desbloquea 1 nivel adelante (tenue)
-        edgeWidth = isContinuous ? 1.8 : 1.4;
-        edgeColor = isContinuous ? { color: '#38bdf8', opacity: 0.45 } : { color: '#cbd5e1', opacity: 0.35 };
-      } else if (isSelectedPrereq) {
-        // Selección: arista en el árbol RECURSIVO de prerrequisitos de la selección
-        var prereqMet = Seleccion.set.has(edge.from);
-        var isOtherOrSatisfied = !prereqMet && edge.dashes && isOrGroupSatisfiedByOther(edge, graphData.edges, Seleccion.set);
-
-        edgeWidth = isContinuous ? 2.2 : 1.5;
-
-        if (prereqMet) {
-          // VERDE: prerrequisito elegido y cumplido
-          edgeColor = { color: '#4ade80', opacity: 0.90 };
-        } else if (isOtherOrSatisfied) {
-          // AZUL SUPER TENUE: opción alternativa OR no elegida, pero el grupo ya fue satisfecho por otra materia
-          edgeColor = { color: '#38bdf8', opacity: 0.12 };
-        } else {
-          // ROJO: prerrequisito obligatorio o grupo OR sin cumplir
-          edgeColor = { color: '#f87171', opacity: 0.85 };
-        }
-      } else {
-        // Invisible por defecto
-        edgeWidth = 1;
-        edgeColor = { color: 'rgba(0,0,0,0)', opacity: 0 };
-      }
-
-      edgeUpdates.push({
-        id:    edge.id,
-        width: edgeWidth,
-        color: edgeColor,
-      });
-    }
-    allEdges.update(edgeUpdates);
+  if (hoveredId) {
+    hoverAncestorEdges = getAncestorEdgeIds(hoveredId, allCurrentEdges);
+    dependentInfo      = getDirectDependentEdgesAndNodes(hoveredId, allCurrentEdges);
   }
 
-  // ─── 2. Visuales de nodos ───
+  var selectedAncestorEdges = new Set();
+  if (Seleccion.set.size > 0) {
+    Seleccion.set.forEach(function(selectedId) {
+      var ancSet = getAncestorEdgeIds(selectedId, allCurrentEdges);
+      ancSet.forEach(function(eid) { selectedAncestorEdges.add(eid); });
+    });
+  }
+
+  var edgeUpdates = [];
+
+  for (var k = 0; k < allCurrentEdges.length; k++) {
+    var edge             = allCurrentEdges[k];
+    var isHoverAncestor  = hoverAncestorEdges.has(edge.id);
+    var isHoverDependent = dependentInfo.edgeIds.has(edge.id);
+    var isSelectedPrereq = selectedAncestorEdges.has(edge.id);
+    var isContinuous     = !edge.dashes;
+
+    var edgeColor, edgeWidth;
+
+    if (hoveredId && (isHoverAncestor || isHoverDependent)) {
+      if (isHoverAncestor) {
+        edgeWidth = isContinuous ? 2.2 : 1.5;
+        edgeColor = isContinuous
+          ? { color: '#38bdf8', opacity: 0.95 }
+          : { color: '#cbd5e1', opacity: 0.85 };
+      } else {
+        edgeWidth = isContinuous ? 2.0 : 1.5;
+        edgeColor = isContinuous
+          ? { color: '#38bdf8', opacity: 0.45 }
+          : { color: '#cbd5e1', opacity: 0.35 };
+      }
+    } else if (isSelectedPrereq) {
+      var prereqMet = Seleccion.set.has(edge.from);
+      var isOtherOrSatisfied = !prereqMet && edge.dashes && isOrGroupSatisfiedByOther(edge, allCurrentEdges, Seleccion.set);
+
+      edgeWidth = isContinuous ? 2.2 : 1.5;
+
+      if (prereqMet) {
+        edgeColor = { color: '#4ade80', opacity: 0.90 };
+      } else if (isOtherOrSatisfied) {
+        edgeColor = { color: '#38bdf8', opacity: 0.12 };
+      } else {
+        edgeColor = { color: '#f87171', opacity: 0.85 };
+      }
+    } else {
+      edgeWidth = isContinuous ? 2.2 : 1.5;
+      edgeColor = { color: 'rgba(0,0,0,0)', opacity: 0 };
+    }
+
+    edgeUpdates.push({
+      id:    edge.id,
+      width: edgeWidth,
+      color: edgeColor,
+    });
+  }
+  allEdges.update(edgeUpdates);
+
+  // Visuales de nodos
   var updates = [];
 
   for (var i = 0; i < graphData.nodes.length; i++) {
@@ -400,16 +357,13 @@ function applySelectionVisuals() {
     var estado     = getEstado(n.id);
     var ev         = ESTADO_VISUAL[estado];
     var isHover    = (n.id === hoveredId);
-    var isUnlocked = dependentInfo.nodeIds.has(n.id); // materia desbloqueada directamente por el hover
 
-    // ¿Su grupo está activo en el filtro?
     var nodeKey = modo === 'grupo' ? n._grupo : n._subgrupo;
     var groupOn = LeyendaFiltro.isActive(nodeKey, modo);
 
     var bgColor, fontColor;
 
     if (groupOn) {
-      // ── CON COLOR (grupo activo en leyenda) ──
       switch (estado) {
         case 'sin_seleccion':
           bgColor   = isHover ? n._colorHover : n._colorDim;
@@ -426,7 +380,6 @@ function applySelectionVisuals() {
           break;
       }
     } else {
-      // ── SIN COLOR (grupo NO activo o ningún grupo seleccionado) ──
       switch (estado) {
         case 'sin_seleccion':
           bgColor   = isHover ? GRIS.hover : GRIS.base;
@@ -444,7 +397,6 @@ function applySelectionVisuals() {
       }
     }
 
-
     updates.push({
       id:          n.id,
       borderWidth: ev.borderWidth,
@@ -460,25 +412,39 @@ function applySelectionVisuals() {
 
   allNodes.update(updates);
   updateCreditCounter();
+  renderLegend();
 }
-
 
 // ─── Contador de créditos por componente ─────────────────────────────────────
 function updateCreditCounter() {
   if (!MINS_PROGRAMA) return;
-  var totales = Seleccion.set.size > 0
-    ? creditosAprobados(Seleccion.set, materias)
-    : { fundamentacion: 0, disciplinar: 0, libre_eleccion: 0 };
+
+  var totales = creditosAprobados(Seleccion.set, materias, COMPONENTE_POR_GRUPO);
+  var metaTotal = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.programa && PENSUM_DATA.programa.creditos_totales)
+    ? PENSUM_DATA.programa.creditos_totales
+    : 165;
 
   function fila(chkId, valId, cur, min) {
     var chk = document.getElementById(chkId);
     var val = document.getElementById(valId);
     if (!chk || !val) return;
+
     var done = cur >= min;
+
     chk.textContent = done ? '✓' : '□';
-    chk.className   = 'cr-check' + (done ? ' done' : '');
     val.textContent = cur + ' / ' + min + ' cr';
-    val.style.color = done ? '#4ade80' : 'var(--accent)';
+
+    if (done) {
+      // Requerimiento alcanzado -> VERDE
+      chk.className   = 'cr-check done';
+      chk.style.color = '#4ade80';
+      val.style.color = '#4ade80';
+    } else {
+      // Mientras no alcance el requerimiento -> AZUL
+      chk.className   = 'cr-check neutral';
+      chk.style.color = '#38bdf8';
+      val.style.color = '#38bdf8';
+    }
   }
 
   fila('chk-fund',  'cr-fund',  totales.fundamentacion,  MINS_PROGRAMA.fundamentacion);
@@ -487,7 +453,14 @@ function updateCreditCounter() {
 
   var total   = totales.fundamentacion + totales.disciplinar + totales.libre_eleccion;
   var totalEl = document.getElementById('cr-total');
-  if (totalEl) { totalEl.textContent = total + ' cr'; totalEl.style.color = 'var(--accent)'; }
+  if (totalEl) {
+    totalEl.textContent = total + ' / ' + metaTotal + ' cr';
+    if (total >= metaTotal) {
+      totalEl.style.color = '#4ade80';
+    } else {
+      totalEl.style.color = '#38bdf8';
+    }
+  }
 }
 
 // ─── Eventos de click en el grafo ────────────────────────────────────────────
@@ -513,280 +486,6 @@ function onRightClick(params) {
   applySelectionVisuals();
   updateInfoPanel(Seleccion.activo);
 }
-
-// ─── Subgrafo Modal (Vista Aislada Hiper-Compacta) ───────────────────────────
-function getAncestorNodeIds(targetId, materias) {
-  var nodes = new Set();
-  function collect(code) {
-    if (!code || !materias[code] || nodes.has(code)) return;
-    nodes.add(code);
-    var m = materias[code];
-    if (m && m.prerrequisitos) {
-      var prereqs = flatPrereqs(m.prerrequisitos);
-      for (var i = 0; i < prereqs.length; i++) collect(prereqs[i]);
-    }
-  }
-  collect(targetId);
-  return nodes;
-}
-
-var SubgrafoModal = {
-  modalEl:     null,
-  titleEl:     null,
-  closeBtnEl:  null,
-  containerEl: null,
-  subNetwork:  null,
-  subNodes:    null,
-  subEdges:    null,
-  targetId:    null,
-  active:      false,
-
-  init: function() {
-    this.modalEl     = document.getElementById('subgraph-modal');
-    this.titleEl     = document.getElementById('modal-course-title');
-    this.closeBtnEl  = document.getElementById('modal-close-btn');
-    this.containerEl = document.getElementById('subgraph-network');
-
-    if (!this.modalEl || !this.closeBtnEl) return;
-
-    var self = this;
-    this.closeBtnEl.addEventListener('click', function() { self.cerrar(); });
-
-    window.addEventListener('keydown', function(e) {
-      if (self.active && (e.key === 'Escape' || e.key === 'Esc')) {
-        self.cerrar();
-      }
-    });
-  },
-
-  abrir: function(targetId) {
-    if (!this.modalEl) this.modalEl = document.getElementById('subgraph-modal');
-    if (!this.titleEl) this.titleEl = document.getElementById('modal-course-title');
-    if (!this.closeBtnEl) this.closeBtnEl = document.getElementById('modal-close-btn');
-    if (!this.containerEl) this.containerEl = document.getElementById('subgraph-network');
-
-    if (!targetId || !materias[targetId] || !graphData) return;
-    this.targetId = targetId;
-    this.active   = true;
-
-    var m = materias[targetId];
-    if (this.titleEl) this.titleEl.textContent = m.nombre;
-
-    if (this.modalEl) {
-      this.modalEl.classList.remove('hidden');
-      this.modalEl.style.display = 'flex';
-    }
-
-    var ancestorNodes = getAncestorNodeIds(targetId, materias);
-
-    var filteredNodes = graphData.nodes
-      .filter(function(n) { return ancestorNodes.has(n._codigo); })
-      .map(function(n) { return Object.assign({}, n); });
-
-    var filteredEdges = graphData.edges
-      .filter(function(e) {
-        return ancestorNodes.has(e.from) && ancestorNodes.has(e.to);
-      })
-      .map(function(e) { return Object.assign({}, e); });
-
-    this.subNodes = new vis.DataSet(filteredNodes);
-    this.subEdges = new vis.DataSet(filteredEdges);
-
-    var options = {
-      layout: {
-        hierarchical: {
-          direction: 'DU', sortMethod: 'directed',
-          levelSeparation: 110, nodeSpacing: 165, treeSpacing: 65,
-          blockShifting: true, edgeMinimization: true, parentCentralization: true,
-        }
-      },
-      physics: false,
-      interaction: {
-        hover:                true,
-        hoverConnectedEdges:  false,
-        selectConnectedEdges: false,
-        tooltipDelay:         200,
-        dragNodes:            true,
-        multiselect:          false,
-      },
-      nodes: { shadow: false },
-      edges: { shadow: false, hoverWidth: 0, selectionWidth: 0, chosen: false },
-    };
-
-    if (this.subNetwork) this.subNetwork.destroy();
-    this.subNetwork = new vis.Network(this.containerEl, { nodes: this.subNodes, edges: this.subEdges }, options);
-
-    var self = this;
-    this.subNetwork.on('click', function(params) {
-      this.setSelection({ nodes: [], edges: [] });
-      if (!params.nodes.length) return;
-      var clicked = params.nodes[0];
-      if (Seleccion.set.has(clicked)) {
-        Seleccion.quitar(clicked);
-      } else {
-        Seleccion.agregar(clicked);
-      }
-      self.actualizar();
-      applySelectionVisuals();
-    });
-
-    this.subNetwork.on('oncontext', function(params) {
-      params.event.preventDefault();
-      var nodeId = self.subNetwork.getNodeAt(params.pointer.DOM);
-      if (nodeId === undefined) return;
-      Seleccion.quitar(nodeId);
-      self.actualizar();
-      applySelectionVisuals();
-    });
-
-    this.subNetwork.on('afterDrawing', function(ctx) {
-      self.drawModalDots(ctx);
-    });
-
-    this.actualizar();
-
-    setTimeout(function() {
-      if (self.subNetwork) {
-        self.subNetwork.fit({ animation: { duration: 400, easingFunction: 'easeInOutQuad' } });
-      }
-    }, 100);
-  },
-
-  actualizar: function() {
-    if (!this.active || !this.subNodes) return;
-
-    var selectedAncestorEdges = new Set();
-    if (this.subEdges && Seleccion.set.size > 0) {
-      var allModalEdges = this.subEdges.get();
-      Seleccion.set.forEach(function(selectedId) {
-        var ancSet = getAncestorEdgeIds(selectedId, allModalEdges);
-        ancSet.forEach(function(eid) { selectedAncestorEdges.add(eid); });
-      });
-    }
-
-    var allModalNodes = this.subNodes.get();
-    var nodeUpdates = [];
-
-    for (var i = 0; i < allModalNodes.length; i++) {
-      var n       = allModalNodes[i];
-      var estado  = getEstado(n._codigo);
-      var ev      = ESTADO_VISUAL[estado];
-      var nodeKey = modo === 'grupo' ? n._grupo : n._subgrupo;
-      var groupOn = LeyendaFiltro.isActive(nodeKey, modo);
-
-      var bgColor, fontColor;
-
-      if (groupOn) {
-        switch (estado) {
-          case 'sin_seleccion': bgColor = n._colorDim;  fontColor = '#c2c8d4'; break;
-          case 'completo':
-          case 'incompleto':    bgColor = n._colorBase; fontColor = '#1e293b'; break;
-          case 'activo':        bgColor = n._colorActive; fontColor = '#0f172a'; break;
-        }
-      } else {
-        switch (estado) {
-          case 'sin_seleccion': bgColor = GRIS.base; fontColor = GRIS_FONT.base; break;
-          case 'completo':
-          case 'incompleto':    bgColor = GRIS.seleccion; fontColor = GRIS_FONT.seleccion; break;
-          case 'activo':        bgColor = GRIS.activo; fontColor = GRIS_FONT.activo; break;
-        }
-      }
-
-      nodeUpdates.push({
-        id:          n.id,
-        borderWidth: ev.borderWidth,
-        font:        { color: fontColor },
-        color: {
-          background: bgColor,
-          border:     ev.borderColor,
-          highlight:  { background: bgColor, border: ev.borderColor },
-          hover:      { background: bgColor, border: ev.borderColor },
-        },
-      });
-    }
-
-    this.subNodes.update(nodeUpdates);
-
-    var allModalEdges = this.subEdges.get();
-    var edgeUpdates = [];
-    for (var k = 0; k < allModalEdges.length; k++) {
-      var edge             = allModalEdges[k];
-      var isSelectedPrereq = selectedAncestorEdges.has(edge.id);
-      var isContinuous     = !edge.dashes;
-
-      var edgeColor, edgeWidth;
-
-      if (isSelectedPrereq) {
-        var prereqMet = Seleccion.set.has(edge.from);
-        var isOtherOrSatisfied = !prereqMet && edge.dashes && isOrGroupSatisfiedByOther(edge, allModalEdges, Seleccion.set);
-
-        edgeWidth = isContinuous ? 2.2 : 1.5;
-        if (prereqMet) {
-          edgeColor = { color: '#4ade80', opacity: 0.90 };
-        } else if (isOtherOrSatisfied) {
-          edgeColor = { color: '#38bdf8', opacity: 0.15 };
-        } else {
-          edgeColor = { color: '#f87171', opacity: 0.85 };
-        }
-      } else {
-        edgeWidth = 1;
-        edgeColor = { color: 'rgba(255,255,255,0.12)', opacity: 0.25 };
-      }
-
-      edgeUpdates.push({
-        id:    edge.id,
-        width: edgeWidth,
-        color: edgeColor,
-      });
-    }
-    this.subEdges.update(edgeUpdates);
-  },
-
-  drawModalDots: function(ctx) {
-    if (!this.subNodes || !this.subNetwork) return;
-    var DOT_R = 6.5;
-    var all = this.subNodes.get();
-
-    for (var i = 0; i < all.length; i++) {
-      var n    = all[i];
-      var m    = materias[n._codigo];
-      if (!m) continue;
-      var comp = COMPONENTE_POR_GRUPO[m.grupo];
-      if (!comp) continue;
-
-      try {
-        var bb = this.subNetwork.getBoundingBox(n.id);
-        var x  = (bb.left + bb.right) / 2;
-        var y  = m.obligatoria ? (bb.bottom + 3) : (bb.bottom - 17);
-
-        ctx.beginPath();
-        ctx.arc(x, y, DOT_R, 0, Math.PI * 2);
-        ctx.fillStyle   = COMP_DOT[comp];
-        ctx.fill();
-        ctx.lineWidth   = 1.4;
-        ctx.strokeStyle = '#12161c';
-        ctx.stroke();
-      } catch(e) {}
-    }
-  },
-
-  cerrar: function() {
-    if (!this.active) return;
-    this.active   = false;
-    this.targetId = null;
-    if (this.modalEl) {
-      this.modalEl.classList.add('hidden');
-      this.modalEl.style.display = 'none';
-    }
-    if (this.subNetwork) {
-      this.subNetwork.destroy();
-      this.subNetwork = null;
-    }
-    applySelectionVisuals();
-    updateCreditCounter();
-    updateInfoPanel(Seleccion.activo);
-  }
-};
 
 // ─── Botones y modo ──────────────────────────────────────────────────────────
 function setupEvents() {
@@ -819,7 +518,6 @@ function setupEvents() {
   });
 }
 
-// Seleccionar/deseleccionar todos los grupos de la leyenda actual
 function toggleAllGrupos() {
   var s       = LeyendaFiltro._set(modo);
   var colors  = modo === 'grupo' ? COLORES_GRUPO : COLORES_SUBGRUPO;
@@ -831,7 +529,6 @@ function toggleAllGrupos() {
     var key = modo === 'grupo' ? m.grupo : m.subgrupo;
     if (!seen[key]) { seen[key] = true; allKeys.push(key); }
   }
-  // Si ya están todos seleccionados → deseleccionar todos. Si no → seleccionar todos.
   var allSelected = allKeys.every(function(k) { return s.has(k); });
   if (allSelected) {
     s.clear();
@@ -851,91 +548,96 @@ function applyModo(newModo) {
   modo = newModo;
   updateModoButtons();
   recolorNodes();
+  renderStats();
   applySelectionVisuals();
   renderLegend();
 }
 
-// ─── Sidebar: estadísticas ───────────────────────────────────────────────────
 function renderStats() {
-  var codigos = Object.keys(materias), obligCount = 0, grupoSet = {};
+  var codigos    = Object.keys(materias);
+  var obligCount = 0;
   for (var i = 0; i < codigos.length; i++) {
-    var m = materias[codigos[i]];
-    if (m.obligatoria) obligCount++;
-    grupoSet[m.grupo] = true;
+    if (materias[codigos[i]].obligatoria) obligCount++;
   }
-  document.getElementById('stat-total').textContent  = codigos.length;
-  document.getElementById('stat-oblig').textContent  = obligCount;
-  document.getElementById('stat-grupos').textContent = Object.keys(grupoSet).length;
+  var totalesMap = modo === 'grupo' ? TOTALES_GRUPO : TOTALES_SUBGRUPO;
+  var numGroups  = totalesMap ? Object.keys(totalesMap).length : 0;
+
+  var totalEl = document.getElementById('stat-total');
+  var obligEl = document.getElementById('stat-oblig');
+  var grupEl  = document.getElementById('stat-grupos');
+
+  if (totalEl) totalEl.textContent = codigos.length;
+  if (obligEl) obligEl.textContent = obligCount;
+  if (grupEl)  grupEl.textContent  = numGroups;
 }
 
-// ─── Sidebar: leyenda interactiva con contadores ─────────────────────────────
 function renderLegend() {
-  var legendList   = document.getElementById('legend-list');
-  var legendTitle  = document.getElementById('legend-title');
-  var colors       = modo === 'grupo' ? COLORES_GRUPO  : COLORES_SUBGRUPO;
-  var totales      = modo === 'grupo' ? TOTALES_GRUPO  : TOTALES_SUBGRUPO;
-  var crSel        = modo === 'grupo'
+  var grid    = document.getElementById('legend-list') || document.getElementById('legend-grid');
+  var titleEl = document.getElementById('legend-title');
+  if (titleEl) titleEl.textContent = modo === 'grupo' ? 'Grupos' : 'Subgrupos';
+  if (!grid) return;
+
+  var s      = LeyendaFiltro._set(modo);
+  var colors = modo === 'grupo' ? COLORES_GRUPO : COLORES_SUBGRUPO;
+
+  var totalesMap = modo === 'grupo' ? TOTALES_GRUPO : TOTALES_SUBGRUPO;
+  var selecMap   = modo === 'grupo'
     ? creditosPorGrupo(Seleccion.set, materias)
     : creditosPorSubgrupo(Seleccion.set, materias);
-  var filtroActivo = LeyendaFiltro.hasAny(modo);
 
-  legendTitle.textContent = modo === 'grupo'
-    ? 'Grupos (Acuerdo 11 de 2023)' : 'Subgrupos';
-  legendList.classList.toggle('has-filter', filtroActivo);
-  legendList.innerHTML = '';
+  var keys = Object.keys(totalesMap);
 
-  // Botón seleccionar/deseleccionar todos
-  var toggleBtn = document.createElement('button');
-  toggleBtn.className = 'legend-toggle-all';
-  toggleBtn.textContent = filtroActivo ? 'Deseleccionar todos' : 'Seleccionar todos';
-  toggleBtn.addEventListener('click', toggleAllGrupos);
-  legendList.appendChild(toggleBtn);
+  var html = '';
+  for (var j = 0; j < keys.length; j++) {
+    var key       = keys[j];
+    var active    = s.has(key);
+    var color     = colors[key] || '#94a3b8';
 
-  var seen = {}, codigos = Object.keys(materias);
-  for (var i = 0; i < codigos.length; i++) {
-    var m   = materias[codigos[i]];
-    var key = modo === 'grupo' ? m.grupo : m.subgrupo;
-    if (seen[key]) continue;
-    seen[key] = true;
+    var totInfo   = totalesMap[key] || { total: 0, oblig: 0, opt: 0 };
+    var totalCr   = totInfo.total;
+    var obligCr   = totInfo.oblig;
+    var selCr     = selecMap[key] || 0;
+    var reqTarget = obligCr > 0 ? obligCr : totalCr;
 
-    var color    = colors[key] || '#e5e7eb';
-    var selected = crSel[key]    || 0;
-    var total    = totales[key]  || 0;
-    var enFiltro = LeyendaFiltro.isActive(key, modo);
-    var crColor;
-    if (enFiltro && total > 0 && selected >= total) crColor = '#4ade80';
-    else if (enFiltro && selected < total)           crColor = '#f87171';
-    else                                              crColor = 'var(--accent)';
+    // Azul mientras no cumpla meta; Verde cuando se completa la meta
+    var isComplete   = (selCr > 0 && selCr >= reqTarget);
+    var counterColor = isComplete ? '#4ade80' : '#38bdf8';
+    var subText      = '<b style="color:' + counterColor + '">' + selCr + ' / ' + totalCr + ' cr</b>';
 
-    var div = document.createElement('div');
-    div.className = 'legend-item' + (enFiltro ? ' filtered' : '');
-    div.innerHTML =
-      '<span class="legend-dot" style="background:' + color + '"></span>' +
-      '<span class="legend-name">' + key + '</span>' +
-      '<span class="legend-cr" style="color:' + crColor + '">' +
-        selected + '&thinsp;/&thinsp;' + total + '</span>';
+    html += '<div class="legend-item' + (active ? '' : ' dim') + '" data-key="' + key + '">';
+    html += '<span class="legend-dot" style="background:' + color + '"></span>';
+    html += '<div class="legend-text">';
+    html += '  <div class="legend-name" title="' + key + '">' + key + '</div>';
+    html += '  <div class="legend-sub">' + subText + '</div>';
+    html += '</div>';
+    html += '</div>';
+  }
 
-    (function(k) {
-      div.addEventListener('click', function() {
-        LeyendaFiltro.toggle(k, modo);
-        renderLegend();
-        applySelectionVisuals();
-      });
-      div.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        LeyendaFiltro.deselect(k, modo);
-        renderLegend();
-        applySelectionVisuals();
-      });
-    })(key);
+  grid.innerHTML = html;
 
-    legendList.appendChild(div);
+  var items = grid.getElementsByClassName('legend-item');
+  for (var k = 0; k < items.length; k++) {
+    items[k].addEventListener('click', function(e) {
+      var itemKey = this.getAttribute('data-key');
+      if (e.shiftKey) {
+        var set = LeyendaFiltro._set(modo);
+        if (set.size === 1 && set.has(itemKey)) {
+          for (var x = 0; x < keys.length; x++) set.add(keys[x]);
+        } else {
+          set.clear();
+          set.add(itemKey);
+        }
+      } else {
+        LeyendaFiltro.toggle(itemKey, modo);
+      }
+      renderLegend();
+      applySelectionVisuals();
+    });
   }
 }
 
-// ─── Sidebar: árbol booleano de prerrequisitos ───────────────────────────────
 function renderPrereqTree(tree) {
-  if (tree === null || tree === undefined)
+  if (!tree)
     return '<em class="dim">Sin prerrequisitos de cursos.</em>';
   if (typeof tree === 'string') {
     var m = materias[tree];
@@ -952,7 +654,6 @@ function renderPrereqTree(tree) {
   return '';
 }
 
-// ─── Sidebar: ficha de materia ───────────────────────────────────────────────
 function updateInfoPanel(selectedId) {
   var content  = document.getElementById('info-content');
   var selCount = Seleccion.set.size;
@@ -968,18 +669,18 @@ function updateInfoPanel(selectedId) {
   var m = materias[selectedId];
   if (!m) { content.innerHTML = '<span class="dim">No encontrado.</span>'; return; }
 
-  var res        = puedeMatricular(selectedId, Seleccion.set, materias);
-  var sinPrereqs = !m.prerrequisitos && !CREDITOS_REQUERIDOS[selectedId];
+  var res        = puedeMatricular(selectedId, Seleccion.set, materias, COMPONENTE_POR_GRUPO);
+  var reqInfo    = m.creditos_requeridos;
+  var sinPrereqs = !m.prerrequisitos && !reqInfo;
   var estadoHtml = sinPrereqs
     ? '<span style="color:#22c55e;font-weight:700">&#10003; Sin prerrequisitos</span>'
     : res.puede
       ? '<span style="color:#22c55e;font-weight:700">&#10003; Completo</span>'
       : '<span style="color:#ef4444;font-weight:700">&#10007; Incompleto</span>';
 
-  var reqInfo = CREDITOS_REQUERIDOS[selectedId];
   var crHtml  = '';
   if (reqInfo) {
-    var tot = creditosAprobados(Seleccion.set, materias);
+    var tot = creditosAprobados(Seleccion.set, materias, COMPONENTE_POR_GRUPO);
     var cur = tot[reqInfo.componente] || 0;
     var pct = Math.min(100, Math.round(cur / reqInfo.minimo * 100));
     var bc  = cur >= reqInfo.minimo ? '#22c55e' : '#ef4444';
@@ -992,8 +693,10 @@ function updateInfoPanel(selectedId) {
   }
 
   var node = null;
-  for (var i = 0; i < graphData.nodes.length; i++) {
-    if (graphData.nodes[i].id === selectedId) { node = graphData.nodes[i]; break; }
+  if (graphData && graphData.nodes) {
+    for (var i = 0; i < graphData.nodes.length; i++) {
+      if (graphData.nodes[i].id === selectedId) { node = graphData.nodes[i]; break; }
+    }
   }
 
   var html = '<div class="course-name">' + m.nombre + '</div>';
