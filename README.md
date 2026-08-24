@@ -1,70 +1,46 @@
-# 🌌 pensum_dinamico.vibecoding
+# pensum_dinamico.vibecoding
 
-> *"#soy mejor que tu porque creo en la pacha mama"*
+> Este proyecto fue generado mediante IA (vibecoding). No me responsabilizo de lo que haya detrás del telón.
 
-> **Nota**: Este proyecto fue creado a puro **vibecoding**. No me responsabilizo de lo que haya detrás del telón.
-
-Visualizador dinámico, interactivo e inteligente de la Malla Curricular y Grafo DAG de Prerrequisitos de la **Carrera de Ingeniería de Sistemas y Computación (UNAL Bogotá · Acuerdo 11 de 2023)**.
+Visualizador interactivo de la malla curricular y prerrequisitos de la carrera de Ingeniería de Sistemas y Computación (UNAL Bogotá, Acuerdo 11 de 2023).
 
 ---
 
-## 🌟 Características Principales
+## Cómo Funciona y Guía de Uso
 
-### 📐 1. Algoritmo Correlacional Bidireccional de Posicionamiento ($X^*$)
-- **Baricentro Bidireccional 2-Vías**: Posiciona cada materia considerando de forma continua la posición horizontal de sus asignaturas antecedente (padres) y subsecuentes (hijos).
-- **Jerarquía Universal de Conectividad**: Las materias de alta conectividad (*Arquitectura de Software*, *Sistemas de Información Gerencial*, *Sistemas Operativos*, *Trabajo de Grado*) ocupan la columna central del mapa ($X \approx 0$). Las electivas independientes ($D = 0$) se desplazan automáticamente hacia la periferia exterior.
-- **Distribución Equidistante Normalizada (`185px`)**: Garantiza una cuadrícula perfectamente alineada, limpia y 100% libre de superposición de cajas.
-- **Preservación de Altura Canónica ($Y$-Coordinates)**: En cualquier vista de enfoque o selección aislada, cada materia mantiene su nivel canónico del pensum por semestre.
+### 1. Selección y Verificación de Materias
+- **Clic Izquierdo en una caja**: Selecciona o aprueba una asignatura.
+- **Clic Derecho en una caja**: Deselecciona la asignatura.
+- **Validación Automática de Bordes**:
+  - **Borde Verde**: Materia seleccionada que cumple con todos sus prerrequisitos y créditos exigidos.
+  - **Borde Rojo**: Materia seleccionada a la que le faltan prerrequisitos directos o créditos previos exigidos.
+  - **Borde Blanco**: Materia activa en inspección.
 
-### 🎮 2. Interacción y Usabilidad
-- **Selección de Materias (Clic Izquierdo / Clic Derecho)**:
-  - **Clic Izquierdo**: Marca una materia como aprobada/seleccionada. Evalúa de forma instantánea si cumple con sus prerrequisitos directos y con los contadores de créditos exigidos por componente.
-  - **Clic Derecho**: Deselecciona la materia seleccionada.
-- **Detección Automática de Estado Visual (Bordes Limpios)**:
-  - 🟢 **Borde Verde (`#22c55e`)**: Materia seleccionada que cumple con todos sus prerrequisitos y créditos exigidos.
-  - 🔴 **Borde Rojo (`#ef4444`)**: Materia seleccionada a la que le faltan prerrequisitos directos o créditos previos.
-  - ⚪ **Borde Blanco (`#ffffff`)**: Materia activa bajo inspección.
+### 2. Panel Derecho (De Arriba a Abajo)
+1. **Detalle de Materia**: Muestra el nombre, código SIA, créditos, estado de prerrequisitos y créditos acumulados exigidos.
+2. **Buscador de Cursos**: Permite buscar por nombre o código SIA. Al hacer clic en un resultado, se ubica y enfoca la materia en el mapa.
+3. **Materias Seleccionadas**: Lista todas las materias que has seleccionado con su conteo de créditos y botón para quitar de la lista.
+4. **Deseleccionar todo**: Botón para limpiar la selección completa de materias.
+5. **Exportar / Importar .txt**:
+   - **Exportar .txt**: Descarga un archivo de texto con la lista de códigos de materias seleccionadas.
+   - **Importar .txt**: Carga un archivo de texto previamente guardado para restaurar tu selección.
 
-### 🎛️ 3. Modos de Vista y Enfoque Flotante
-- **🔍 Botón Lupa (`btn-float-focus-active`)**: Aísla el árbol local de prerrequisitos antecedente de la materia activa.
-- **🎓 Botón Birrete (`btn-float-focus-selection`)**: Aísla e ilustra exclusivamente las materias seleccionadas en tu tray manteniendo su altura por nivel semestral original.
-- **🎨 Botón Libre Elección Externa**: Permite sumar o restar créditos de asignaturas de libre elección fuera del pensum (+3 créditos con clic izquierdo, -3 créditos con clic derecho).
-- **👁️ Alternar Todos los Grupos**: Botón en la leyenda para activar o desactivar la visibilidad de todos los grupos con 1 solo clic.
+### 3. Botones Flotantes de Vista
+- **Botón Lupa**: Enfoca el árbol de prerrequisitos de la materia activa.
+- **Botón Birrete (Mi Selección)**: Muestra únicamente las materias que tienes seleccionadas en tu lista, conservando su nivel por semestre.
+- **Botón Libre Elección Externa**: Permite agregar o quitar créditos de materias de libre elección cursadas fuera del pensum (Clic izquierdo: +3 créditos, Clic derecho: -3 créditos).
 
-### 📥 4. Importación y Exportación `.txt` (100% Client-Side)
-- **`📤 Exportar .txt`**: Descarga instantánea de un archivo `mi_seleccion_pensum.txt` con la lista de códigos SIA de tus materias elegidas.
-- **`📥 Importar .txt`**: Carga cualquier archivo `.txt` y reconstruye la selección al instante.
-- **100% Estático para GitHub Pages**: Funciona mediante `Blob` y `FileReader` nativos del navegador sin necesidad de servidor ni backend.
-
----
-
-## 🧭 Estructura del Panel Derecho (De Arriba a Abajo)
-
-1. **Detalle de Materia (`#info`)**: Ficha técnica con código SIA, créditos, estado de validación y lista de prerrequisitos.
-2. **Buscador de Cursos (`#search-section`)**: Búsqueda en tiempo real por código SIA o nombre con desplegable de sugerencias y enfoque automático de cámara (*zoom/pan*).
-3. **Materias Seleccionadas (`#selected-tray-section`)**: Bandeja con listado compacto, créditos acumulados y botón de eliminación individual (`✕`).
-4. **🗑️ Deseleccionar todo (`#reset-btn`)**: Limpia la selección completa con 1 solo clic.
-5. **📤 Exportar / 📥 Importar `.txt` (`.panel-export-block`)**: Fondo del panel para guardar y cargar planes de estudio.
+### 4. Barra Lateral Izquierda (Filtros)
+- **Contador de Componentes**: Muestra el avance de créditos en Fundamentación, Disciplinar y Libre Elección.
+- **Filtros por Grupo / Subgrupo**: Permite ocultar o mostrar grupos de materias. Incluye un botón para alternar la visibilidad de todos los grupos.
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## Despliegue en GitHub Pages
 
-- **Core**: HTML5, JavaScript ES6+ Vanilla.
-- **Estilos**: Vanilla CSS3 (Variables HSL, Glassmorphism, Micro-animaciones).
-- **Visualización DAG**: [vis.js Network](https://visjs.org/) (Canvas / SVG Renderer).
-- **Favicon Vectorial**: SVG nativo `icono.svg` + convertidores ico/png.
+Este proyecto es una aplicación web estática que funciona directamente en el navegador sin necesidad de servidor.
 
----
-
-## 🚀 Despliegue en GitHub Pages
-
-Este proyecto es **100% estático** y no requiere compilación ni servidor Node.js.
-
-Para desplegarlo en GitHub Pages:
-```bash
-git add .
-git commit -m "feat: pensum_dinamico.vibecoding"
-git push origin main
-```
-Luego ve a **Settings > Pages** en tu repositorio de GitHub y selecciona la rama `main` como origen de publicación.
+Para publicar en GitHub Pages:
+1. Sube el código al repositorio de GitHub.
+2. Ve a Settings > Pages.
+3. Selecciona la rama main y la carpeta root como origen de publicación.
