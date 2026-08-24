@@ -1,0 +1,1580 @@
+[
+  {
+    "code": "1000004",
+    "nombre_json": "Cálculo Diferencial",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Matemáticas",
+    "subgrupo": "Cálculo Diferencial",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016377",
+    "nombre_json": "Cálculo Diferencial en una Variable",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Matemáticas",
+    "subgrupo": "Cálculo Diferencial",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000005",
+    "nombre_json": "Cálculo Integral",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Matemáticas",
+    "subgrupo": "Cálculo Integral",
+    "prerrequisitos": {
+      "or": [
+        "1000004",
+        "2016377"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015556",
+    "nombre_json": "Cálculo Integral en una Variable",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Matemáticas",
+    "subgrupo": "Cálculo Integral",
+    "prerrequisitos": {
+      "or": [
+        "1000004",
+        "2016377"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000006",
+    "nombre_json": "Cálculo en Varias Variables",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Matemáticas",
+    "subgrupo": "Cálculo en Varias Variables",
+    "prerrequisitos": {
+      "or": [
+        "1000005",
+        "2015556"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015162",
+    "nombre_json": "Cálculo Vectorial",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Matemáticas",
+    "subgrupo": "Cálculo en Varias Variables",
+    "prerrequisitos": {
+      "or": [
+        "1000005",
+        "2015556"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000003",
+    "nombre_json": "Álgebra Lineal",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Matemáticas",
+    "subgrupo": "Álgebra Lineal",
+    "prerrequisitos": {
+      "or": [
+        "1000004",
+        "2016377"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015555",
+    "nombre_json": "Álgebra Lineal Básica",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Matemáticas",
+    "subgrupo": "Álgebra Lineal",
+    "prerrequisitos": {
+      "or": [
+        "1000004",
+        "2016377"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000013",
+    "nombre_json": "Probabilidad y Estadística Fundamental",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Probabilidad y Estadística",
+    "subgrupo": "Probabilidad y Estadística",
+    "prerrequisitos": {
+      "or": [
+        "1000005",
+        "2015556"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2027877",
+    "nombre_json": "Probabilidad Fundamental",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Probabilidad y Estadística",
+    "subgrupo": "Probabilidad y Estadística",
+    "prerrequisitos": {
+      "or": [
+        "1000005",
+        "2015556"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015178",
+    "nombre_json": "Probabilidad",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Probabilidad y Estadística",
+    "subgrupo": "Probabilidad y Estadística",
+    "prerrequisitos": {
+      "or": [
+        "1000005",
+        "2015556"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000019",
+    "nombre_json": "Fundamentos de Mecánica",
+    "creditos_json": 4,
+    "obligatoria": true,
+    "grupo": "Física",
+    "subgrupo": "Física",
+    "prerrequisitos": {
+      "or": [
+        "1000004",
+        "2016377"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000017",
+    "nombre_json": "Fundamentos de Electricidad y Magnetismo",
+    "creditos_json": 4,
+    "obligatoria": true,
+    "grupo": "Física",
+    "subgrupo": "Física",
+    "prerrequisitos": {
+      "and": [
+        "1000019",
+        {
+          "or": [
+            "1000005",
+            "2015556"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025963",
+    "nombre_json": "Matemáticas Discretas I",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Ciencias de la Computación",
+    "subgrupo": "Matemáticas Discretas I",
+    "prerrequisitos": {
+      "or": [
+        "1000003",
+        "2015555"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015168",
+    "nombre_json": "Fundamentos de Matemáticas",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Ciencias de la Computación",
+    "subgrupo": "Matemáticas Discretas I",
+    "prerrequisitos": {
+      "or": [
+        "1000003",
+        "2015555"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025964",
+    "nombre_json": "Matemáticas Discretas II",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Ciencias de la Computación",
+    "subgrupo": "Matemáticas Discretas II",
+    "prerrequisitos": {
+      "or": [
+        "2025963",
+        "2015168"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015181",
+    "nombre_json": "Sistemas Numéricos",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Ciencias de la Computación",
+    "subgrupo": "Matemáticas Discretas II",
+    "prerrequisitos": {
+      "or": [
+        "2025963",
+        "2015168"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015970",
+    "nombre_json": "Métodos Numéricos",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Ciencias de la Computación",
+    "subgrupo": "Métodos Numéricos",
+    "prerrequisitos": {
+      "or": [
+        "1000006",
+        "2015162"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2019072",
+    "nombre_json": "Análisis Numérico I",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Ciencias de la Computación",
+    "subgrupo": "Métodos Numéricos",
+    "prerrequisitos": {
+      "or": [
+        "1000006",
+        "2015162"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015174",
+    "nombre_json": "Introducción a la Teoría de la Computación",
+    "creditos_json": 4,
+    "obligatoria": true,
+    "grupo": "Ciencias de la Computación",
+    "subgrupo": "Ciencias de la Computación",
+    "prerrequisitos": {
+      "or": [
+        "2025963",
+        "2015168"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016696",
+    "nombre_json": "Algoritmos",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Ciencias de la Computación",
+    "subgrupo": "Ciencias de la Computación",
+    "prerrequisitos": {
+      "and": [
+        "2016699",
+        {
+          "or": [
+            "2025964",
+            "2015181"
+          ]
+        },
+        {
+          "or": [
+            "1000013",
+            "2027877",
+            "2015178"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025986",
+    "nombre_json": "Ingeniería Económica y Análisis de Riesgo",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Ciencias Económicas y Administrativas",
+    "subgrupo": "Ingeniería Económica",
+    "prerrequisitos": {
+      "and": [
+        {
+          "or": [
+            "1000005",
+            "2015556"
+          ]
+        },
+        {
+          "or": [
+            "1000013",
+            "2027877",
+            "2015178"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015703",
+    "nombre_json": "Ingeniería Económica",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Ciencias Económicas y Administrativas",
+    "subgrupo": "Ingeniería Económica",
+    "prerrequisitos": {
+      "or": [
+        "1000005",
+        "2015556"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016047",
+    "nombre_json": "Modelos Económicos Computacionales",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Ciencias Económicas y Administrativas",
+    "subgrupo": "Ingeniería Económica",
+    "prerrequisitos": {
+      "or": [
+        "1000005",
+        "2015556"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015702",
+    "nombre_json": "Gerencia y Gestión de Proyectos",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Ciencias Económicas y Administrativas",
+    "subgrupo": "Gerencia y Gestión de Proyectos",
+    "prerrequisitos": {
+      "or": [
+        "2025986",
+        "2015703",
+        "2016047"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016028",
+    "nombre_json": "Diseño, Gestión y Evaluación de Proyectos",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Ciencias Económicas y Administrativas",
+    "subgrupo": "Gerencia y Gestión de Proyectos",
+    "prerrequisitos": {
+      "or": [
+        "2025986",
+        "2015703",
+        "2016047"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015734",
+    "nombre_json": "Programación de Computadores",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Programación de Computadores",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2026573",
+    "nombre_json": "Introducción a las Ciencias de la Computación y a la Programación",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Programación de Computadores",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016375",
+    "nombre_json": "Programación Orientada a Objetos",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Métodos y Tecnologías de Software",
+    "prerrequisitos": {
+      "or": [
+        "2015734",
+        "2026573"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016699",
+    "nombre_json": "Estructuras de Datos",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Métodos y Tecnologías de Software",
+    "prerrequisitos": "2016375",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025966",
+    "nombre_json": "Lenguajes de Programación",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Lenguajes",
+    "prerrequisitos": {
+      "and": [
+        "2016699",
+        "2015174"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2027642",
+    "nombre_json": "Compiladores",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Lenguajes",
+    "prerrequisitos": {
+      "and": [
+        "2016699",
+        "2015174"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2027628",
+    "nombre_json": "Teoría de Lenguajes Formales",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Lenguajes",
+    "prerrequisitos": {
+      "and": [
+        "2016699",
+        "2015174"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016701",
+    "nombre_json": "Ingeniería de Software I",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Métodos y Tecnologías de Software",
+    "prerrequisitos": {
+      "and": [
+        "2016703",
+        "2016699",
+        {
+          "or": [
+            "2016353",
+            "2027641"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016702",
+    "nombre_json": "Ingeniería de Software II",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Métodos y Tecnologías de Software",
+    "prerrequisitos": {
+      "and": [
+        "2016701",
+        "2025967"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016716",
+    "nombre_json": "Arquitectura de Software",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Métodos y Tecnologías de Software",
+    "subgrupo": "Métodos y Tecnologías de Software",
+    "prerrequisitos": "2016702",
+    "creditos_requeridos": {
+      "componente": "disciplinar",
+      "minimo": 20
+    },
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016698",
+    "nombre_json": "Elementos de Computadores",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Elementos de Computadores",
+    "prerrequisitos": "2025975",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016498",
+    "nombre_json": "Electrónica Digital I",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Elementos de Computadores",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016697",
+    "nombre_json": "Arquitectura de Computadores",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "prerrequisitos": {
+      "or": [
+        "2016698",
+        "2016498"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016707",
+    "nombre_json": "Sistemas Operativos",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "prerrequisitos": "2016697",
+    "creditos_requeridos": {
+      "componente": "disciplinar",
+      "minimo": 20
+    },
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025967",
+    "nombre_json": "Redes de Computadores",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "prerrequisitos": {
+      "and": [
+        "1000017",
+        "2016699",
+        "2016697"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016722",
+    "nombre_json": "Computación Paralela y Distribuida",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": {
+      "componente": "disciplinar",
+      "minimo": 20
+    },
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016353",
+    "nombre_json": "Bases de Datos",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Bases de Datos",
+    "prerrequisitos": "2016375",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2027641",
+    "nombre_json": "Análisis de Bases de Datos",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Bases de Datos",
+    "prerrequisitos": "2016375",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025994",
+    "nombre_json": "Teoría de la Información y Sistemas de Comunicaciones",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Información y Comunicaciones",
+    "prerrequisitos": {
+      "and": [
+        "2025967",
+        {
+          "or": [
+            "1000013",
+            "2027877",
+            "2015178"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016492",
+    "nombre_json": "Comunicaciones",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Información y Comunicaciones",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025982",
+    "nombre_json": "Sistemas de Información",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Sistemas de Información",
+    "prerrequisitos": {
+      "and": [
+        "2016703",
+        {
+          "or": [
+            "2016353",
+            "2027641"
+          ]
+        },
+        {
+          "or": [
+            "2015702",
+            "2016028"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016053",
+    "nombre_json": "Sistemas de Información Gerencial",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Sistemas de Información",
+    "prerrequisitos": {
+      "and": [
+        "2016703",
+        {
+          "or": [
+            "2016353",
+            "2027641"
+          ]
+        },
+        {
+          "or": [
+            "2015702",
+            "2016028"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025972",
+    "nombre_json": "Introducción a la Criptografía y a la Seguridad de la Información",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Criptografía y Seguridad de la Información",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2027311",
+    "nombre_json": "Introducción a la Criptografía y a la Teoría de Información",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Criptografía y Seguridad de la Información",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2027313",
+    "nombre_json": "Teoría de la Codificación",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Criptografía y Seguridad de la Información",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 2
+  },
+  {
+    "code": "2027310",
+    "nombre_json": "Criptografía",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Criptografía y Seguridad de la Información",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025983",
+    "nombre_json": "Arquitectura de Infraestructura y Gobierno de TICs",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "subgrupo": "Infraestructura Computacional, de Comunicaciones y de Información",
+    "prerrequisitos": {
+      "and": [
+        "2016702",
+        {
+          "or": [
+            "2025982",
+            "2016053"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016788",
+    "nombre_json": "Tecnología Digital",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": "2016697",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016753",
+    "nombre_json": "Microcontroladores",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": "2016697",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025960",
+    "nombre_json": "Computación Visual",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016080",
+    "nombre_json": "Aplicaciones Gráficas Tridimensionales",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025196",
+    "nombre_json": "Introducción a la Biología Computacional",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2026548",
+    "nombre_json": "Introducción al Análisis Combinatorio",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2028837",
+    "nombre_json": "Matemáticas del Aprendizaje de Máquinas",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 2
+  },
+  {
+    "code": "2027309",
+    "nombre_json": "Análisis Forense Digital",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2029297",
+    "nombre_json": "Introducción a la Computación de Alto Rendimiento",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016770",
+    "nombre_json": "Robótica",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Computación Aplicada",
+    "subgrupo": "Computación Aplicada",
+    "prerrequisitos": {
+      "and": [
+        "1000017",
+        "2016697",
+        "2016696"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025995",
+    "nombre_json": "Introducción a los Sistemas Inteligentes",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Sistemas Inteligentes",
+    "subgrupo": "Sistemas Inteligentes",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016748",
+    "nombre_json": "Inteligencia Artificial",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Sistemas Inteligentes",
+    "subgrupo": "Sistemas Inteligentes",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2023251",
+    "nombre_json": "Inteligencia Artificial y Minirobots",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Sistemas Inteligentes",
+    "subgrupo": "Sistemas Inteligentes",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2027631",
+    "nombre_json": "Introducción a la Inteligencia Artificial",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Sistemas Inteligentes",
+    "subgrupo": "Sistemas Inteligentes",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2017290",
+    "nombre_json": "Técnicas de Inteligencia Artificial",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Sistemas Inteligentes",
+    "subgrupo": "Sistemas Inteligentes",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016703",
+    "nombre_json": "Pensamiento Sistémico",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Modelos, Sistemas, Optimización y Simulación",
+    "subgrupo": "Modelos, Sistemas, Optimización y Simulación",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025970",
+    "nombre_json": "Modelos y Simulación",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Modelos, Sistemas, Optimización y Simulación",
+    "subgrupo": "Modelos y Sistemas",
+    "prerrequisitos": {
+      "and": [
+        "2016375",
+        {
+          "or": [
+            "1000006",
+            "2015162"
+          ]
+        },
+        {
+          "or": [
+            "2025964",
+            "2015181"
+          ]
+        },
+        {
+          "or": [
+            "1000013",
+            "2027877",
+            "2015178"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2019082",
+    "nombre_json": "Modelos Matemáticos I",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Modelos, Sistemas, Optimización y Simulación",
+    "subgrupo": "Modelos y Sistemas",
+    "prerrequisitos": {
+      "and": [
+        "2016375",
+        {
+          "or": [
+            "1000006",
+            "2015162"
+          ]
+        },
+        {
+          "or": [
+            "2025964",
+            "2015181"
+          ]
+        },
+        {
+          "or": [
+            "1000013",
+            "2027877",
+            "2015178"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2017293",
+    "nombre_json": "Modelación Matemática",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Modelos, Sistemas, Optimización y Simulación",
+    "subgrupo": "Modelos y Sistemas",
+    "prerrequisitos": {
+      "and": [
+        "2016375",
+        {
+          "or": [
+            "1000006",
+            "2015162"
+          ]
+        },
+        {
+          "or": [
+            "2025964",
+            "2015181"
+          ]
+        },
+        {
+          "or": [
+            "1000013",
+            "2027877",
+            "2015178"
+          ]
+        }
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025971",
+    "nombre_json": "Optimización",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Modelos, Sistemas, Optimización y Simulación",
+    "subgrupo": "Optimización",
+    "prerrequisitos": {
+      "or": [
+        "2025970",
+        "2019082",
+        "2017293"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015173",
+    "nombre_json": "Introducción a la Optimización",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Modelos, Sistemas, Optimización y Simulación",
+    "subgrupo": "Optimización",
+    "prerrequisitos": {
+      "or": [
+        "2025970",
+        "2019082",
+        "2017293"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025969",
+    "nombre_json": "Modelos Estocásticos y Simulación en Computación y Comunicaciones",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Modelos, Sistemas, Optimización y Simulación",
+    "subgrupo": "Modelos, Sistemas, Optimización y Simulación",
+    "prerrequisitos": {
+      "or": [
+        "2025971",
+        "2015173"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025975",
+    "nombre_json": "Introducción a la Ingeniería de Sistemas y Computación",
+    "creditos_json": 3,
+    "obligatoria": true,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Contexto Profesional e Interdisciplinario",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2024045",
+    "nombre_json": "Taller de Proyectos Interdisciplinarios",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016615",
+    "nombre_json": "Taller de Invención y Creatividad",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2017275",
+    "nombre_json": "Proyecto Aplicado de Ingeniería",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016093",
+    "nombre_json": "Taller de Énfasis en Animación y Narrativas Audiovisuales I",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016091",
+    "nombre_json": "Taller de Énfasis en Multimedia e Imagen Digital I",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2026551",
+    "nombre_json": "Creación y Gestión de Empresas",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016007",
+    "nombre_json": "Fundamentos de Administración",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016600",
+    "nombre_json": "Gestión Tecnológica",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016599",
+    "nombre_json": "Gestión de la Ciencia, la Tecnología y la Innovación",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016741",
+    "nombre_json": "Finanzas",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016037",
+    "nombre_json": "Finanzas Avanzadas",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Contexto Profesional e Interdisciplinario",
+    "subgrupo": "Taller Interdisciplinario de Proyectos de Creación y Gestión",
+    "prerrequisitos": {
+      "or": [
+        "2015702",
+        "2016028"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025974",
+    "nombre_json": "Trabajo de Grado — Trabajo Investigativo",
+    "creditos_json": 6,
+    "obligatoria": false,
+    "grupo": "Trabajo de Grado",
+    "subgrupo": "Trabajo de Grado",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025973",
+    "nombre_json": "Trabajo de Grado — Práctica de Extensión",
+    "creditos_json": 6,
+    "obligatoria": false,
+    "grupo": "Trabajo de Grado",
+    "subgrupo": "Trabajo de Grado",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016843",
+    "nombre_json": "Trabajo de Grado — Asignaturas de Posgrado",
+    "creditos_json": 6,
+    "obligatoria": false,
+    "grupo": "Trabajo de Grado",
+    "subgrupo": "Trabajo de Grado",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016762",
+    "nombre_json": "Práctica Estudiantil I",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016763",
+    "nombre_json": "Práctica Estudiantil II",
+    "creditos_json": 6,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016764",
+    "nombre_json": "Práctica Estudiantil III",
+    "creditos_json": 9,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000070",
+    "nombre_json": "Práctica Colombia I",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000071",
+    "nombre_json": "Práctica Colombia II",
+    "creditos_json": 6,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000072",
+    "nombre_json": "Práctica Colombia III",
+    "creditos_json": 9,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "1000089-B",
+    "nombre_json": "Cátedra Nacional de Inducción y Preparación para la Vida Universitaria",
+    "creditos_json": 2,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2025819",
+    "nombre_json": "Introducción a la Teoría de Conjuntos",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015184",
+    "nombre_json": "Teoría de Grafos",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2019267",
+    "nombre_json": "Teoría de la Recursión",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2027629",
+    "nombre_json": "Lógica Computacional",
+    "creditos_json": 3,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": "2016696",
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016366",
+    "nombre_json": "Estadística Descriptiva y Exploratoria",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": null,
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016379",
+    "nombre_json": "Inferencia Estadística",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": {
+      "or": [
+        "1000013",
+        "2027877",
+        "2015178"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2016360",
+    "nombre_json": "Análisis de Regresión",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": {
+      "or": [
+        "1000013",
+        "2027877",
+        "2015178"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  },
+  {
+    "code": "2015155",
+    "nombre_json": "Introducción al Análisis Real",
+    "creditos_json": 4,
+    "obligatoria": false,
+    "grupo": "Libre Elección — Profundización",
+    "subgrupo": "Libre Elección — Profundización",
+    "prerrequisitos": {
+      "or": [
+        "1000006",
+        "2015162"
+      ]
+    },
+    "creditos_requeridos": null,
+    "pdf_mentions": 1
+  }
+]

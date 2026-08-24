@@ -1,6 +1,6 @@
 'use strict';
 // malla_app.js — orquesta DOM, vis.js y los módulos de lógica.
-// Depende de (orden de carga): pensum_bundle.js → pensum_logic.js → graph_builder.js → subgraph_modal.js
+// Depende de (orden de carga): pensum_bundle.js → pensum_logic.js → graph_builder.js
 
 // ─── Datos y grafo ────────────────────────────────────────────────────────────
 var materias             = {};
@@ -16,6 +16,10 @@ var COMPONENTE_POR_GRUPO = {};
 var COLORES_GRUPO        = {};
 var COLORES_SUBGRUPO     = {};
 var hoveredId            = null;
+
+// ─── Modo de vista (Pensum Universal vs Árbol Local Enfoque) ──────────────────
+var vistaModo       = 'universal'; // 'universal' | 'local'
+var materiaEnfocada = null;
 
 // ─── Paleta gris (sin color — se usa cuando el grupo NO está en el filtro) ──
 var GRIS = {
@@ -129,7 +133,58 @@ function init() {
   renderLegend();
   setupEvents();
   updateCreditCounter();
-  SubgrafoModal.init();
+}
+
+// ─── Cambio de Modo de Vista (Pensum Universal <-> Árbol Local) ───────────────
+function mostrarArbolLocal(codigo) {
+  if (!codigo || !materias[codigo]) return;
+  vistaModo       = 'local';
+  materiaEnfocada = codigo;
+
+  var banner  = document.getElementById('view-mode-banner');
+  var titleEl = document.getElementById('banner-course-title');
+  if (banner) banner.classList.remove('hidden');
+  if (titleEl) titleEl.textContent = materias[codigo].nombre;
+
+  var ancestorNodes = getAncestorNodeIds(codigo, materias);
+  var filteredNodes = graphData.nodes.filter(function(n) { return ancestorNodes.has(n._codigo); });
+  var filteredEdges = graphData.edges.filter(function(e) {
+    return ancestorNodes.has(e.from) && ancestorNodes.has(e.to);
+  });
+
+  allNodes.clear();
+  allNodes.add(filteredNodes);
+
+  allEdges.clear();
+  allEdges.add(filteredEdges);
+
+  applySelectionVisuals();
+  if (network) {
+    network.fit({ animation: false });
+  }
+
+  updateInfoPanel(codigo);
+}
+
+function mostrarPensumUniversal() {
+  vistaModo       = 'universal';
+  materiaEnfocada = null;
+
+  var banner = document.getElementById('view-mode-banner');
+  if (banner) banner.classList.add('hidden');
+
+  allNodes.clear();
+  allNodes.add(graphData.nodes);
+
+  allEdges.clear();
+  allEdges.add(graphData.edges);
+
+  applySelectionVisuals();
+  if (network) {
+    network.fit({ animation: false });
+  }
+
+  updateInfoPanel(Seleccion.activo);
 }
 
 // ─── Grafo ────────────────────────────────────────────────────────────────────
@@ -142,9 +197,14 @@ function rebuildGraph() {
   var options = {
     layout: {
       hierarchical: {
-        direction: 'DU', sortMethod: 'directed',
-        levelSeparation: 130, nodeSpacing: 190, treeSpacing: 80,
-        blockShifting: false, edgeMinimization: false, parentCentralization: true,
+        direction:            'DU',
+        sortMethod:           'directed',
+        levelSeparation:      130,
+        nodeSpacing:          190,
+        treeSpacing:          80,
+        blockShifting:        false,
+        edgeMinimization:     false,
+        parentCentralization: false,
       }
     },
     physics: false,
@@ -153,10 +213,16 @@ function rebuildGraph() {
       hoverConnectedEdges:  false,
       selectConnectedEdges: false,
       tooltipDelay:         200,
-      dragNodes:            true,
+      dragNodes:            false,
+      dragView:             true,
+      zoomView:             true,
       multiselect:          false,
     },
-    nodes: { shadow: false },
+    nodes: {
+      shadow: false,
+      chosen: false,
+      fixed:  true,
+    },
     edges: {
       shadow:         false,
       hoverWidth:     0,
@@ -213,6 +279,7 @@ function drawComponentDots(ctx) {
 
 // Recoloración liviana cuando cambia el modo grupo / subgrupo
 function recolorNodes() {
+  if (vistaModo === 'local') return;
   var updates = [];
   for (var i = 0; i < graphData.nodes.length; i++) {
     var n   = graphData.nodes[i];
@@ -350,10 +417,11 @@ function applySelectionVisuals() {
   allEdges.update(edgeUpdates);
 
   // Visuales de nodos
+  var currentNodes = allNodes.get();
   var updates = [];
 
-  for (var i = 0; i < graphData.nodes.length; i++) {
-    var n          = graphData.nodes[i];
+  for (var i = 0; i < currentNodes.length; i++) {
+    var n          = currentNodes[i];
     var estado     = getEstado(n.id);
     var ev         = ESTADO_VISUAL[estado];
     var isHover    = (n.id === hoveredId);
@@ -424,32 +492,26 @@ function updateCreditCounter() {
     ? PENSUM_DATA.programa.creditos_totales
     : 165;
 
-  function fila(chkId, valId, cur, min) {
+  function fila(chkId, valId, cur, min, typeClass) {
     var chk = document.getElementById(chkId);
     var val = document.getElementById(valId);
     if (!chk || !val) return;
 
     var done = cur >= min;
-
-    chk.textContent = done ? '✓' : '□';
     val.textContent = cur + ' / ' + min + ' cr';
 
+    chk.className = 'comp-dot ' + typeClass + (done ? ' done' : '');
+
     if (done) {
-      // Requerimiento alcanzado -> VERDE
-      chk.className   = 'cr-check done';
-      chk.style.color = '#4ade80';
       val.style.color = '#4ade80';
     } else {
-      // Mientras no alcance el requerimiento -> AZUL
-      chk.className   = 'cr-check neutral';
-      chk.style.color = '#38bdf8';
       val.style.color = '#38bdf8';
     }
   }
 
-  fila('chk-fund',  'cr-fund',  totales.fundamentacion,  MINS_PROGRAMA.fundamentacion);
-  fila('chk-disc',  'cr-disc',  totales.disciplinar,      MINS_PROGRAMA.disciplinar);
-  fila('chk-libre', 'cr-libre', totales.libre_eleccion,   MINS_PROGRAMA.libre_eleccion);
+  fila('chk-fund',  'cr-fund',  totales.fundamentacion,  MINS_PROGRAMA.fundamentacion, 'fund');
+  fila('chk-disc',  'cr-disc',  totales.disciplinar,      MINS_PROGRAMA.disciplinar,     'disc');
+  fila('chk-libre', 'cr-libre', totales.libre_eleccion,   MINS_PROGRAMA.libre_eleccion,  'libre');
 
   var total   = totales.fundamentacion + totales.disciplinar + totales.libre_eleccion;
   var totalEl = document.getElementById('cr-total');
@@ -500,19 +562,26 @@ function setupEvents() {
       updateInfoPanel(null);
     });
 
-  // Atajos de teclado: F (Abrir/Cerrar Árbol Modal) y Escape (Cerrar Modal)
+  var returnBtn = document.getElementById('btn-return-universal');
+  if (returnBtn) {
+    returnBtn.addEventListener('click', function() {
+      mostrarPensumUniversal();
+    });
+  }
+
+  // Atajos de teclado: F (Alternar Árbol Local / Universal) y Escape (Salir del Árbol Local)
   window.addEventListener('keydown', function(e) {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
     if (e.key === 'Escape' || e.key === 'Esc') {
-      if (SubgrafoModal.active) {
-        SubgrafoModal.cerrar();
+      if (vistaModo === 'local') {
+        mostrarPensumUniversal();
       }
     } else if (e.key === 'f' || e.key === 'F') {
-      if (SubgrafoModal.active) {
-        SubgrafoModal.cerrar();
+      if (vistaModo === 'local') {
+        mostrarPensumUniversal();
       } else if (Seleccion.activo) {
-        SubgrafoModal.abrir(Seleccion.activo);
+        mostrarArbolLocal(Seleccion.activo);
       }
     }
   });
@@ -593,16 +662,15 @@ function renderLegend() {
     var active    = s.has(key);
     var color     = colors[key] || '#94a3b8';
 
-    var totInfo   = totalesMap[key] || { total: 0, oblig: 0, opt: 0 };
+    var totInfo   = totalesMap[key] || { total: 0, oblig: 0, opt: 0, minimos: 0 };
     var totalCr   = totInfo.total;
     var obligCr   = totInfo.oblig;
     var selCr     = selecMap[key] || 0;
-    var reqTarget = obligCr > 0 ? obligCr : totalCr;
+    var reqTarget = totInfo.minimos || (obligCr > 0 ? obligCr : totalCr);
 
-    // Azul mientras no cumpla meta; Verde cuando se completa la meta
     var isComplete   = (selCr > 0 && selCr >= reqTarget);
     var counterColor = isComplete ? '#4ade80' : '#38bdf8';
-    var subText      = '<b style="color:' + counterColor + '">' + selCr + ' / ' + totalCr + ' cr</b>';
+    var subText      = '<b style="color:' + counterColor + '">' + selCr + ' / ' + reqTarget + ' cr</b>';
 
     html += '<div class="legend-item' + (active ? '' : ' dim') + '" data-key="' + key + '">';
     html += '<span class="legend-dot" style="background:' + color + '"></span>';
@@ -641,7 +709,7 @@ function renderPrereqTree(tree) {
     return '<em class="dim">Sin prerrequisitos de cursos.</em>';
   if (typeof tree === 'string') {
     var m = materias[tree];
-    return '<span class="prereq-course">' + (m ? m.nombre : tree) + '</span>';
+    return '<div class="prereq-item"><span class="prereq-bullet">•</span><span class="prereq-course">' + (m ? m.nombre : tree) + '</span></div>';
   }
   if (tree.and)
     return '<div class="bool-block bool-and"><span class="bool-op and-op">Y — todos</span><ul>' +
@@ -699,6 +767,9 @@ function updateInfoPanel(selectedId) {
     }
   }
 
+  var isCurrentLocal = (vistaModo === 'local' && materiaEnfocada === selectedId);
+  var btnText = isCurrentLocal ? '⬅ Volver al Pensum Universal' : '🔍 Enfocar árbol local';
+
   var html = '<div class="course-name">' + m.nombre + '</div>';
   html += '<div class="course-meta">';
   html += '<span class="badge ' + (m.obligatoria ? 'badge-oblig' : 'badge-opt') + '">';
@@ -713,7 +784,7 @@ function updateInfoPanel(selectedId) {
   if (node) html += '<div class="info-row"><b>Nivel:</b> ' + node.level + '</div>';
   html += '<div class="info-section">Prerrequisitos inmediatos</div>';
   html += renderPrereqTree(m.prerrequisitos);
-  html += '<button class="focus-mode-btn" id="btn-focus-toggle">🔍 Abrir árbol en vista compacta</button>';
+  html += '<button class="focus-mode-btn" id="btn-focus-toggle">' + btnText + '</button>';
 
   if (m.notas) html += '<div class="info-note">' + m.notas + '</div>';
   if (selCount > 1)
@@ -724,8 +795,12 @@ function updateInfoPanel(selectedId) {
 
   var focusBtn = document.getElementById('btn-focus-toggle');
   if (focusBtn) {
-    focusBtn.addEventListener('click', function() {
-      SubgrafoModal.abrir(selectedId);
-    });
+    focusBtn.onclick = function() {
+      if (isCurrentLocal) {
+        mostrarPensumUniversal();
+      } else {
+        mostrarArbolLocal(selectedId);
+      }
+    };
   }
 }

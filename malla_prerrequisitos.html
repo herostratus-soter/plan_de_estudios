@@ -46,9 +46,9 @@
 
   <section id="contador">
     <h2>Componentes</h2>
-    <div class="cr-row"><span class="cr-check" id="chk-fund">□</span><span>Fundamentación</span><b id="cr-fund">0 / 51 cr</b></div>
-    <div class="cr-row"><span class="cr-check" id="chk-disc">□</span><span>Disciplinar</span><b id="cr-disc">0 / 81 cr</b></div>
-    <div class="cr-row"><span class="cr-check" id="chk-libre">□</span><span>Libre Elección</span><b id="cr-libre">0 / 33 cr</b></div>
+    <div class="cr-row"><span class="comp-dot fund" id="chk-fund"></span><span>Fundamentación</span><b id="cr-fund">0 / 51 cr</b></div>
+    <div class="cr-row"><span class="comp-dot disc" id="chk-disc"></span><span>Disciplinar</span><b id="cr-disc">0 / 81 cr</b></div>
+    <div class="cr-row"><span class="comp-dot libre" id="chk-libre"></span><span>Libre Elección</span><b id="cr-libre">0 / 33 cr</b></div>
     <div class="cr-row cr-total"><span></span><span>Total</span><b id="cr-total">0 / 165 cr</b></div>
   </section>
 
@@ -64,8 +64,19 @@
 
 </aside>
 
-<!-- Lienzo Central de la Red -->
-<main id="network"></main>
+<!-- Lienzo Central de la Red y Banner de Navegación de Vista -->
+<div id="network-wrapper">
+  <div id="view-mode-banner" class="view-mode-banner hidden">
+    <div class="banner-info">
+      <span class="banner-badge">🔍 Vista Enfoque — Árbol Local</span>
+      <span id="banner-course-title" class="banner-title">Materia</span>
+    </div>
+    <button id="btn-return-universal" class="banner-return-btn">
+      ⬅ Volver al Pensum Universal
+    </button>
+  </div>
+  <main id="network"></main>
+</div>
 
 <!-- Panel Derecho: Detalle de la Materia -->
 <aside id="right-panel">
@@ -78,29 +89,11 @@
   </section>
 </aside>
 
-<!-- Modal Subgrafo Compacto (Modo Enfoque Aislado) -->
-<div id="subgraph-modal" class="modal-overlay hidden">
-  <div class="modal-container">
-    <div class="modal-header">
-      <div class="modal-title">
-        <span class="modal-badge">Árbol de Prerrequisitos (Vista Compacta)</span>
-        <h2 id="modal-course-title">Materia</h2>
-      </div>
-      <button id="modal-close-btn" title="Cerrar (Esc)">✕ Salir al Pensum General</button>
-    </div>
-    <div id="subgraph-network" class="modal-canvas"></div>
-    <div class="modal-footer">
-      💡 Haz clic en cualquier materia para marcarla/desmarcarla. Las selecciones se conservan automáticamente en tu plan general.
-    </div>
-  </div>
-</div>
-
 <!-- Dependencias: orden importa -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.js"></script>
 <script src="js/pensum_bundle.js"></script>  <!-- datos del JSON canónico -->
 <script src="js/pensum_logic.js"></script>   <!-- lógica pura + colores + contadores -->
 <script src="js/graph_builder.js"></script>  <!-- buildGraph, computarNiveles -->
-<script src="js/subgraph_modal.js"></script> <!-- vista modal del sub-árbol aislado -->
 <script src="js/malla_app.js"></script>      <!-- orquesta todo -->
 
 </body>

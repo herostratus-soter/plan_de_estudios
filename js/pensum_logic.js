@@ -73,6 +73,24 @@ function flatPrereqs(tree) {
 }
 
 /**
+ * Retorna el conjunto de códigos SIA de todas las asignaturas ancestros (prerrequisitos directos e indirectos).
+ */
+function getAncestorNodeIds(targetId, materias) {
+  var nodes = new Set();
+  function collect(code) {
+    if (!code || !materias[code] || nodes.has(code)) return;
+    nodes.add(code);
+    var m = materias[code];
+    if (m && m.prerrequisitos) {
+      var prereqs = flatPrereqs(m.prerrequisitos);
+      for (var i = 0; i < prereqs.length; i++) collect(prereqs[i]);
+    }
+  }
+  collect(targetId);
+  return nodes;
+}
+
+/**
  * Evalúa recursivamente si un árbol de prerrequisitos booleanos se satisface con un conjunto de aprobadas.
  */
 function evaluarArbolPrereqs(tree, aprobadas) {
@@ -159,31 +177,95 @@ function puedeMatricular(codigo, aprobadas, materias, compMap) {
 }
 
 /**
- * Calcula total de créditos obligatorios/optativos por grupo
+ * Mapa oficial de créditos mínimos exigidos por Agrupación según Acuerdo 11 de 2023.
+ */
+var MINIMOS_GRUPO_ACUERDO11 = {
+  "Matemáticas": 16,
+  "Probabilidad y Estadística": 3,
+  "Física": 8,
+  "Ciencias de la Computación": 18,
+  "Ciencias Económicas y Administrativas": 6,
+  "Métodos y Tecnologías de Software": 21,
+  "Infraestructura Computacional, de Comunicaciones y de Información": 30,
+  "Computación Aplicada": 3,
+  "Sistemas Inteligentes": 3,
+  "Modelos, Sistemas, Optimización y Simulación": 12,
+  "Contexto Profesional e Interdisciplinario": 6,
+  "Trabajo de Grado": 6,
+  "Libre Elección": 33,
+  "Libre Elección — Profundización": 33
+};
+
+/**
+ * Mapa oficial de créditos mínimos exigidos por Subagrupación según Acuerdo 11 de 2023.
+ */
+var MINIMOS_SUBGRUPO_ACUERDO11 = {
+  "Cálculo Diferencial": 4,
+  "Cálculo Integral": 4,
+  "Cálculo en Varias Variables": 4,
+  "Álgebra Lineal": 4,
+  "Probabilidad y Estadística": 3,
+  "Física": 8,
+  "Matemáticas Discretas I": 4,
+  "Matemáticas Discretas II": 4,
+  "Métodos Numéricos": 3,
+  "Ciencias de la Computación": 7,
+  "Ingeniería Económica": 3,
+  "Gerencia y Gestión de Proyectos": 3,
+  "Programación de Computadores": 3,
+  "Lenguajes": 3,
+  "Métodos y Tecnologías de Software": 15,
+  "Elementos de Computadores": 3,
+  "Bases de Datos": 3,
+  "Información y Comunicaciones": 3,
+  "Sistemas de Información": 3,
+  "Criptografía y Seguridad de la Información": 3,
+  "Infraestructura Computacional, de Comunicaciones y de Información": 15,
+  "Computación Aplicada": 3,
+  "Sistemas Inteligentes": 3,
+  "Modelos y Sistemas": 3,
+  "Optimización": 3,
+  "Modelos, Sistemas, Optimización y Simulación": 6,
+  "Taller Interdisciplinario de Proyectos de Creación y Gestión": 3,
+  "Contexto Profesional e Interdisciplinario": 3,
+  "Trabajo de Grado": 6,
+  "Libre Elección — Profundización": 33
+};
+
+/**
+ * Calcula total de créditos obligatorios/optativos y exigencia mínima por grupo
  */
 function computarTotalesGrupo(materias) {
   var r = {};
   for (var c in materias) {
     var m = materias[c];
-    if (!r[m.grupo]) r[m.grupo] = { oblig: 0, opt: 0, total: 0 };
+    if (!r[m.grupo]) r[m.grupo] = { oblig: 0, opt: 0, total: 0, minimos: 0 };
     if (m.obligatoria) r[m.grupo].oblig += m.creditos;
     else               r[m.grupo].opt   += m.creditos;
     r[m.grupo].total += m.creditos;
+  }
+
+  for (var g in r) {
+    r[g].minimos = MINIMOS_GRUPO_ACUERDO11[g] || (r[g].oblig > 0 ? r[g].oblig : r[g].total);
   }
   return r;
 }
 
 /**
- * Calcula total de créditos obligatorios/optativos por subgrupo
+ * Calcula total de créditos obligatorios/optativos y exigencia mínima por subgrupo
  */
 function computarTotalesSubgrupo(materias) {
   var r = {};
   for (var c in materias) {
     var m = materias[c];
-    if (!r[m.subgrupo]) r[m.subgrupo] = { oblig: 0, opt: 0, total: 0 };
+    if (!r[m.subgrupo]) r[m.subgrupo] = { oblig: 0, opt: 0, total: 0, minimos: 0 };
     if (m.obligatoria) r[m.subgrupo].oblig += m.creditos;
     else               r[m.subgrupo].opt   += m.creditos;
     r[m.subgrupo].total += m.creditos;
+  }
+
+  for (var sg in r) {
+    r[sg].minimos = MINIMOS_SUBGRUPO_ACUERDO11[sg] || (r[sg].oblig > 0 ? r[sg].oblig : r[sg].total);
   }
   return r;
 }

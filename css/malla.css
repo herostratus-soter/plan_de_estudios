@@ -265,18 +265,26 @@ body {
   flex: 1;
 }
 
-.cr-check {
-  width: 16px;
+.comp-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
   flex-shrink: 0;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1;
-  transition: color 0.15s;
+  display: inline-block;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.cr-check.neutral { color: #38bdf8; }
-.cr-check.done    { color: #4ade80; }
+.comp-dot.fund  { background: #3b82f6; box-shadow: 0 0 6px rgba(59, 130, 246, 0.5); }
+.comp-dot.disc  { background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, 0.5); }
+.comp-dot.libre { background: #f472b6; box-shadow: 0 0 6px rgba(244, 114, 182, 0.5); }
+
+.comp-dot.done {
+  transform: scale(1.25);
+}
+
+.comp-dot.fund.done  { box-shadow: 0 0 10px #3b82f6; }
+.comp-dot.disc.done  { box-shadow: 0 0 10px #22c55e; }
+.comp-dot.libre.done { box-shadow: 0 0 10px #f472b6; }
 
 .cr-row b {
   font-size: 12.5px;
@@ -455,69 +463,51 @@ body {
   background: rgba(59, 130, 246, 0.1);
 }
 
-#network {
+/* ─── Lienzo y Contenedor Principal ─────────────────────────────────────── */
+#network-wrapper {
   flex: 1;
+  position: relative;
   height: 100vh;
-  background: #0d1117;
-}
-
-/* ─── Modal Subgrafo Compacto (Modo Enfoque Aislado) ─────────────────────── */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  background: rgba(10, 14, 23, 0.88);
-  backdrop-filter: blur(12px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.modal-overlay.hidden {
-  display: none !important;
-}
-
-@keyframes modalFadeIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-.modal-container {
-  width: 92vw;
-  height: 90vh;
-  background: #0d1117;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 12px;
-  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.7);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-.modal-header {
+#network {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  background: #0d1117;
+}
+
+/* ─── Banner de Navegación de Vista (Pensum Universal vs Árbol Local) ───── */
+.view-mode-banner {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  z-index: 500;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 20px;
-  background: #161b22;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  gap: 16px;
+  padding: 8px 16px;
+  background: rgba(22, 27, 34, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-.modal-title {
+.view-mode-banner.hidden {
+  display: none !important;
+}
+
+.banner-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 
-.modal-title h2 {
-  font-size: 15px;
-  font-weight: 700;
-  color: #f8fafc;
-}
-
-.modal-badge {
+.banner-badge {
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -525,37 +515,30 @@ body {
   color: #38bdf8;
 }
 
-#modal-close-btn {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #cbd5e1;
+.banner-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.banner-return-btn {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
   padding: 6px 12px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 600;
+  font-family: var(--font);
   cursor: pointer;
   transition: all 0.15s;
+  white-space: nowrap;
 }
 
-#modal-close-btn:hover {
-  background: rgba(239, 68, 68, 0.2);
-  border-color: #ef4444;
+.banner-return-btn:hover {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
   color: #ffffff;
-}
-
-.modal-canvas {
-  flex: 1;
-  width: 100%;
-  background: #090d16;
-}
-
-.modal-footer {
-  padding: 8px 16px;
-  background: rgba(15, 23, 42, 0.9);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  text-align: center;
-  font-size: 11.5px;
-  color: #94a3b8;
 }
 
 .focus-mode-btn {
