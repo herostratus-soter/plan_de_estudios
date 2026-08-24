@@ -74,15 +74,15 @@ var LeyendaFiltro = {
 
 // ─── Selección de materias ────────────────────────────────────────────────────
 var Seleccion = {
-  set: new Set(), activo: null,
+  set: new Set(), activo: null, extCredits: 0,
 
   agregar:       function(c) { this.set.add(c); this.activo = c; },
   quitar:        function(c) { this.set.delete(c); if (this.activo===c) this.activo=null; },
   limpiarActivo: function()  { this.activo = null; },
-  reiniciar:     function()  { this.set.clear(); this.activo = null; },
+  reiniciar:     function()  { this.set.clear(); this.activo = null; this.extCredits = 0; updateLEExternaLabel(); },
   esCompleto:    function(c) { return puedeMatricular(c, this.set, materias, COMPONENTE_POR_GRUPO).puede; },
-  exportar:      function()  { return { seleccionados: Array.from(this.set), activo: this.activo }; },
-  importar:      function(d) { this.set = new Set(d.seleccionados||[]); this.activo = d.activo||null; },
+  exportar:      function()  { return { seleccionados: Array.from(this.set), activo: this.activo, extCredits: this.extCredits }; },
+  importar:      function(d) { this.set = new Set(d.seleccionados||[]); this.activo = d.activo||null; this.extCredits = d.extCredits||0; updateLEExternaLabel(); },
 };
 
 // Estado de selección: solo determina «nivel de brillo» y «tipo de borde»
@@ -147,20 +147,22 @@ function mostrarArbolLocal(codigo) {
   if (titleEl) titleEl.textContent = materias[codigo].nombre;
 
   var ancestorNodes = getAncestorNodeIds(codigo, materias);
-  var filteredNodes = graphData.nodes.filter(function(n) { return ancestorNodes.has(n._codigo); });
-  var filteredEdges = graphData.edges.filter(function(e) {
-    return ancestorNodes.has(e.from) && ancestorNodes.has(e.to);
+  var subMaterias   = {};
+  ancestorNodes.forEach(function(code) {
+    if (materias[code]) subMaterias[code] = materias[code];
   });
 
+  var localGraph = buildGraph(subMaterias, modo);
+
   allNodes.clear();
-  allNodes.add(filteredNodes);
+  allNodes.add(localGraph.nodes);
 
   allEdges.clear();
-  allEdges.add(filteredEdges);
+  allEdges.add(localGraph.edges);
 
   applySelectionVisuals();
   if (network) {
-    network.fit({ animation: false });
+    network.fit({ animation: true });
   }
 
   updateInfoPanel(codigo);
@@ -173,17 +175,18 @@ function mostrarPensumUniversal() {
   var banner = document.getElementById('view-mode-banner');
   if (banner) banner.classList.add('hidden');
 
+  var universalGraph = buildGraph(materias, modo);
+
   allNodes.clear();
-  allNodes.add(graphData.nodes);
+  allNodes.add(universalGraph.nodes);
 
   allEdges.clear();
-  allEdges.add(graphData.edges);
+  allEdges.add(universalGraph.edges);
 
   applySelectionVisuals();
   if (network) {
-    network.fit({ animation: false });
+    network.fit({ animation: true });
   }
-
   updateInfoPanel(Seleccion.activo);
 }
 
@@ -197,14 +200,7 @@ function rebuildGraph() {
   var options = {
     layout: {
       hierarchical: {
-        direction:            'DU',
-        sortMethod:           'directed',
-        levelSeparation:      130,
-        nodeSpacing:          190,
-        treeSpacing:          80,
-        blockShifting:        false,
-        edgeMinimization:     false,
-        parentCentralization: false,
+        enabled: false
       }
     },
     physics: false,
@@ -525,6 +521,16 @@ function updateCreditCounter() {
   }
 }
 
+function updateLEExternaLabel() {
+  if (!allNodes) return;
+  var cr = Seleccion.extCredits || 0;
+  var labelText = 'Libre Elección\n(Asignatura Externa)';
+  if (cr > 0) labelText += '\n[' + cr + ' cr]';
+  try {
+    allNodes.update({ id: 'LE-EXTERNA', label: labelText });
+  } catch(e) {}
+}
+
 // ─── Eventos de click en el grafo ────────────────────────────────────────────
 function onLeftClick(params) {
   network.setSelection({ nodes: [], edges: [] });
@@ -535,6 +541,21 @@ function onLeftClick(params) {
     return;
   }
   var clicked = params.nodes[0];
+
+  if (clicked === 'LE-EXTERNA') {
+    if (!Seleccion.set.has('LE-EXTERNA')) {
+      Seleccion.extCredits = 3;
+      Seleccion.agregar('LE-EXTERNA');
+    } else {
+      Seleccion.extCredits = Math.min(33, (Seleccion.extCredits || 3) + 3);
+      Seleccion.activo = 'LE-EXTERNA';
+    }
+    updateLEExternaLabel();
+    applySelectionVisuals();
+    updateInfoPanel('LE-EXTERNA');
+    return;
+  }
+
   Seleccion.agregar(clicked);
   applySelectionVisuals();
   updateInfoPanel(clicked);
@@ -544,6 +565,20 @@ function onRightClick(params) {
   params.event.preventDefault();
   var nodeId = network.getNodeAt(params.pointer.DOM);
   if (nodeId === undefined) return;
+
+  if (nodeId === 'LE-EXTERNA') {
+    if (Seleccion.extCredits > 3) {
+      Seleccion.extCredits -= 3;
+    } else {
+      Seleccion.extCredits = 0;
+      Seleccion.quitar('LE-EXTERNA');
+    }
+    updateLEExternaLabel();
+    applySelectionVisuals();
+    updateInfoPanel(Seleccion.activo);
+    return;
+  }
+
   Seleccion.quitar(nodeId);
   applySelectionVisuals();
   updateInfoPanel(Seleccion.activo);
@@ -731,6 +766,24 @@ function updateInfoPanel(selectedId) {
       ? '<span class="dim">' + selCount + ' materia' + (selCount>1?'s':'') +
         ' seleccionada' + (selCount>1?'s':'') + '.<br>Haz clic en una para ver su ficha.</span>'
       : '<span class="dim">Click izquierdo para seleccionar.<br>Click derecho para deseleccionar.</span>';
+    return;
+  }
+
+  if (selectedId === 'LE-EXTERNA') {
+    var crEx = Seleccion.extCredits || 3;
+    var htmlEx = '<div class="course-name">Libre Elección (Asignatura Externa)</div>';
+    htmlEx += '<div class="course-meta"><span class="badge badge-opt">Optativa</span>';
+    htmlEx += '<span class="badge badge-cr">' + crEx + ' cr</span></div>';
+    htmlEx += '<div class="info-row"><b>Grupo:</b> Libre Elección</div>';
+    htmlEx += '<div class="info-row"><b>Subgrupo:</b> Libre Elección — Profundización</div>';
+    htmlEx += '<div class="info-row"><b>Créditos acumulados:</b> <b style="color:#38bdf8">' + crEx + ' cr</b></div>';
+    htmlEx += '<div class="info-note" style="margin-top:12px;background:rgba(59,130,246,0.1);border-left-color:#38bdf8;color:#e2e8f0;">';
+    htmlEx += '💡 <b>Contador de Asignaturas de Libre Elección</b><br>';
+    htmlEx += '• Clic izquierdo: <b>Suma +3 créditos</b><br>';
+    htmlEx += '• Clic derecho: <b>Resta -3 créditos</b>';
+    htmlEx += '</div>';
+
+    content.innerHTML = htmlEx;
     return;
   }
 

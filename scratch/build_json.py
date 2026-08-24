@@ -163,17 +163,32 @@ data["programa"] = {
             "color_indicador": "#f472b6",
             "agrupaciones": [
                 {
-                    "id": "libre_eleccion_profundizacion",
-                    "nombre": "Libre Elección — Profundización",
+                    "id": "libre_eleccion",
+                    "nombre": "Libre Elección",
                     "creditos_minimos": 33,
-                    "color": "#a3e635",
+                    "color": "#f472b6",
                     "subagrupaciones": [
-                        { "nombre": "Libre Elección — Profundización", "creditos_minimos": 33, "color": "#a3e635" }
+                        { "nombre": "Libre Elección", "creditos_minimos": 33, "color": "#f472b6" }
                     ]
                 }
             ]
         }
     }
+}
+
+# Normalizar todas las materias de Libre Elección al grupo y subgrupo "Libre Elección"
+for code, m in data["materias"].items():
+    if "Libre Elección" in m.get("grupo", "") or "Profundización" in m.get("grupo", ""):
+        m["grupo"] = "Libre Elección"
+        m["subgrupo"] = "Libre Elección"
+
+data["materias"]["LE-EXTERNA"] = {
+    "nombre": "Libre Elección (Asignatura Externa)",
+    "creditos": 3,
+    "obligatoria": False,
+    "grupo": "Libre Elección",
+    "subgrupo": "Libre Elección",
+    "prerrequisitos": None
 }
 
 # Guardar pensum_data.json

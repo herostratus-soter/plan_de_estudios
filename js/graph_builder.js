@@ -105,15 +105,27 @@ function computarNiveles(materias) {
 
   function getLevel(codigo) {
     if (levels[codigo] !== undefined) return levels[codigo];
-    if (visiting[codigo]) return 0; // guard ante ciclos (no debería haber en un DAG)
+    if (visiting[codigo]) return 0;
 
     visiting[codigo] = true;
     var m = materias[codigo];
-    var prereqs = flatPrereqs(m ? m.prerrequisitos : null)
-      .filter(function(p) { return !!materias[p]; }); // solo internos al catálogo
+    if (!m) { delete visiting[codigo]; return 0; }
+
+    if (m.grupo === 'Trabajo de Grado' || (m.nombre && m.nombre.indexOf('Trabajo de Grado') !== -1)) {
+      levels[codigo] = 7;
+      delete visiting[codigo];
+      return 7;
+    }
+
+    var prereqs = flatPrereqs(m.prerrequisitos).filter(function(p) { return !!materias[p]; });
 
     if (prereqs.length === 0) {
-      levels[codigo] = 0;
+      var req = m.creditos_requeridos;
+      if (req && req.minimo >= 40) {
+        levels[codigo] = 5;
+      } else {
+        levels[codigo] = 0;
+      }
     } else {
       var max = 0;
       for (var i = 0; i < prereqs.length; i++) {
@@ -144,6 +156,97 @@ function buildGraph(materias, modo) {
   var edges   = [];
   var edgeSet = {};
 
+  var childrenMap = {};
+  for (var cKey in materias) childrenMap[cKey] = [];
+  for (var cKey in materias) {
+    var pList = flatPrereqs(materias[cKey].prerrequisitos);
+    for (var p = 0; p < pList.length; p++) {
+      if (childrenMap[pList[p]]) childrenMap[pList[p]].push(cKey);
+    }
+  }
+
+  var getDescendantsCount = function(code) {
+    var desc = {};
+    var count = 0;
+    var traverse = function(c) {
+      var chList = childrenMap[c] || [];
+      for (var k = 0; k < chList.length; k++) {
+        var ch = chList[k];
+        if (!desc[ch]) {
+          desc[ch] = true;
+          count++;
+          traverse(ch);
+        }
+      }
+    };
+    traverse(code);
+    return count;
+  };
+
+  var byLevel = {};
+  var maxLevel = 0;
+  for (var code in levels) {
+    var lvl = levels[code];
+    if (!byLevel[lvl]) byLevel[lvl] = [];
+    byLevel[lvl].push(code);
+    if (lvl > maxLevel) maxLevel = lvl;
+  }
+
+  if (byLevel[0] && byLevel[0].length > 0) {
+    var nodesL0 = byLevel[0].slice();
+    nodesL0.sort(function(a, b) {
+      return getDescendantsCount(a) - getDescendantsCount(b);
+    });
+
+    var centeredL0 = new Array(nodesL0.length);
+    var mid = Math.floor(nodesL0.length / 2);
+    var lPtr = mid - 1, rPtr = mid;
+
+    for (var idx = nodesL0.length - 1; idx >= 0; idx--) {
+      var itemCode = nodesL0[idx];
+      if ((nodesL0.length - 1 - idx) % 2 === 0) {
+        centeredL0[rPtr++] = itemCode;
+      } else {
+        centeredL0[lPtr--] = itemCode;
+      }
+    }
+    byLevel[0] = centeredL0.filter(function(x) { return !!x; });
+  }
+
+  var positions = {};
+  var nodeSpacingX = 180;
+  var levelSpacingY = 150;
+
+  for (var l = 0; l <= maxLevel; l++) {
+    var nodesInLvl = byLevel[l] || [];
+
+    if (l > 0) {
+      nodesInLvl.sort(function(a, b) {
+        var getBary = function(c) {
+          var prereqs = flatPrereqs(materias[c] ? materias[c].prerrequisitos : null);
+          var sum = 0, count = 0;
+          for (var p = 0; p < prereqs.length; p++) {
+            if (positions[prereqs[p]]) {
+              sum += positions[prereqs[p]].x;
+              count++;
+            }
+          }
+          return count > 0 ? (sum / count) : 0;
+        };
+        return getBary(a) - getBary(b);
+      });
+    }
+
+    var count = nodesInLvl.length;
+    var y = (maxLevel - l - (maxLevel / 2.0)) * levelSpacingY;
+
+    for (var k = 0; k < count; k++) {
+      var cCode = nodesInLvl[k];
+      var x = (k - (count - 1) / 2.0) * nodeSpacingX;
+      positions[cCode] = { x: x, y: y };
+    }
+  }
+
   var codigos = Object.keys(materias);
   for (var i = 0; i < codigos.length; i++) {
     var codigo = codigos[i];
@@ -158,26 +261,28 @@ function buildGraph(materias, modo) {
       color = COLORES_SUBGRUPO[m.subgrupo] || COLORES_GRUPO[m.grupo] || '#e5e7eb';
     }
 
-    // Forma: obligatoria → cuadrado exacto; optativa → muy redondeada (notable)
     var borderRadius = m.obligatoria ? 0 : 20;
 
-    // Derivados del color base para los distintos estados visuales
-    var dimColor    = dimHex(color);           // sin selección: muy apagado
-    var hoverColor  = lightenHex(color, 60);   // hover: aclara bastante
-    var activeColor = lightenHex(color, 70);   // activo: muy blancuzco
+    var dimColor    = dimHex(color);
+    var hoverColor  = lightenHex(color, 60);
+    var activeColor = lightenHex(color, 70);
 
-    nodes.push({
+    var pos = positions[codigo] || { x: 0, y: 0 };
+
+    var nodeObj = {
       id:    codigo,
       label: wrapLabel(m.nombre),
       level: levels[codigo] !== undefined ? levels[codigo] : 0,
+      x:     pos.x,
+      y:     pos.y,
       color: {
-        background: dimColor,           // empieza en dim — applySelectionVisuals lo actualiza
+        background: dimColor,
         border:     'transparent',
         highlight:  { background: hoverColor, border: 'transparent' },
         hover:      { background: hoverColor, border: 'transparent' },
       },
       font: {
-        color: '#6b7280',              // gris claro por defecto (estado dim)
+        color: '#6b7280',
         size:  11,
         face:  'Inter, Arial, sans-serif',
         align: 'center',
@@ -188,12 +293,10 @@ function buildGraph(materias, modo) {
       heightConstraint:{ minimum: 50 },
       margin:      8,
       borderWidth: 0,
-      // Colores precomputados para applySelectionVisuals — vis.js ignora campos desconocidos
       _colorBase:   color,
       _colorDim:    dimColor,
       _colorHover:  hoverColor,
       _colorActive: activeColor,
-      // Payload de materia
       _codigo:         codigo,
       _nombre:         m.nombre,
       _grupo:          m.grupo,
@@ -202,7 +305,9 @@ function buildGraph(materias, modo) {
       _obligatoria:    m.obligatoria,
       _prerrequisitos: m.prerrequisitos,
       _notas:          m.notas || null,
-    });
+    };
+
+    nodes.push(nodeObj);
 
     // Aristas desde el árbol de prerrequisitos (con semántica continua/discontinua)
     var prereqList = extractEdgesFromTree(m.prerrequisitos, false)

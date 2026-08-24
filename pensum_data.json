@@ -1188,104 +1188,104 @@
       "nombre": "Práctica Estudiantil I",
       "creditos": 3,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": null
     },
     "2016763": {
       "nombre": "Práctica Estudiantil II",
       "creditos": 6,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": null
     },
     "2016764": {
       "nombre": "Práctica Estudiantil III",
       "creditos": 9,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": null
     },
     "1000070": {
       "nombre": "Práctica Colombia I",
       "creditos": 3,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": null
     },
     "1000071": {
       "nombre": "Práctica Colombia II",
       "creditos": 6,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": null
     },
     "1000072": {
       "nombre": "Práctica Colombia III",
       "creditos": 9,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": null
     },
     "1000089-B": {
       "nombre": "Cátedra Nacional de Inducción y Preparación para la Vida Universitaria",
       "creditos": 2,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": null
     },
     "2025819": {
       "nombre": "Introducción a la Teoría de Conjuntos",
       "creditos": 4,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": "2016696"
     },
     "2015184": {
       "nombre": "Teoría de Grafos",
       "creditos": 4,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": "2016696"
     },
     "2019267": {
       "nombre": "Teoría de la Recursión",
       "creditos": 4,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": "2016696"
     },
     "2027629": {
       "nombre": "Lógica Computacional",
       "creditos": 3,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": "2016696"
     },
     "2016366": {
       "nombre": "Estadística Descriptiva y Exploratoria",
       "creditos": 4,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": null
     },
     "2016379": {
       "nombre": "Inferencia Estadística",
       "creditos": 4,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": {
         "or": [
           "1000013",
@@ -1298,8 +1298,8 @@
       "nombre": "Análisis de Regresión",
       "creditos": 4,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": {
         "or": [
           "1000013",
@@ -1312,14 +1312,22 @@
       "nombre": "Introducción al Análisis Real",
       "creditos": 4,
       "obligatoria": false,
-      "grupo": "Libre Elección — Profundización",
-      "subgrupo": "Libre Elección — Profundización",
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
       "prerrequisitos": {
         "or": [
           "1000006",
           "2015162"
         ]
       }
+    },
+    "LE-EXTERNA": {
+      "nombre": "Libre Elección (Asignatura Externa)",
+      "creditos": 3,
+      "obligatoria": false,
+      "grupo": "Libre Elección",
+      "subgrupo": "Libre Elección",
+      "prerrequisitos": null
     }
   },
   "programa": {
@@ -1594,15 +1602,15 @@
         "color_indicador": "#f472b6",
         "agrupaciones": [
           {
-            "id": "libre_eleccion_profundizacion",
-            "nombre": "Libre Elección — Profundización",
+            "id": "libre_eleccion",
+            "nombre": "Libre Elección",
             "creditos_minimos": 33,
-            "color": "#a3e635",
+            "color": "#f472b6",
             "subagrupaciones": [
               {
-                "nombre": "Libre Elección — Profundización",
+                "nombre": "Libre Elección",
                 "creditos_minimos": 33,
-                "color": "#a3e635"
+                "color": "#f472b6"
               }
             ]
           }

@@ -114,7 +114,8 @@ function creditosAprobados(aprobadas, materias, compMap) {
 
     var comp = compMap ? compMap[m.grupo] : null;
     if (comp && result.hasOwnProperty(comp)) {
-      result[comp] += m.creditos;
+      var cr = (code === 'LE-EXTERNA' && typeof Seleccion !== 'undefined' && Seleccion.extCredits) ? Seleccion.extCredits : m.creditos;
+      result[comp] += cr;
     }
   });
 
@@ -131,7 +132,8 @@ function creditosPorGrupo(aprobadas, materias) {
     var m = materias[code];
     if (!m) return;
     if (!r[m.grupo]) r[m.grupo] = 0;
-    r[m.grupo] += m.creditos;
+    var cr = (code === 'LE-EXTERNA' && typeof Seleccion !== 'undefined' && Seleccion.extCredits) ? Seleccion.extCredits : m.creditos;
+    r[m.grupo] += cr;
   });
   return r;
 }
@@ -146,7 +148,8 @@ function creditosPorSubgrupo(aprobadas, materias) {
     var m = materias[code];
     if (!m) return;
     if (!r[m.subgrupo]) r[m.subgrupo] = 0;
-    r[m.subgrupo] += m.creditos;
+    var cr = (code === 'LE-EXTERNA' && typeof Seleccion !== 'undefined' && Seleccion.extCredits) ? Seleccion.extCredits : m.creditos;
+    r[m.subgrupo] += cr;
   });
   return r;
 }
@@ -192,8 +195,7 @@ var MINIMOS_GRUPO_ACUERDO11 = {
   "Modelos, Sistemas, Optimización y Simulación": 12,
   "Contexto Profesional e Interdisciplinario": 6,
   "Trabajo de Grado": 6,
-  "Libre Elección": 33,
-  "Libre Elección — Profundización": 33
+  "Libre Elección": 33
 };
 
 /**
@@ -229,7 +231,7 @@ var MINIMOS_SUBGRUPO_ACUERDO11 = {
   "Taller Interdisciplinario de Proyectos de Creación y Gestión": 3,
   "Contexto Profesional e Interdisciplinario": 3,
   "Trabajo de Grado": 6,
-  "Libre Elección — Profundización": 33
+  "Libre Elección": 33
 };
 
 /**
