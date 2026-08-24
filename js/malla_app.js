@@ -802,7 +802,7 @@ function updateInfoPanel(selectedId) {
   var crHtml  = '';
   if (reqInfo) {
     var tot = creditosAprobados(Seleccion.set, materias, COMPONENTE_POR_GRUPO);
-    var cur = tot[reqInfo.componente] || 0;
+    var cur = (tot[reqInfo.componente] || 0) - (Seleccion.set.has(selectedId) && COMPONENTE_POR_GRUPO[m.grupo] === reqInfo.componente ? (selectedId === 'LE-EXTERNA' ? (Seleccion.extCredits || 3) : m.creditos) : 0);
     var pct = Math.min(100, Math.round(cur / reqInfo.minimo * 100));
     var bc  = cur >= reqInfo.minimo ? '#22c55e' : '#ef4444';
     crHtml  =

@@ -168,13 +168,20 @@ function puedeMatricular(codigo, aprobadas, materias, compMap) {
     return { puede: puedePrereqs, faltan: puedePrereqs ? [] : ['Prerrequisitos directos no cumplidos'] };
   }
 
-  var totales = creditosAprobados(aprobadas, materias, compMap);
+  var aprobadasSinEval = new Set();
+  if (aprobadas) {
+    aprobadas.forEach(function(code) {
+      if (code !== codigo) aprobadasSinEval.add(code);
+    });
+  }
+
+  var totales = creditosAprobados(aprobadasSinEval, materias, compMap);
   var cur = totales[reqInfo.componente] || 0;
   var puedeCreds = cur >= reqInfo.minimo;
 
   var faltan = [];
   if (!puedePrereqs) faltan.push('Prerrequisitos directos no cumplidos');
-  if (!puedeCreds)   faltan.push('Créditos mínimos de ' + reqInfo.componente + ' (' + cur + '/' + reqInfo.minimo + ')');
+  if (!puedeCreds)   faltan.push('Créditos previos de ' + reqInfo.componente + ' (' + cur + '/' + reqInfo.minimo + ' cr)');
 
   return { puede: puedePrereqs && puedeCreds, faltan: faltan };
 }
