@@ -73,6 +73,23 @@
 
 <main id="network"></main>
 
+<!-- Modal Subgrafo Compacto (Modo Enfoque Aislado) -->
+<div id="subgraph-modal" class="modal-overlay hidden">
+  <div class="modal-container">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="modal-badge">Árbol de Prerrequisitos (Vista Compacta)</span>
+        <h2 id="modal-course-title">Materia</h2>
+      </div>
+      <button id="modal-close-btn" title="Cerrar (Esc)">✕ Salir al Pensum General</button>
+    </div>
+    <div id="subgraph-network" class="modal-canvas"></div>
+    <div class="modal-footer">
+      💡 Haz clic en cualquier materia para marcarla/desmarcarla. Las selecciones se conservan automáticamente en tu plan general.
+    </div>
+  </div>
+</div>
+
 <!-- Dependencias: orden importa -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.js"></script>
 <script src="js/pensum_bundle.js"></script>  <!-- datos del JSON canónico -->

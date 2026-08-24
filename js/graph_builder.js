@@ -15,7 +15,7 @@ function padHex(n) {
  */
 function dimHex(hex) {
   var bgR = 13, bgG = 17, bgB = 23; // #0d1117
-  var f   = 0.82;                    // tono más oscuro para que los colores no se vean lavados
+  var f   = 0.72;                    // tono medio equilibrado
   var r   = Math.round(parseInt(hex.slice(1, 3), 16) * (1 - f) + bgR * f);
   var g   = Math.round(parseInt(hex.slice(3, 5), 16) * (1 - f) + bgG * f);
   var b   = Math.round(parseInt(hex.slice(5, 7), 16) * (1 - f) + bgB * f);
