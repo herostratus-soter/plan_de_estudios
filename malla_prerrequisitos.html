@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malla de Prerrequisitos — Ing. Sistemas y Computación · UNAL</title>
+  <meta name="description" content="Visualización interactiva de la malla curricular de Ingeniería de Sistemas y Computación, Universidad Nacional de Colombia, según el Acuerdo 11 de 2023.">
+
+  <!-- vis.js -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.css" rel="stylesheet">
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="css/malla.css">
+  <!-- Tipografía -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<aside id="sidebar">
+
+  <div class="sidebar-header">
+    <h1>Malla de Prerrequisitos</h1>
+    <p class="subtitle">Ingeniería de Sistemas y Computación<br>UNAL Bogotá · Acuerdo 11 de 2023</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat">
+      <div class="stat-value" id="stat-total">—</div>
+      <div class="stat-label">materias</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-oblig">—</div>
+      <div class="stat-label">obligatorias</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-grupos">—</div>
+      <div class="stat-label">grupos</div>
+    </div>
+  </div>
+
+  <div class="legend-hint">
+    <span class="shape-demo sq"></span> Obligatoria &nbsp;
+    <span class="shape-demo rd"></span> Optativa
+  </div>
+
+  <div id="mode-switch">
+    <button class="mode-btn active" id="btn-grupo">Por grupo</button>
+    <button class="mode-btn"        id="btn-subgrupo">Por subgrupo</button>
+  </div>
+
+  <section id="contador">
+    <h2>Componentes</h2>
+    <div class="cr-row"><span class="cr-check" id="chk-fund">□</span><span>Fundamentación</span><b id="cr-fund">0 / —</b></div>
+    <div class="cr-row"><span class="cr-check" id="chk-disc">□</span><span>Disciplinar</span><b id="cr-disc">0 / —</b></div>
+    <div class="cr-row"><span class="cr-check" id="chk-libre">□</span><span>Libre Elección</span><b id="cr-libre">0 / —</b></div>
+    <div class="cr-row cr-total"><span></span><span>Total</span><b id="cr-total">0</b></div>
+  </section>
+
+  <section id="legend">
+    <h2 id="legend-title">Grupos</h2>
+    <div id="legend-list"></div>
+  </section>
+
+  <section id="info">
+    <h2>Detalle</h2>
+    <div id="info-content">
+      <span class="dim">Haz clic en una materia para ver su cadena de prerrequisitos.</span>
+    </div>
+    <button id="reset-btn">Reiniciar selección</button>
+  </section>
+
+</aside>
+
+<main id="network"></main>
+
+<!-- Dependencias: orden importa -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.js"></script>
+<script src="js/pensum_bundle.js"></script>  <!-- datos del JSON canónico -->
+<script src="js/pensum_logic.js"></script>   <!-- lógica pura + colores + contadores -->
+<script src="js/graph_builder.js"></script>  <!-- buildGraph, computarNiveles -->
+<script src="js/malla_app.js"></script>      <!-- orquesta todo -->
+
+</body>
+</html>
