@@ -68,7 +68,7 @@
     <div class="legend-header">
       <h2 id="legend-title">Grupos</h2>
       <button id="btn-toggle-legend-all" class="legend-toggle-btn" title="Activar / Desactivar todos los grupos">
-        👁️ Alternar todos
+        Alternar todos
       </button>
     </div>
     <div id="legend-list"></div>
@@ -76,83 +76,109 @@
 
 </aside>
 
-<!-- Lienzo Central de la Red y Banner de Navegación de Vista -->
+<!-- Lienzo Central de la Red -->
 <div id="network-wrapper">
-  <div id="view-mode-banner" class="view-mode-banner hidden">
-    <div class="banner-info">
-      <span id="banner-badge" class="banner-badge">🔍 Vista Enfoque — Árbol Local</span>
-      <span id="banner-course-title" class="banner-title">Materia</span>
-    </div>
-    <button id="btn-return-universal" class="banner-return-btn">
-      ⬅ Volver al Pensum Universal
-    </button>
-  </div>
-
-  <!-- Botones Flotantes de Vista (A la derecha sobre el lienzo) -->
-  <div id="floating-controls" class="floating-controls">
+  <!-- Botón Flotante Superior Izquierdo (Libre Elección Externa) -->
+  <div id="floating-top-left" class="floating-controls floating-top-left">
     <button id="btn-float-le-externa" class="float-btn float-btn-wide" title="Asignaturas de Libre Elección fuera del pensum (Clic: +3 créditos | Clic Der: -3 créditos)">
-      <span class="float-icon">🎨</span>
       <span class="float-label">Libre Elección Externa: <b id="float-le-cr">0 créditos</b></span>
       <span class="float-tooltip">Clic: +3 créditos | Clic Der: -3 créditos</span>
     </button>
-    <button id="btn-float-focus-active" class="float-btn" title="Enfocar árbol de la materia activa">
-      <span class="float-icon">🔍</span>
-      <span class="float-tooltip">Enfocar materia activa</span>
-    </button>
-    <button id="btn-float-focus-selection" class="float-btn" title="Enfocar solo materias seleccionadas">
-      <span class="float-icon">🎓</span>
-      <span class="float-tooltip">Enfocar mi selección</span>
-    </button>
+  </div>
+
+  <!-- Botones Flotantes Superiores Derechos (3 Modos de Vista: Árbol Global, Árbol Materia, Pensum) -->
+  <div id="floating-top-right" class="floating-controls floating-top-right">
+    <div class="view-mode-group">
+      <button id="mode-global" class="view-mode-btn active" title="Ver todo el pensum general">Árbol Global</button>
+      <button id="mode-materia" class="view-mode-btn" title="Examinar árbol local de la materia activa">Árbol Materia</button>
+      <button id="mode-pensum" class="view-mode-btn" title="Organizar selección y semestres">Pensum</button>
+    </div>
+  </div>
+
+  <!-- Panel Flotante Inferior Central (Ajuste de Semestre — Solo visible en el viewport Pensum) -->
+  <div id="floating-bottom-center" class="floating-bottom-center hidden" style="display:none;">
+    <div id="floating-sem-panel" class="floating-sem-panel">
+      <div class="sem-panel-header">
+        <span id="float-sem-title"><b>Semestre:</b> Sem. —</span>
+        <span id="float-sem-min" class="dim">(Mínimo: Sem. —)</span>
+      </div>
+      <div class="sem-panel-btns">
+        <button id="btn-sem-down" class="sem-btn sem-btn-down">Bajar</button>
+        <button id="btn-sem-up" class="sem-btn sem-btn-up">Subir</button>
+        <button id="btn-sem-reset" class="sem-btn sem-btn-reset hidden" title="Volver al semestre derivado/natural">Restablecer</button>
+      </div>
+    </div>
   </div>
 
   <main id="network"></main>
 </div>
 
-<!-- Panel Derecho: Detalle, Buscador, Selección, Reset y Exportar -->
+<!-- Panel Derecho Desplegable (3 Acordeones Estilo SketchUp) -->
 <aside id="right-panel">
-  <!-- 1. Ficha / Detalle de la Materia Seleccionada Activa (Lo más arriba) -->
-  <section id="info">
-    <h2>Detalle de Materia</h2>
-    <div id="info-content">
-      <span class="dim">Haz clic en una materia para ver su cadena de prerrequisitos.</span>
+  <!-- Acordeón 1: Detalle de Materia -->
+  <details open class="panel-accordion">
+    <summary class="accordion-header">
+      <span>Detalle de Materia</span>
+      <span class="accordion-chevron">▾</span>
+    </summary>
+    <div class="accordion-content">
+      <section id="info">
+        <div id="info-content">
+          <span class="dim">Haz clic en una materia para ver su información y prerrequisitos.</span>
+        </div>
+      </section>
     </div>
-  </section>
+  </details>
 
-  <!-- 2. Buscador de Cursos -->
-  <section id="search-section" class="panel-section">
-    <h2>Buscador de Cursos</h2>
-    <div class="search-box">
-      <input type="text" id="course-search-input" placeholder="Buscar por código SIA o nombre..." autocomplete="off" />
-      <div id="search-results-dropdown" class="search-dropdown hidden"></div>
+  <!-- Acordeón 2: Mi Selección y Búsqueda -->
+  <details open class="panel-accordion">
+    <summary class="accordion-header">
+      <span>Mi Selección y Búsqueda</span>
+      <span class="accordion-chevron">▾</span>
+    </summary>
+    <div class="accordion-content">
+      <section id="search-section" class="panel-section">
+        <h2>Buscador de Cursos</h2>
+        <div class="search-box">
+          <input type="text" id="course-search-input" placeholder="Buscar por código SIA o nombre..." autocomplete="off" />
+          <div id="search-results-dropdown" class="search-dropdown hidden"></div>
+        </div>
+      </section>
+
+      <section id="selected-tray-section" class="panel-section">
+        <div class="tray-header">
+          <h2>Materias Seleccionadas (<span id="tray-count">0</span>)</h2>
+          <span id="tray-total-cr" class="tray-total-cr">0 créditos</span>
+        </div>
+        <div id="selected-tray-list" class="selected-tray-list">
+          <span class="dim">Ninguna materia seleccionada.</span>
+        </div>
+      </section>
+
+      <div class="panel-action-block">
+        <button id="reset-btn" class="reset-all-btn">Reiniciar Selección</button>
+      </div>
     </div>
-  </section>
+  </details>
 
-  <!-- 3. Lista de Materias Seleccionadas -->
-  <section id="selected-tray-section" class="panel-section">
-    <div class="tray-header">
-      <h2>Materias Seleccionadas (<span id="tray-count">0</span>)</h2>
-      <span id="tray-total-cr" class="tray-total-cr">0 créditos</span>
+  <!-- Acordeón 3: Exportar e Importar -->
+  <details open class="panel-accordion">
+    <summary class="accordion-header">
+      <span>Exportar e Importar</span>
+      <span class="accordion-chevron">▾</span>
+    </summary>
+    <div class="accordion-content">
+      <div class="panel-action-block panel-export-block">
+        <button id="btn-export-txt" class="tray-action-btn" title="Exportar materias seleccionadas a un archivo .txt">
+          Exportar .txt
+        </button>
+        <button id="btn-import-txt" class="tray-action-btn" title="Importar materias seleccionadas desde un archivo .txt">
+          Importar .txt
+        </button>
+        <input type="file" id="input-import-file" accept=".txt" style="display:none;" />
+      </div>
     </div>
-    <div id="selected-tray-list" class="selected-tray-list">
-      <span class="dim">Ninguna materia seleccionada.</span>
-    </div>
-  </section>
-
-  <!-- 4. Botón Deseleccionar Todo -->
-  <div class="panel-action-block">
-    <button id="reset-btn" class="reset-all-btn">🗑️ Deseleccionar todo</button>
-  </div>
-
-  <!-- 5. Exportar / Importar .txt (Lo más abajo) -->
-  <div class="panel-action-block panel-export-block">
-    <button id="btn-export-txt" class="tray-action-btn" title="Exportar materias seleccionadas a un archivo .txt">
-      📤 Exportar .txt
-    </button>
-    <button id="btn-import-txt" class="tray-action-btn" title="Importar materias seleccionadas desde un archivo .txt">
-      📥 Importar .txt
-    </button>
-    <input type="file" id="input-import-file" accept=".txt" style="display:none;" />
-  </div>
+  </details>
 </aside>
 
 <!-- Dependencias: orden importa -->

@@ -152,14 +152,16 @@ function computarNiveles(materias) {
  * @param {string} modo      — 'grupo' | 'subgrupo'
  * @returns {{ nodes: Array, edges: Array, levels: Object }}
  */
-function buildGraph(materiasInput, modo) {
+function buildGraph(materiasInput, modo, customSemesters) {
   var masterLevels = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.materias)
     ? computarNiveles(PENSUM_DATA.materias)
     : computarNiveles(materiasInput);
 
   var levels = {};
   for (var code in materiasInput) {
-    if (masterLevels && masterLevels[code] !== undefined) {
+    if (customSemesters && customSemesters[code] !== undefined) {
+      levels[code] = customSemesters[code];
+    } else if (masterLevels && masterLevels[code] !== undefined) {
       levels[code] = masterLevels[code];
     } else {
       levels[code] = 0;

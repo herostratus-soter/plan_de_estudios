@@ -74,15 +74,15 @@ var LeyendaFiltro = {
 
 // ─── Selección de materias ────────────────────────────────────────────────────
 var Seleccion = {
-  set: new Set(), activo: null, extCredits: 0,
+  set: new Set(), activo: null, extCredits: 0, explicitSemesters: {},
 
   agregar:       function(c) { this.set.add(c); this.activo = c; },
-  quitar:        function(c) { this.set.delete(c); if (this.activo===c) this.activo=null; },
+  quitar:        function(c) { this.set.delete(c); delete this.explicitSemesters[c]; if (this.activo===c) this.activo=null; },
   limpiarActivo: function()  { this.activo = null; },
-  reiniciar:     function()  { this.set.clear(); this.activo = null; this.extCredits = 0; updateLEExternaLabel(); },
+  reiniciar:     function()  { this.set.clear(); this.activo = null; this.extCredits = 0; this.explicitSemesters = {}; updateLEExternaLabel(); },
   esCompleto:    function(c) { return puedeMatricular(c, this.set, materias, COMPONENTE_POR_GRUPO).puede; },
-  exportar:      function()  { return { seleccionados: Array.from(this.set), activo: this.activo, extCredits: this.extCredits }; },
-  importar:      function(d) { this.set = new Set(d.seleccionados||[]); this.activo = d.activo||null; this.extCredits = d.extCredits||0; updateLEExternaLabel(); },
+  exportar:      function()  { return { seleccionados: Array.from(this.set), activo: this.activo, extCredits: this.extCredits, explicitSemesters: this.explicitSemesters }; },
+  importar:      function(d) { this.set = new Set(d.seleccionados||[]); this.activo = d.activo||null; this.extCredits = d.extCredits||0; this.explicitSemesters = d.explicitSemesters||{}; updateLEExternaLabel(); },
 };
 
 // Estado de selección: solo determina «nivel de brillo» y «tipo de borde»
@@ -135,19 +135,51 @@ function init() {
   updateCreditCounter();
 }
 
-// ─── Cambio de Modo de Vista (Pensum Universal <-> Árbol Local / Selección) ───
+// ─── Cambio de Modo de Vista (3 Viewport Modes: Global | Materia | Pensum) ───
+var currentViewportMode = 'global'; // 'global' | 'materia' | 'pensum'
+
+function updateViewModeButtons(activeId) {
+  var ids = ['mode-global', 'mode-materia', 'mode-pensum'];
+  for (var i = 0; i < ids.length; i++) {
+    var btn = document.getElementById(ids[i]);
+    if (btn) {
+      if (ids[i] === activeId) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  }
+}
+
+function setViewportMode(mode) {
+  currentViewportMode = mode;
+
+  if (mode === 'global') {
+    mostrarPensumUniversal();
+  } else if (mode === 'materia') {
+    var activeCode = Seleccion.activo;
+    if (!activeCode || !materias[activeCode]) {
+      var selArray = Array.from(Seleccion.set);
+      activeCode = (selArray.length > 0 && materias[selArray[0]]) ? selArray[0] : '2016377';
+      Seleccion.activo = activeCode;
+    }
+    mostrarArbolLocal(activeCode);
+  } else if (mode === 'pensum') {
+    if (Seleccion.set.size > 0) {
+      mostrarArbolSeleccionados();
+    } else {
+      mostrarPensumUniversal();
+      updateViewModeButtons('mode-pensum');
+    }
+  }
+
+  updateFloatingSemesterPanel();
+}
+
 function mostrarArbolLocal(codigo) {
   if (!codigo || !materias[codigo]) return;
   vistaModo       = 'local';
   materiaEnfocada = codigo;
-
-  var banner   = document.getElementById('view-mode-banner');
-  var badgeEl  = document.getElementById('banner-badge');
-  var titleEl  = document.getElementById('banner-course-title');
-
-  if (banner) banner.classList.remove('hidden');
-  if (badgeEl) badgeEl.textContent = '🔍 Vista Enfoque — Árbol Local';
-  if (titleEl) titleEl.textContent = materias[codigo].nombre;
+  currentViewportMode = 'materia';
+  updateViewModeButtons('mode-materia');
 
   var ancestorNodes = getAncestorNodeIds(codigo, materias);
   var subMaterias   = {};
@@ -177,14 +209,8 @@ function mostrarArbolSeleccionados() {
 
   vistaModo       = 'local';
   materiaEnfocada = 'SELECCION';
-
-  var banner   = document.getElementById('view-mode-banner');
-  var badgeEl  = document.getElementById('banner-badge');
-  var titleEl  = document.getElementById('banner-course-title');
-
-  if (banner) banner.classList.remove('hidden');
-  if (badgeEl) badgeEl.textContent = '🎓 Vista Enfoque — Mi Selección';
-  if (titleEl) titleEl.textContent = selCodes.length + ' materias seleccionadas';
+  currentViewportMode = 'pensum';
+  updateViewModeButtons('mode-pensum');
 
   var subMaterias = {};
   for (var i = 0; i < selCodes.length; i++) {
@@ -194,7 +220,12 @@ function mostrarArbolSeleccionados() {
     }
   }
 
-  var selGraph = buildGraph(subMaterias, modo);
+  var masterLevels = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.materias)
+    ? computarNiveles(PENSUM_DATA.materias)
+    : {};
+
+  var effectiveSemesters = calcularSemestresEfectivos(subMaterias, Seleccion.explicitSemesters, masterLevels);
+  var selGraph = buildGraph(subMaterias, modo, effectiveSemesters);
 
   allNodes.clear();
   allNodes.add(selGraph.nodes);
@@ -211,9 +242,8 @@ function mostrarArbolSeleccionados() {
 function mostrarPensumUniversal() {
   vistaModo       = 'universal';
   materiaEnfocada = null;
-
-  var banner = document.getElementById('view-mode-banner');
-  if (banner) banner.classList.add('hidden');
+  currentViewportMode = 'global';
+  updateViewModeButtons('mode-global');
 
   var universalGraph = buildGraph(materias, modo);
 
@@ -285,8 +315,49 @@ function rebuildGraph() {
   applySelectionVisuals();
 }
 
-// ─── Puntos de Componente ───────────────────────────────────────────────────
+// ─── Puntos de Componente y Líneas de Semestre ───────────────────────────────
+function drawSemesterLines(ctx) {
+  if (currentViewportMode !== 'pensum') return;
+  var all = allNodes.get();
+  if (!all || all.length === 0) return;
+
+  var semMap = {};
+  for (var i = 0; i < all.length; i++) {
+    var n = all[i];
+    if (n.y !== undefined && n.level !== undefined) {
+      if (semMap[n.level] === undefined) {
+        semMap[n.level] = n.y;
+      }
+    }
+  }
+
+  var levels = Object.keys(semMap).map(Number).sort(function(a, b) { return a - b; });
+  if (levels.length === 0) return;
+
+  ctx.save();
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(56, 189, 248, 0.22)';
+  ctx.setLineDash([6, 6]);
+  ctx.font = '600 12px Inter, sans-serif';
+  ctx.fillStyle = '#38bdf8';
+
+  for (var k = 0; k < levels.length; k++) {
+    var lvl = levels[k];
+    var yPos = semMap[lvl];
+    var semNum = lvl + 1;
+
+    ctx.beginPath();
+    ctx.moveTo(-2000, yPos);
+    ctx.lineTo(2000, yPos);
+    ctx.stroke();
+
+    ctx.fillText('Semestre ' + semNum, -580, yPos - 10);
+  }
+  ctx.restore();
+}
+
 function drawComponentDots(ctx) {
+  drawSemesterLines(ctx);
   var DOT_R = 6.5;
   var all = allNodes.get();
 
@@ -517,6 +588,7 @@ function applySelectionVisuals() {
   allNodes.update(updates);
   updateCreditCounter();
   renderLegend();
+  updateFloatingSemesterPanel();
 }
 
 // ─── Contador de créditos por componente ─────────────────────────────────────
@@ -734,6 +806,13 @@ function renderSelectedTray() {
     return;
   }
 
+  var subMaterias = {};
+  for (var s = 0; s < selCodes.length; s++) {
+    if (materias[selCodes[s]]) subMaterias[selCodes[s]] = materias[selCodes[s]];
+  }
+  var masterLevels = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.materias) ? computarNiveles(PENSUM_DATA.materias) : {};
+  var effectiveSemesters = calcularSemestresEfectivos(subMaterias, Seleccion.explicitSemesters, masterLevels);
+
   var html = '';
   for (var j = 0; j < selCodes.length; j++) {
     var code = selCodes[j];
@@ -744,12 +823,16 @@ function renderSelectedTray() {
     var dotCol = COMP_DOT[comp] || '#ffffff';
     var isAct = (Seleccion.activo === code);
 
+    var isExplicit = (!isExt && Seleccion.explicitSemesters && Seleccion.explicitSemesters[code] !== undefined);
+    var resetBtnHtml = isExplicit ? '<button class="tray-item-reset" data-code="' + code + '" title="Semestre modificado. Clic para restablecer">↺ Restablecer</button>' : '';
+
     html += '<div class="tray-item' + (isAct ? ' active-item' : '') + '" data-code="' + code + '">';
     html += '  <div class="tray-item-left">';
     html += '    <span class="tray-item-dot" style="background:' + dotCol + '"></span>';
     html += '    <span class="tray-item-name" title="' + mName + '">' + mName + '</span>';
     html += '  </div>';
     html += '  <div class="tray-item-right">';
+    html += '    ' + resetBtnHtml;
     html += '    <span class="tray-item-cr">' + cr + ' créditos</span>';
     html += '    <button class="tray-item-remove" data-code="' + code + '" title="Quitar de selección">✕</button>';
     html += '  </div>';
@@ -761,12 +844,29 @@ function renderSelectedTray() {
   var items = listEl.getElementsByClassName('tray-item');
   for (var k = 0; k < items.length; k++) {
     items[k].addEventListener('click', function(e) {
-      if (e.target.classList.contains('tray-item-remove')) return;
+      if (e.target.classList.contains('tray-item-remove') || e.target.classList.contains('tray-item-reset')) return;
       var code = this.getAttribute('data-code');
       Seleccion.activo = code;
       applySelectionVisuals();
       updateInfoPanel(code);
       renderSelectedTray();
+      updateFloatingSemesterPanel();
+    });
+  }
+
+  var resetBtns = listEl.getElementsByClassName('tray-item-reset');
+  for (var rb = 0; rb < resetBtns.length; rb++) {
+    resetBtns[rb].addEventListener('click', function(e) {
+      e.stopPropagation();
+      var code = this.getAttribute('data-code');
+      delete Seleccion.explicitSemesters[code];
+      applySelectionVisuals();
+      updateInfoPanel(code);
+      renderSelectedTray();
+      updateFloatingSemesterPanel();
+      if (vistaModo === 'local' && materiaEnfocada === 'SELECCION') {
+        mostrarArbolSeleccionados();
+      }
     });
   }
 
@@ -779,6 +879,10 @@ function renderSelectedTray() {
       applySelectionVisuals();
       updateInfoPanel(Seleccion.activo);
       renderSelectedTray();
+      updateFloatingSemesterPanel();
+      if (vistaModo === 'local' && materiaEnfocada === 'SELECCION') {
+        mostrarArbolSeleccionados();
+      }
     });
   }
 }
@@ -797,7 +901,11 @@ function exportarSeleccionTxt() {
     if (c === 'LE-EXTERNA') {
       formattedList.push('LE-EXTERNA:' + (Seleccion.extCredits || 3));
     } else {
-      formattedList.push(c);
+      var itemStr = c;
+      if (Seleccion.explicitSemesters[c] !== undefined) {
+        itemStr += '@' + (Seleccion.explicitSemesters[c] + 1);
+      }
+      formattedList.push(itemStr);
     }
   }
 
@@ -838,9 +946,18 @@ function importarSeleccionTxt(file) {
         Seleccion.extCredits = isNaN(cr) ? 3 : cr;
         Seleccion.agregar('LE-EXTERNA');
         lastAdded = 'LE-EXTERNA';
-      } else if (materias[tok]) {
-        Seleccion.agregar(tok);
-        lastAdded = tok;
+      } else {
+        var parts = tok.split('@');
+        var code = parts[0];
+        var sem  = parts.length > 1 ? parseInt(parts[1], 10) : null;
+
+        if (materias[code]) {
+          Seleccion.agregar(code);
+          if (sem !== null && !isNaN(sem) && sem >= 1) {
+            Seleccion.explicitSemesters[code] = sem - 1;
+          }
+          lastAdded = code;
+        }
       }
     }
 
@@ -849,9 +966,55 @@ function importarSeleccionTxt(file) {
     applySelectionVisuals();
     updateInfoPanel(Seleccion.activo);
     renderSelectedTray();
+    if (vistaModo === 'local' && materiaEnfocada === 'SELECCION') {
+      mostrarArbolSeleccionados();
+    }
   };
 
   reader.readAsText(file);
+}
+
+function updateFloatingSemesterPanel() {
+  var panel   = document.getElementById('floating-bottom-center') || document.getElementById('floating-bottom-right');
+  var titleEl = document.getElementById('float-sem-title');
+  var minEl   = document.getElementById('float-sem-min');
+  var downBtn = document.getElementById('btn-sem-down');
+  var resetBtn= document.getElementById('btn-sem-reset');
+  if (!panel) return;
+
+  if (currentViewportMode !== 'pensum') {
+    panel.style.display = 'none';
+    panel.classList.add('hidden');
+    return;
+  }
+
+  var activeCode = Seleccion.activo;
+
+  if (activeCode && Seleccion.set.has(activeCode) && activeCode !== 'LE-EXTERNA' && materias[activeCode]) {
+    panel.style.display = 'flex';
+    panel.classList.remove('hidden');
+
+    var subMaterias = {};
+    Seleccion.set.forEach(function(code) {
+      if (materias[code]) subMaterias[code] = materias[code];
+    });
+    var masterLevels = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.materias) ? computarNiveles(PENSUM_DATA.materias) : {};
+    var effectiveSemesters = calcularSemestresEfectivos(subMaterias, Seleccion.explicitSemesters, masterLevels);
+    var minSem = calcularSemestreMinimo(activeCode, effectiveSemesters, materias);
+    var curSem = (effectiveSemesters && effectiveSemesters[activeCode] !== undefined) ? effectiveSemesters[activeCode] : minSem;
+    var isExplicit = (Seleccion.explicitSemesters[activeCode] !== undefined);
+
+    if (titleEl) titleEl.innerHTML = '<b>Semestre:</b> Sem. ' + (curSem + 1);
+    if (minEl)   minEl.textContent = '(Mínimo: Sem. ' + (minSem + 1) + ')';
+    if (downBtn) downBtn.disabled = (curSem <= minSem);
+    if (resetBtn) {
+      if (isExplicit) resetBtn.classList.remove('hidden');
+      else resetBtn.classList.add('hidden');
+    }
+  } else {
+    panel.style.display = 'none';
+    panel.classList.add('hidden');
+  }
 }
 
 // ─── Botones y modo ──────────────────────────────────────────────────────────
@@ -868,6 +1031,10 @@ function setupEvents() {
       updateInfoPanel(null);
       renderSelectedTray();
       updateLEExternaLabel();
+      updateFloatingSemesterPanel();
+      if (vistaModo === 'local' && materiaEnfocada === 'SELECCION') {
+        mostrarPensumUniversal();
+      }
     });
 
   var btnToggleLegend = document.getElementById('btn-toggle-legend-all');
@@ -888,6 +1055,7 @@ function setupEvents() {
       applySelectionVisuals();
       updateInfoPanel('LE-EXTERNA');
       renderSelectedTray();
+      updateFloatingSemesterPanel();
     });
 
     btnFloatLE.addEventListener('contextmenu', function(e) {
@@ -904,33 +1072,77 @@ function setupEvents() {
       applySelectionVisuals();
       updateInfoPanel(Seleccion.activo);
       renderSelectedTray();
+      updateFloatingSemesterPanel();
     });
   }
 
-  var returnBtn = document.getElementById('btn-return-universal');
-  if (returnBtn) {
-    returnBtn.addEventListener('click', function() {
+  var modeGlobal  = document.getElementById('mode-global');
+  var modeMateria = document.getElementById('mode-materia');
+  var modePensum  = document.getElementById('mode-pensum');
+
+  if (modeGlobal) {
+    modeGlobal.addEventListener('click', function() {
       mostrarPensumUniversal();
     });
   }
 
-  var btnFloatActive = document.getElementById('btn-float-focus-active');
-  if (btnFloatActive) {
-    btnFloatActive.addEventListener('click', function() {
-      if (Seleccion.activo) {
+  if (modeMateria) {
+    modeMateria.addEventListener('click', function() {
+      if (Seleccion.activo && materias[Seleccion.activo]) {
         mostrarArbolLocal(Seleccion.activo);
+      } else {
+        alert("Haz clic en una materia para explorar su árbol local.");
       }
     });
   }
 
-  var btnFloatSelection = document.getElementById('btn-float-focus-selection');
-  if (btnFloatSelection) {
-    btnFloatSelection.addEventListener('click', function() {
+  if (modePensum) {
+    modePensum.addEventListener('click', function() {
       if (Seleccion.set.size > 0) {
         mostrarArbolSeleccionados();
+      } else {
+        alert("Selecciona al menos una materia para organizar tu pensum.");
       }
     });
   }
+
+  var btnSemUp = document.getElementById('btn-sem-up');
+  var btnSemDown = document.getElementById('btn-sem-down');
+  var btnSemReset = document.getElementById('btn-sem-reset');
+
+  function handleSemChange(action) {
+    var code = Seleccion.activo;
+    if (!code || !materias[code]) return;
+
+    var subMaterias = {};
+    Seleccion.set.forEach(function(c) {
+      if (materias[c]) subMaterias[c] = materias[c];
+    });
+    var masterLevels = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.materias) ? computarNiveles(PENSUM_DATA.materias) : {};
+    var effectiveSemesters = calcularSemestresEfectivos(subMaterias, Seleccion.explicitSemesters, masterLevels);
+    var minSem = calcularSemestreMinimo(code, effectiveSemesters, materias);
+    var curSem = (effectiveSemesters && effectiveSemesters[code] !== undefined) ? effectiveSemesters[code] : minSem;
+
+    if (action === 'up') {
+      Seleccion.explicitSemesters[code] = curSem + 1;
+    } else if (action === 'down') {
+      if (curSem > minSem) Seleccion.explicitSemesters[code] = curSem - 1;
+    } else if (action === 'reset') {
+      delete Seleccion.explicitSemesters[code];
+    }
+
+    applySelectionVisuals();
+    updateInfoPanel(code);
+    renderSelectedTray();
+    updateFloatingSemesterPanel();
+    if (vistaModo === 'local' && materiaEnfocada === 'SELECCION') {
+      mostrarArbolSeleccionados();
+    }
+  }
+
+  if (btnSemUp)   btnSemUp.addEventListener('click', function() { handleSemChange('up'); });
+  if (btnSemDown) btnSemDown.addEventListener('click', function() { handleSemChange('down'); });
+  if (btnSemReset)btnSemReset.addEventListener('click', function() { handleSemChange('reset'); });
 
   var btnExport = document.getElementById('btn-export-txt');
   if (btnExport) {
@@ -1171,6 +1383,34 @@ function updateInfoPanel(selectedId) {
   var isCurrentLocal = (vistaModo === 'local' && materiaEnfocada === selectedId);
   var btnText = isCurrentLocal ? '⬅ Volver al Pensum Universal' : '🔍 Enfocar árbol local';
 
+  // Bloque de Control de Semestre (solo si está en la selección y el modo activo es Pensum)
+  var semControlHtml = '';
+  if (currentViewportMode === 'pensum' && Seleccion.set.has(selectedId) && selectedId !== 'LE-EXTERNA') {
+    var subMaterias = {};
+    Seleccion.set.forEach(function(code) {
+      if (materias[code]) subMaterias[code] = materias[code];
+    });
+    var masterLevels = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.materias) ? computarNiveles(PENSUM_DATA.materias) : {};
+    var effectiveSemesters = calcularSemestresEfectivos(subMaterias, Seleccion.explicitSemesters, masterLevels);
+    var minSem = calcularSemestreMinimo(selectedId, effectiveSemesters, materias);
+    var curSem = (effectiveSemesters && effectiveSemesters[selectedId] !== undefined) ? effectiveSemesters[selectedId] : minSem;
+    var isExplicit = (Seleccion.explicitSemesters[selectedId] !== undefined);
+
+    semControlHtml += '<div class="sem-control-block" style="margin-top:14px;padding-top:10px;border-top:1px dashed var(--border);">';
+    semControlHtml += '  <div class="sem-control-title">';
+    semControlHtml += '    <span><b>Semestre Planificado:</b> Sem. ' + (curSem + 1) + '</span>';
+    semControlHtml += '    <span class="dim">(Mínimo: Sem. ' + (minSem + 1) + ')</span>';
+    semControlHtml += '  </div>';
+    semControlHtml += '  <div class="sem-control-btns">';
+    semControlHtml += '    <button class="sem-btn sem-btn-down" data-code="' + selectedId + '" ' + (curSem <= minSem ? 'disabled' : '') + '>Bajar</button>';
+    semControlHtml += '    <button class="sem-btn sem-btn-up" data-code="' + selectedId + '">Subir</button>';
+    if (isExplicit) {
+      semControlHtml += '    <button class="sem-btn sem-btn-reset" data-code="' + selectedId + '" title="Volver al semestre derivado/natural">Restablecer</button>';
+    }
+    semControlHtml += '  </div>';
+    semControlHtml += '</div>';
+  }
+
   var html = '<div class="course-name">' + m.nombre + '</div>';
   html += '<div class="course-meta">';
   html += '<span class="badge ' + (m.obligatoria ? 'badge-oblig' : 'badge-opt') + '">';
@@ -1191,5 +1431,40 @@ function updateInfoPanel(selectedId) {
     html += '<div class="info-row" style="margin-top:8px;color:var(--text-dim);font-size:11px">' +
             selCount + ' materias en la selección</div>';
 
+  html += semControlHtml;
+
   content.innerHTML = html;
+
+  var semBtns = content.querySelectorAll('.sem-btn');
+  for (var sb = 0; sb < semBtns.length; sb++) {
+    semBtns[sb].addEventListener('click', function(e) {
+      e.stopPropagation();
+      var code = this.getAttribute('data-code');
+      var subMaterias = {};
+      Seleccion.set.forEach(function(c) {
+        if (materias[c]) subMaterias[c] = materias[c];
+      });
+      var masterLevels = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.materias) ? computarNiveles(PENSUM_DATA.materias) : {};
+      var effectiveSemesters = calcularSemestresEfectivos(subMaterias, Seleccion.explicitSemesters, masterLevels);
+      var minSem = calcularSemestreMinimo(code, effectiveSemesters, materias);
+      var curSem = (effectiveSemesters && effectiveSemesters[code] !== undefined) ? effectiveSemesters[code] : minSem;
+
+      if (this.classList.contains('sem-btn-up')) {
+        Seleccion.explicitSemesters[code] = curSem + 1;
+      } else if (this.classList.contains('sem-btn-down')) {
+        if (curSem > minSem) {
+          Seleccion.explicitSemesters[code] = curSem - 1;
+        }
+      } else if (this.classList.contains('sem-btn-reset')) {
+        delete Seleccion.explicitSemesters[code];
+      }
+
+      applySelectionVisuals();
+      updateInfoPanel(code);
+      renderSelectedTray();
+      if (vistaModo === 'local' && materiaEnfocada === 'SELECCION') {
+        mostrarArbolSeleccionados();
+      }
+    });
+  }
 }

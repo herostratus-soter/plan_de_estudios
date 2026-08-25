@@ -306,3 +306,68 @@ function computarTotalesSubgrupo(materias) {
   }
   return r;
 }
+
+/**
+ * Calcula el semestre mínimo viable de una asignatura basado únicamente en sus prerrequisitos antecedentes.
+ */
+function calcularSemestreMinimo(codigo, effectiveSemesters, materias) {
+  if (!materias || !materias[codigo]) return 0;
+  var m = materias[codigo];
+  var prereqs = flatPrereqs(m.prerrequisitos);
+  if (!prereqs || prereqs.length === 0) {
+    var req = m.creditos_requeridos;
+    if (req && req.minimo >= 60) return 6;
+    if (req && req.minimo >= 40) return 5;
+    return 0;
+  }
+
+  var maxP = 0;
+  for (var i = 0; i < prereqs.length; i++) {
+    var pCode = prereqs[i];
+    var pSem = (effectiveSemesters && effectiveSemesters[pCode] !== undefined)
+      ? effectiveSemesters[pCode]
+      : 0;
+    if (pSem + 1 > maxP) maxP = pSem + 1;
+  }
+  return maxP;
+}
+
+/**
+ * Calcula dinámicamente el semestre efectivo S(v) para cada materia en orden topológico.
+ * S(v) = max( L_natural(v), L_prereqs(v), explicitSemesters[v] )
+ */
+function calcularSemestresEfectivos(subMaterias, explicitSemesters, masterLevels) {
+  var effective = {};
+  if (!subMaterias) return effective;
+  explicitSemesters = explicitSemesters || {};
+  masterLevels      = masterLevels || {};
+
+  var codigos = Object.keys(subMaterias);
+  codigos.sort(function(a, b) {
+    var la = masterLevels[a] !== undefined ? masterLevels[a] : 0;
+    var lb = masterLevels[b] !== undefined ? masterLevels[b] : 0;
+    return la - lb;
+  });
+
+  for (var i = 0; i < codigos.length; i++) {
+    var code = codigos[i];
+    var m = subMaterias[code];
+    var naturalLvl = masterLevels[code] !== undefined ? masterLevels[code] : 0;
+    var prereqLvl  = 0;
+
+    var pList = flatPrereqs(m.prerrequisitos);
+    for (var p = 0; p < pList.length; p++) {
+      var pCode = pList[p];
+      if (effective[pCode] !== undefined) {
+        if (effective[pCode] + 1 > prereqLvl) prereqLvl = effective[pCode] + 1;
+      }
+    }
+
+    var minViable = Math.max(naturalLvl, prereqLvl);
+    var explicit  = explicitSemesters[code] !== undefined ? explicitSemesters[code] : 0;
+
+    effective[code] = Math.max(minViable, explicit);
+  }
+
+  return effective;
+}
