@@ -102,16 +102,18 @@ function evaluarArbolPrereqs(tree, aprobadas) {
 }
 
 /**
- * Suma los créditos aprobados por componente
+ * Suma los créditos aprobados por componente y calcula la transferencia de excesos
+ * de Fundamentación y Disciplinar al contador de Libre Elección (Normativa UNAL)
+ * manteniendo la suma total bruta sin doble conteo.
  */
-function creditosAprobados(aprobadas, materias, compMap) {
-  var result = { fundamentacion: 0, disciplinar: 0, libre_eleccion: 0 };
-  if (!aprobadas) return result;
+function creditosAprobados(aprobadas, materias, compMap, mins) {
+  var raw = { fundamentacion: 0, disciplinar: 0, libre_eleccion: 0 };
+  if (!aprobadas) return { fundamentacion: 0, disciplinar: 0, libre_eleccion: 0, total_bruto: 0 };
 
   aprobadas.forEach(function(code) {
     if (code === 'LE-EXTERNA') {
       var crEx = (typeof Seleccion !== 'undefined' && Seleccion.extCredits) ? Seleccion.extCredits : 3;
-      result.libre_eleccion += crEx;
+      raw.libre_eleccion += crEx;
       return;
     }
 
@@ -119,10 +121,24 @@ function creditosAprobados(aprobadas, materias, compMap) {
     if (!m) return;
 
     var comp = compMap ? compMap[m.grupo] : null;
-    if (comp && result.hasOwnProperty(comp)) {
-      result[comp] += m.creditos;
+    if (comp && raw.hasOwnProperty(comp)) {
+      raw[comp] += m.creditos;
     }
   });
+
+  var totalBruto = raw.fundamentacion + raw.disciplinar + raw.libre_eleccion;
+  var result = {
+    fundamentacion: raw.fundamentacion,
+    disciplinar:    raw.disciplinar,
+    libre_eleccion: raw.libre_eleccion,
+    total_bruto:    totalBruto
+  };
+
+  if (mins) {
+    var exFund = Math.max(0, raw.fundamentacion - (mins.fundamentacion || 0));
+    var exDisc = Math.max(0, raw.disciplinar - (mins.disciplinar || 0));
+    result.libre_eleccion = raw.libre_eleccion + exFund + exDisc;
+  }
 
   return result;
 }

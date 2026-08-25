@@ -523,7 +523,7 @@ function applySelectionVisuals() {
 function updateCreditCounter() {
   if (!MINS_PROGRAMA) return;
 
-  var totales = creditosAprobados(Seleccion.set, materias, COMPONENTE_POR_GRUPO);
+  var totales = creditosAprobados(Seleccion.set, materias, COMPONENTE_POR_GRUPO, MINS_PROGRAMA);
   var metaTotal = (typeof PENSUM_DATA !== 'undefined' && PENSUM_DATA.programa && PENSUM_DATA.programa.creditos_totales)
     ? PENSUM_DATA.programa.creditos_totales
     : 165;
@@ -549,7 +549,7 @@ function updateCreditCounter() {
   fila('chk-disc',  'cr-disc',  totales.disciplinar,      MINS_PROGRAMA.disciplinar,     'disc');
   fila('chk-libre', 'cr-libre', totales.libre_eleccion,   MINS_PROGRAMA.libre_eleccion,  'libre');
 
-  var total   = totales.fundamentacion + totales.disciplinar + totales.libre_eleccion;
+  var total   = totales.total_bruto;
   var totalEl = document.getElementById('cr-total');
   if (totalEl) {
     totalEl.textContent = total + ' / ' + metaTotal + ' créditos';

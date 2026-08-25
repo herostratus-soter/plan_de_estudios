@@ -307,6 +307,14 @@ body {
   font-weight: 700;
 }
 
+.counter-note {
+  margin-top: 8px;
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--text-dim);
+  opacity: 0.85;
+}
+
 /* ─── Info panel (Panel Derecho) ─────────────────────────────────────────────── */
 #info {
   padding: 14px 16px;
